@@ -1,8 +1,7 @@
 \documentclass[
  paper=A4,pagesize=automedia,fontsize=12pt,
- BCOR=10mm,
+ BCOR=10mm,DIV=16,
  twoside,headinclude,footinclude=false,
- fleqn,
  bibtotocnumbered,          % show bibl. refs in TOC
  liststotoc,                % show image list in TOC
  listsleft,
@@ -33,7 +32,7 @@
 \usepackage{setspace} \onehalfspacing
 \deffootnote{1em}{1em}{\textsuperscript{\thefootnotemark }}
 % math mode formatting etc.
-\usepackage{amsmath,amsfonts,amssymb,sistyle,xcolor,delim}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,sistyle,xcolor,delim}
 \usepackage{graphicx,tikz,calc,tabularx}
 \SIstyle{German}
 % presentation of floats
@@ -44,6 +43,14 @@
 % put footnotes below floats
 \usepackage[bottom]{footmisc}
 
+\newcounter{theorem}
+\theoremstyle{plain}
+\newtheorem{theorem}[theorem]{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\numberwithin{theorem}{chapter}
 \numberwithin{equation}{chapter}
 \numberwithin{figure}{chapter}
 \numberwithin{table}{chapter}
@@ -74,6 +81,7 @@
 \newcommand\zz{\mathbb Z}
 \newcommand\argmax{\qopname\relax m{argmax}}
 \newcommand\eps{\varepsilon}
+\newcommand\mle{\operatorname{mle}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -119,7 +127,7 @@
 
  \end{center}
 
- \vspace*{3em}
+ \vspace*{6em}
  \begin{singlespace}
   \hspace{0.17\linewidth}
   \begin{minipage}{0.1\linewidth}
@@ -136,9 +144,12 @@
 \tableofcontents
 \mainmatter
 
+\input{01-introduction}
+\input{02-em-algorithm}
+
 \backmatter
 \listoffigures % TODO: necessary?
-\bibliographystyle{gerunsrt} % TODO: style okay?
+\bibliographystyle{alpha} % TODO: style is broken; e.g. "EM Algorithm" gets lowercased to "em algorithm" in title display
 \bibliography{citations}
 
 \clearpage

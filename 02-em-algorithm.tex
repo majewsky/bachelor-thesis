@@ -1,0 +1,104 @@
+\chapter{Expectation maximization algorithm}
+
+The generic framework for expectation maximization (EM) algorithms introduced
+by \cite{bucstuvog15} applies to both language models and translation models.
+This section will introduce terminology and notation from \cite{bucstuvog15} as
+far as is necessary to apply this framework to the Hidden Markov models in the
+following chapters.
+
+\section{Preliminaries}
+
+The set $\brc{0,1,2,\ldots}$ of non-negative integers and the set of non-negative reals shall be denoted by $\zn$ and $\zr_{\geq0}$, respectively. We assume that
+\begin{align*}
+ 0^0 &:= 1, &
+ \log 0 &:= -\infty, &
+ 0 (-\infty) &= \log 0^0 = 1.
+\end{align*}
+
+\begin{definition}
+ Given a countable set $X$, a mapping $c: X \to \zr_{\geq0}$ is called a \emph{$X$-corpus}.
+\end{definition}
+
+When used as input for a language model's training algorithm, $X$ is the set of all sentences consisting of words from the language in question, and $c(x)$ describes how often a sentence $x\in X$ occurs in the corpus $c$. The \emph{size} of the corpus is defined as
+\begin{equation*}
+ \abs c := \sum_{x\in X} c(x).
+\end{equation*}
+
+\begin{definition}
+ A \emph{probability distribution of $X$} is an $X$-corpus of size 1.
+\end{definition}
+
+The set of all such probability distributions is denoted by $\um(X)$. Probability distributions can be derived from corpora:
+
+\begin{definition}
+ Given a non-empty and finite $X$-corpus $c$, the \emph{empirical probability distribution} $\tilde c$ is defined as
+ \[
+  \tilde c(x) = \frac{c(x)}{\abs c}.
+ \]
+\end{definition}
+
+This expression is not well-defined for $\abs c = 0$ or $\abs c = \infty$, hence the requirement for $c$ to be non-empty and finite. If this cannot be guaranteed, a fall-back function can be added.
+
+\begin{definition}
+ Given $p\in\um(X)$, a \emph{normalization mapping with fall-back $p$} is the mapping
+ \[
+  \overline p: \zr_{\geq0}^X \to \um(X),
+  \quad
+  c \mapsto \begin{cases}
+   \tilde c & 0 < \abs c < \infty \\ p & \text{otherwise}
+  \end{cases}
+ \]
+\end{definition}
+
+\begin{definition}
+ Given an $X$-corpus $c$ and $p\in\um(X)$, the \emph{likelihood of $c$ under $p$} is
+ \[
+  p(c) := \prod_{x\in X} p(x)^{c(x)}.
+ \]
+\end{definition}
+
+The likelihood describes the probability of observing the sentences from the corpus $c$ when sentences occur with the probability distribution described by $p$. A training algorithm will take $c$ as an input, and seek to find an admissible $p$ such that $p(c)$ is maximized. If any $p$ is admissible, then for non-empty and finite $c$, the optimal choice is $p = \tilde c$:
+
+\begin{lemma}\label{lemma:empirical1}
+ Let $c$ be a non-empty and finite $X$-corpus. Then $\tilde c(c) \geq p(c)$ for every $p\in\um(X)$.
+\end{lemma}
+
+\begin{proof}
+ Since $\log$ is monotone, it suffices to show that $\log\tilde c(c) \geq \log p(c)$. Using Gibbs' inequality,
+ \begin{align*}
+  \log \tilde c(c)
+  &= \sum_{x\in X} c(x) \cdot \log \tilde c(x)
+  = \abs c \cdot \sum_{x\in X} \tilde c(x) \cdot \log \tilde c(x) \\
+  &\geq \abs c \cdot \sum_{x\in X} \tilde c(x) \cdot \log p(x)
+  = \sum_{x\in X} c(x) \cdot \log p(x)
+  = p(c)
+  \qedhere
+ \end{align*}
+\end{proof}
+
+However, using $p = \tilde c$ directly is not useful because this probability distribution is grossly overfitted: It will assign zero probability to any sentence not in the original corpus. A useful language model thus limits the set of admissible $p$ by describing the probability distribution in terms of \emph{model parameters} $\omega\in\Omega$.
+
+\begin{definition}
+ Given a set $\Omega$, an \emph{$\Omega$-probability model for $X$} is a mapping $p:\Omega\to\um(X)$.
+\end{definition}
+
+Training shall then find $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
+
+\begin{definition}
+ Given a set $\Omega$ and an $\Omega$-probability model for $X$ called $p$, the \emph{maximum likelihood estimator} for $p$ is the mapping
+ \[
+  \mle_p: \zr_{\geq0}^X \to \up(\Omega),
+  \quad
+  c \mapsto \argmax_\omega p_\omega(c).
+ \]
+\end{definition}
+
+$\mle_p(c)$ is the set of all $\omega$ with maximal likelihood, but training only needs to find a single $\hat\omega \in \mle_p(c)$. Computing $\mle_p(c)$ by brute force is typically not tractible because the set $\Omega$ is infinite (usually countably infinite). However, there is one easily solvable special case.
+
+\begin{lemma}\label{lemma:empirical2}
+ Let $c$ be a finite $X$-corpus, and $p$ a $\Omega$-probability model over $X$. If there exists $\hat\omega\in\Omega$ such that $p_{\hat\omega} = \tilde c$, then $\hat\omega\in\mle_p(c)$.
+\end{lemma}
+
+\begin{proof}
+ If $c$ is empty, then $p_\omega(c) = 1$ for every $\omega$, and thus $\mle_p(c) = \Omega \ni \hat\omega$. Otherwise, by Lemma~\ref{lemma:empirical1}, $p_{\hat\omega}(c) = \tilde c(c) \geq p_\omega(c)$ for every $\omega\in\Omega$, and thus $\hat\omega \in \mle_p(c)$.
+\end{proof}
