@@ -1,10 +1,10 @@
-\chapter{Expectation maximization algorithm}
+\chapter{Expectation-maximization algorithm}
 
-The generic framework for expectation maximization (EM) algorithms introduced
+The generic framework for expectation-maximization (EM) algorithms introduced
 by \cite{bucstuvog15} applies to both language models and translation models.
-This section will introduce terminology and notation from \cite{bucstuvog15} as
-far as is necessary to apply this framework to the Hidden Markov models in the
-following chapters.
+This chapter will introduce terminology and notation from \cite{bucstuvog15} as
+far as is necessary to apply this framework to the Hidden Markov Model in the
+subsequent chapters.
 
 \section{Preliminaries}
 
@@ -85,7 +85,7 @@ However, using $p = \tilde c$ directly is not useful because this probability di
 Training shall then find $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
 
 \begin{definition}
- Given a set $\Omega$ and an $\Omega$-probability model for $X$ called $p$, the \emph{maximum likelihood estimator} for $p$ is the mapping
+ Given a set $\Omega$ and an $\Omega$-probability model $p$ for $X$, the \emph{maximum likelihood estimator} for $p$ is the mapping
  \[
   \mle_p: \zr_{\geq0}^X \to \up(\Omega),
   \quad
@@ -96,9 +96,33 @@ Training shall then find $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
 $\mle_p(c)$ is the set of all $\omega$ with maximal likelihood, but training only needs to find a single $\hat\omega \in \mle_p(c)$. Computing $\mle_p(c)$ by brute force is typically not tractible because the set $\Omega$ is infinite (usually countably infinite). However, there is one easily solvable special case.
 
 \begin{lemma}\label{lemma:empirical2}
- Let $c$ be a finite $X$-corpus, and $p$ a $\Omega$-probability model over $X$. If there exists $\hat\omega\in\Omega$ such that $p_{\hat\omega} = \tilde c$, then $\hat\omega\in\mle_p(c)$.
+ Let $c$ be a finite $X$-corpus, and $p$ a $\Omega$-probability model for $X$. If there exists $\hat\omega\in\Omega$ such that $p_{\hat\omega} = \tilde c$, then $\hat\omega\in\mle_p(c)$.
 \end{lemma}
 
 \begin{proof}
  If $c$ is empty, then $p_\omega(c) = 1$ for every $\omega$, and thus $\mle_p(c) = \Omega \ni \hat\omega$. Otherwise, by Lemma~\ref{lemma:empirical1}, $p_{\hat\omega}(c) = \tilde c(c) \geq p_\omega(c)$ for every $\omega\in\Omega$, and thus $\hat\omega \in \mle_p(c)$.
 \end{proof}
+
+\section{Algorithmic skeleton}
+
+\begin{algorithm}[t]
+ \caption{Algorithmic skeleton for EM of language models  \cite{bucstuvog15}}
+ \label{alg:skeleton}
+ \begin{algorithmic}[1]
+  \algorithmheader[Input:] $X$-corpus $c$
+  \algorithmheader         $\Omega$-probability model $p$ for $Y\times X$
+  \algorithmheader         some initial parameter $\omega_0 \in \Omega_0$ where $\Omega_0 := \brc{\omega\in\Omega: p_\omega(c) \neq 0}$
+  \algorithmheader[Implicit:] step mapping $\psi:\Omega_0\to\up(\Omega)$
+  \algorithmheader            \hspace{1em} such that $\omega'\in\psi(\omega)$ implies $p_\omega(c) \leq p_{\omega'}(c)$
+  \algorithmheader[Output:] sequence $\omega_1,\omega_2,\ldots\in\Omega_0$
+  \algorithmheader            \hspace{1em} such that $p_{\omega_0}(c), p_{\omega_1}(c), p_{\omega_2}(c)$ nondecreasing
+
+  \STATE $i\leftarrow 0$
+  \WHILE \TRUE
+   \STATE $\omega_{i+1} \leftarrow \text{select a member of $\psi(\omega_i)$}$
+   \STATE output $\omega_{i+1}$
+   \STATE $i\leftarrow i+1$
+  \ENDWHILE
+ \end{algorithmic}
+\end{algorithm}
+

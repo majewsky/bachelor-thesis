@@ -40,6 +40,14 @@
 \usepackage[section]{placeins}
 \usepackage[margin=8mm,font=small,labelfont=bf,format=plain]{caption}
 \usepackage[margin=8mm,font=small,labelfont=bf,format=hang]{subcaption}
+% rendering of algorithms
+\usepackage{algorithmic}
+\usepackage[chapter]{algorithm}
+\newcommand\algorithmheader[1][]{%
+ \expandafter\def\expandafter\algorithmicrequire{\begin{minipage}{6em}\textbf{#1}~\end{minipage}}\REQUIRE%
+}
+\renewcommand\algorithmicrequire{\textbf{Input:}}
+\renewcommand\algorithmicensure{\textbf{Output:}}
 % put footnotes below floats
 \usepackage[bottom]{footmisc}
 
@@ -149,6 +157,7 @@
 
 \backmatter
 \listoffigures % TODO: necessary?
+\listofalgorithms
 \bibliographystyle{alpha} % TODO: style is broken; e.g. "EM Algorithm" gets lowercased to "em algorithm" in title display
 \bibliography{citations}
 
