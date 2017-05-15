@@ -10,6 +10,9 @@
  cleardoublepage=empty      % no page number on vacant pages
 ]{scrbook}
 
+% pdfx wants to be first
+\usepackage[a-1b,latxmp]{pdfx}
+
 % encoding
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -46,7 +49,7 @@
 \numberwithin{table}{chapter}
 
 % hyperref is loaded as the last package (as recommended by its manual)
-\usepackage[hyperindex,pdfborder={0 0 0},pdfa]{hyperref}
+\hypersetup{hyperindex,pdfborder={0 0 0},pdfa}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

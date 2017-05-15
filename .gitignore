@@ -2,5 +2,6 @@
 *.lof
 *.log
 *.out
-main.pdf
 *.toc
+main.pdf
+pdfa.xmpi
