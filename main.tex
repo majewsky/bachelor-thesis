@@ -77,6 +77,8 @@
 \delimdef\dangle#1{\dleft\langle#1\dright\rangle}
 \delimdef\skal#1#2{\dleft\langle#1,#2\dright\rangle}
 \delimdef\norm#1{\dleft\|#1\dright\|}
+\delimdef\lang#1{\dleft[\!\dleft[#1\dright]\!\dright]}
+\delimdef\stepmap#1{\dleft(\!\dleft[#1\dright]\!\dright)}
 
 \newcommand\ub{\mathcal B}
 \newcommand\ug{\mathcal G}
@@ -90,6 +92,8 @@
 \newcommand\argmax{\qopname\relax m{argmax}}
 \newcommand\eps{\varepsilon}
 \newcommand\mle{\operatorname{mle}}
+\newcommand\pos{\operatorname{pos}}
+\newcommand\rk{\operatorname{rk}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -135,16 +139,19 @@
 
  \end{center}
 
- \vspace*{6em}
+ \vspace*{5em}
  \begin{singlespace}
-  \hspace{0.17\linewidth}
+  \hspace{0.18\linewidth}
   \begin{minipage}{0.1\linewidth}
    \includegraphics[width=\linewidth]{img/by-nd.pdf}
   \end{minipage}
   \hspace{0.02\linewidth}
   \begin{minipage}{0.6\linewidth}\footnotesize\flushleft
    This work is licensed under a \href{https://creativecommons.org/licenses/by-nd/4.0/}{Creative Commons Attribution-NoDerivatives 4.0 International License}.
-  \end{minipage}
+  \end{minipage}\\[-1em]
+  \begin{center}\footnotesize
+   Source code at: \url{https://github.com/majewsky/bachelor-thesis/}
+  \end{center}
  \end{singlespace}
 \end{titlepage}
 

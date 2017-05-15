@@ -106,7 +106,7 @@ $\mle_p(c)$ is the set of all $\omega$ with maximal likelihood, but training onl
 \section{Algorithmic skeleton}
 
 \begin{algorithm}[t]
- \caption{Algorithmic skeleton for EM of language models  \cite{bucstuvog15}}
+ \caption{Algorithmic skeleton for EM of language models according to \cite{bucstuvog15}}
  \label{alg:skeleton}
  \begin{algorithmic}[1]
   \algorithmheader[Input:] $X$-corpus $c$
@@ -118,7 +118,7 @@ $\mle_p(c)$ is the set of all $\omega$ with maximal likelihood, but training onl
   \algorithmheader            \hspace{1em} such that $p_{\omega_0}(c), p_{\omega_1}(c), p_{\omega_2}(c)$ nondecreasing
 
   \STATE $i\leftarrow 0$
-  \WHILE \TRUE
+  \WHILE{not converged}
    \STATE $\omega_{i+1} \leftarrow \text{select a member of $\psi(\omega_i)$}$
    \STATE output $\omega_{i+1}$
    \STATE $i\leftarrow i+1$
@@ -126,3 +126,75 @@ $\mle_p(c)$ is the set of all $\omega$ with maximal likelihood, but training onl
  \end{algorithmic}
 \end{algorithm}
 
+The major complication that occurs when trying to train a typical language
+model is that not all required data is present in the corpus. For example, a
+probabilistic context-free grammar is described by the probability distribution
+of derivation rules. \cite{laryou90} When the training data consists of full
+parse trees (\emph{supervized training}), the optimal probability distribution
+can be found by simply counting how many times each rule is used across all
+these parse trees, and then computing the empirical probability distribution
+for this corpus. Most of the times, however, the training data will consist
+only of sentences. The information about how to parse the sentences is hidden.
+
+The same problem arises with the Hidden Markov Model: When training data is not
+already annotated with state information, the information which states
+correspond to which words from the training data remains hidden. Expectation
+maximization algorithms can be used when parts of the training data are hidden
+in such a way.
+
+For the remainder, let
+\begin{itemize}\setlength\itemsep{-0.3em}
+ \item $X$ and $Y$ be countable sets,
+ \item $\Omega$ be a set,
+ \item $c$ be a finite $X$-corpus and
+ \item $p$ be a $\Omega$-probability model for $Y\times X$.
+\end{itemize}
+
+$c$ represents the set of training data. Each $x\in\operatorname{supp}(c)$ is
+an \emph{observation}. To judge its probability under a $p_\omega$, additional
+\emph{hidden information} $y\in Y$ is required. For notational convenience, we define
+\begin{align*}
+ p_\omega(c) &:= \prod_{x\in X} p_\omega(x)^{c(x)}, &
+ \text{where } p_\omega(x) &:= \sum_{y\in Y} p_\omega(x,y).
+\end{align*}
+
+That is, even though $p_\omega$ is a probability distribution over $Y\times X$,
+we allow to take the likelihood of the $X$-corpus $c$ under $p$ by aggregating
+the probabilities for all hidden information $y$ that lead to a certain
+observation $x$.
+
+The basic pattern for expectation maximization is outlined in
+algorithm~\ref{alg:skeleton}. The algorithm starts with an initial $\omega_0$
+such that $p_{\omega_0}(c) \neq 0$. It then iteratively employs a step mapping
+to choose the next $\omega_i$ with a higher (or at least equal) likelihood than
+the one that came before.
+
+\begin{definition}
+ A \emph{step mapping} is a mapping $\psi:\Omega_0\to\up(\Omega)$ which is non-decreasing in the following manner:
+ \[
+  \forall \omega\in\Omega_0: \forall \omega'\in\psi(\Omega): p_\omega(c) \leq p_{\omega'}(c)
+ \]
+\end{definition}
+
+The step mappings that we will consider will typically consist of two steps:
+\begin{enumerate}
+ \item \emph{Expectation:} The training data $c$ is converted into a \emph{complete-data corpus}. Using the $\omega_i$ from the previous iteration, the complete-data corpus estimates how hidden information contributes to the observations in the original corpus.
+ \item \emph{Maximization:} A suitable maximum-likelihood estimator is applied to the complete-data corpus to choose $\omega_{i+1}$.
+\end{enumerate}
+\cite{bucstuvog15} identify three types of step mappings that build on each other, each one more specific than the one before it. Since the training of Hidden Markov Models will be identified as an instance of the most specific step mapping, the remainder of this chapter will introduce all three in order.
+
+\section{Corpus-based step mapping}
+
+The most general type of complete-data corpus can be obtained by distributing $c(x)$ among the hidden information $y$ according to the probability distribution $p_\omega$:
+\[
+ c\!\dangle{\omega,p}(y,x) := \begin{cases}
+  c(x) \cdot \frac{p_\omega(y,x)}{p_\omega(x)} & p_\omega(x) \neq 0 \\
+  0 & p_\omega(x) = 0
+ \end{cases}
+\]
+Recall that $p_\omega(x) = \sum_y p_\omega(y,x)$. Therefore, $\abs{c\!\dangle{\omega,p}} = \abs c$. This corpus now has the correct structure for plugging it into $\mle_p$, yielding the \emph{corpus-based step mapping}\footnote{The proof that this step mapping is non-decreasing can be found in \cite[pp.~10]{bucstuvog15}.}
+\[
+ \stepmap p_\mathrm{cb}(p): \Omega_0\to\up(\Omega),
+ \quad
+ \omega \mapsto \mle_p\mbig\kla{c\!\dangle{\omega,p}} = \argmax_{\omega'} p_{\omega'}\mbig\kla{c\!\dangle{\omega,p}}.
+\]
