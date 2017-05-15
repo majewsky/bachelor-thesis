@@ -1,0 +1,141 @@
+\documentclass[
+ paper=A4,pagesize=automedia,fontsize=12pt,
+ BCOR=10mm,
+ twoside,headinclude,footinclude=false,
+ fleqn,
+ bibtotocnumbered,          % show bibl. refs in TOC
+ liststotoc,                % show image list in TOC
+ listsleft,
+ pointlessnumbers,          % no point after heading index
+ cleardoublepage=empty      % no page number on vacant pages
+]{scrbook}
+
+% encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% language
+\usepackage[english]{babel}
+% fonts
+\setkomafont{disposition}{\normalcolor\bfseries} % keine serifenlose Schrift
+\usepackage{mathpazo}
+% for being able to copy text out of the PDF
+\usepackage{cmap}
+% layout
+\setlength\parindent{0em}
+\usepackage{scrpage2} \pagestyle{scrheadings}
+                      \clearscrheadfoot
+                      \ihead{\headmark}\ohead{\pagemark}
+                      \automark[section]{chapter}
+                      \setheadsepline{0.5pt}
+\usepackage{setspace} \onehalfspacing
+\deffootnote{1em}{1em}{\textsuperscript{\thefootnotemark }}
+% math mode formatting etc.
+\usepackage{amsmath,amsfonts,amssymb,sistyle,xcolor,delim,tikz,calc,lipsum}
+\SIstyle{German}
+% presentation of floats
+\usepackage{flafter,afterpage}
+\usepackage[section]{placeins}
+\usepackage[margin=8mm,font=small,labelfont=bf,format=plain]{caption}
+\usepackage[margin=8mm,font=small,labelfont=bf,format=hang]{subcaption}
+% put footnotes below floats
+\usepackage[bottom]{footmisc}
+
+\numberwithin{equation}{chapter}
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+
+% hyperref is loaded as the last package (as recommended by its manual)
+\usepackage[hyperindex,pdfborder={0 0 0},pdfa]{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\delimdef\kla#1{\dleft(#1\dright)}
+\delimdef\brk#1{\dleft[#1\dright]}
+\delimdef\brc#1{\dleft\{#1\dright\}}
+\delimdef\abs#1{\dleft|#1\dright|}
+\delimdef\floor#1{\dleft\lfloor#1\dright\rfloor}
+\delimdef\ceil#1{\dleft\lceil#1\dright\rceil}
+\delimdef\dangle#1{\dleft\langle#1\dright\rangle}
+\delimdef\skal#1#2{\dleft\langle#1,#2\dright\rangle}
+\delimdef\norm#1{\dleft\|#1\dright\|}
+
+\newcommand\ub{\mathcal B}
+\newcommand\ug{\mathcal G}
+\newcommand\uh{\mathcal H}
+\newcommand\ul{\mathcal L}
+\newcommand\um{\mathcal M}
+\newcommand\up{\mathcal P}
+\newcommand\zn{\mathbb N}
+\newcommand\zr{\mathbb R}
+\newcommand\zz{\mathbb Z}
+\newcommand\argmax{\qopname\relax m{argmax}}
+\newcommand\eps{\varepsilon}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\frontmatter
+
+\begin{titlepage}
+ \begin{center}
+  \vspace*{5em}
+
+  \begin{singlespace}\bfseries\Huge
+   Training of Hidden Markov models as an instance of the expectation maximization algorithm
+  \end{singlespace}
+
+  \vspace*{5em}
+
+  \begin{singlespace}\large
+   Bachelorarbeit \\ zur Erlangung des Hochschulgrades \\ Bachelor of Science
+  \end{singlespace}\medskip
+
+  \vspace*{4em}
+
+  vorgelegt von \\
+  {\large Stefan Majewsky} \\
+  geboren am 06.11.1989 in Schwerin
+
+  \vspace*{4em}
+
+  \begin{singlespace}\large
+   Technische Universität Dresden \\
+   Fakultät Informatik \\
+   Institut für Theoretische Informatik \\
+   Lehrstuhl für Grundlagen der Programmierung
+  \end{singlespace}
+
+  \vspace*{4em}
+
+  \begin{singlespace}
+   Betreuer: Dipl.-Inf.~Kilian~Gebhardt \\
+   Verantwortlicher Hochschullehrer: Prof.~Dr.-Ing.~habil.~Heiko~Vogler
+  \end{singlespace}
+
+ \end{center}
+\end{titlepage}
+
+\cleardoublepage
+\tableofcontents
+\mainmatter
+
+\backmatter
+\listoffigures % TODO: necessary?
+\bibliographystyle{gerunsrt} % TODO: style okay?
+\bibliography{citations}
+
+\clearpage
+\thispagestyle{empty}
+\minisec{Erklärung}\vspace*{1.5em}
+
+Hiermit erkläre ich, dass ich diese Arbeit im Rahmen der Betreuung im Institut
+für Theoretische Informatik ohne unzulässige Hilfe Dritter verfasst und alle
+Quellen als solche gekennzeichnet habe.
+
+\vspace*{15em}
+
+Stefan Majewsky \par
+Dresden, {\color{red}August 2017}
+
+\end{document}

@@ -1,0 +1,41 @@
+% stop if the preamble is being read for the second time
+\makeatletter
+ \ifx\@preamble\undefined\else\endinput\fi
+\makeatother
+
+\documentclass[
+ paper=A4,pagesize=automedia,fontsize=12pt,
+ BCOR=10mm,
+ twoside,headinclude,footinclude=false,
+ fleqn,
+ bibtotocnumbered,          % show bibl. refs in TOC
+ liststotoc,                % show image list in TOC
+ listsleft,
+ pointlessnumbers,          % no point after heading index
+ cleardoublepage=empty      % no page number on vacant pages
+]{scrbook}
+\setlength\parindent{0em}
+
+% select encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+% for being able to copy text out of the PDF
+\usepackage{cmap}
+% layout
+\usepackage{scrpage2} \pagestyle{scrheadings}
+                      \clearscrheadfoot
+                      \ihead{\headmark}\ohead{\pagemark}
+                      \automark[section]{chapter}
+                      \setheadsepline{0.5pt}
+\usepackage{setspace} \onehalfspacing
+\deffootnote{1em}{1em}{\textsuperscript{\thefootnotemark }}
+% math mode formatting
+\usepackage{amsmath,amsfonts,amssymb}
+% presentation of floats
+\usepackage{flafter,afterpage}
+\usepackage[section]{placeins}
+\usepackage[margin=8mm,font=small,labelfont=bf,format=plain]{caption}
+\usepackage[margin=8mm,font=small,labelfont=bf,format=hang]{subcaption}
+% put footnotes below floats
+\usepackage[bottom]{footmisc}
