@@ -30,7 +30,8 @@
 \usepackage{setspace} \onehalfspacing
 \deffootnote{1em}{1em}{\textsuperscript{\thefootnotemark }}
 % math mode formatting etc.
-\usepackage{amsmath,amsfonts,amssymb,sistyle,xcolor,delim,tikz,calc,lipsum}
+\usepackage{amsmath,amsfonts,amssymb,sistyle,xcolor,delim}
+\usepackage{graphicx,tikz,calc,tabularx}
 \SIstyle{German}
 % presentation of floats
 \usepackage{flafter,afterpage}
@@ -79,25 +80,25 @@
 
 \begin{titlepage}
  \begin{center}
-  \vspace*{5em}
+  \vspace*{4em}
 
   \begin{singlespace}\bfseries\Huge
    Training of Hidden Markov models as an instance of the expectation maximization algorithm
   \end{singlespace}
 
-  \vspace*{5em}
+  \vspace*{4em}
 
   \begin{singlespace}\large
    Bachelorarbeit \\ zur Erlangung des Hochschulgrades \\ Bachelor of Science
   \end{singlespace}\medskip
 
-  \vspace*{4em}
+  \vspace*{3em}
 
   vorgelegt von \\
   {\large Stefan Majewsky} \\
   geboren am 06.11.1989 in Schwerin
 
-  \vspace*{4em}
+  \vspace*{3em}
 
   \begin{singlespace}\large
    Technische Universität Dresden \\
@@ -106,7 +107,7 @@
    Lehrstuhl für Grundlagen der Programmierung
   \end{singlespace}
 
-  \vspace*{4em}
+  \vspace*{3em}
 
   \begin{singlespace}
    Betreuer: Dipl.-Inf.~Kilian~Gebhardt \\
@@ -114,6 +115,18 @@
   \end{singlespace}
 
  \end{center}
+
+ \vspace*{3em}
+ \begin{singlespace}
+  \hspace{0.17\linewidth}
+  \begin{minipage}{0.1\linewidth}
+   \includegraphics[width=\linewidth]{img/by-nd.pdf}
+  \end{minipage}
+  \hspace{0.02\linewidth}
+  \begin{minipage}{0.6\linewidth}\footnotesize\flushleft
+   This work is licensed under a \href{https://creativecommons.org/licenses/by-nd/4.0/}{Creative Commons Attribution-NoDerivatives 4.0 International License}.
+  \end{minipage}
+ \end{singlespace}
 \end{titlepage}
 
 \cleardoublepage
@@ -127,6 +140,7 @@
 
 \clearpage
 \thispagestyle{empty}
+
 \minisec{Erklärung}\vspace*{1.5em}
 
 Hiermit erkläre ich, dass ich diese Arbeit im Rahmen der Betreuung im Institut
@@ -136,6 +150,6 @@ Quellen als solche gekennzeichnet habe.
 \vspace*{15em}
 
 Stefan Majewsky \par
-Dresden, {\color{red}August 2017}
+Dresden, {\color{red}August 2017} % TODO: enter final date when known
 
 \end{document}
