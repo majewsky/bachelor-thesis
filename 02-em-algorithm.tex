@@ -99,7 +99,7 @@ set of admissible $p$ by describing the probability distribution in terms of
  Given a set $\Omega$, an \emph{$\Omega$-probability model for $X$} is a mapping $p:\Omega\to\um(X)$.
 \end{definition}
 
-Training shall then find $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
+Instead of $p(\omega)$, we write $p_\omega$. Training shall then find $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
 
 \begin{definition}
  Given a set $\Omega$ and an $\Omega$-probability model $p$ for $X$, the
@@ -194,7 +194,7 @@ to choose the next $\omega_i$ with a higher (or at least equal) likelihood than
 the one that came before.
 
 \begin{definition}
- A \emph{step mapping} is a mapping $\psi:\Omega_0\to\up(\Omega)$ which is non-decreasing in the following manner:
+ A \emph{step mapping} is a mapping $\psi:\Omega_0\to\up(\Omega)$ which is nondecreasing in the following manner:
  \[
   \forall \omega\in\Omega_0: \forall \omega'\in\psi(\Omega): p_\omega(c) \leq p_{\omega'}(c)
  \]
@@ -236,10 +236,10 @@ distribution $p_\omega$:
 Recall that $p_\omega(x) = \sum_y p_\omega(y,x)$. Therefore,
 $\abs{c\!\dangle{\omega,p}} = \abs c$. This corpus now has the correct
 structure for plugging it into $\mle_p$, yielding the \emph{corpus-based step
-mapping}\footnote{The proof that this step mapping is non-decreasing can be
-found in \cite[pp.~10]{bucstuvog15}.}G
+mapping}\footnote{The proof that this step mapping is nondecreasing can be
+found in \cite[pp.~10]{bucstuvog15}.}
 \[
- \stepmap p_\mathrm{cb}(p): \Omega_0\to\up(\Omega),
+ \stepmap p_\mathrm{cb}: \Omega_0\to\up(\Omega),
  \quad
  \omega \mapsto \mle_p\mbig\kla{c\!\dangle{\omega,p}} = \argmax_{\omega'} p_{\omega'}\mbig\kla{c\!\dangle{\omega,p}}.
 \]
@@ -298,15 +298,15 @@ defined for any set $U$.
 \end{definition}
 
 The motivation for this definition is to model hidden information $y$ as
-consisting of countable events $c\in C$. $\lambda(x,y)$ describes whether a
-certain $y$ can be the cause for a certain observation $x$.\footnote{Most
-actual instances of $\lambda$ use only integer images,
-i.~e.~$\lambda(X_{\not\bot}\times Y_{\not\bot}) = \brc{0,1}$, thus following
-this intuitive notion. However, the possibility of fractional values for
-$\lambda(x,y)$ is occasionally useful, e.~g.~to define a counting information
-for the IBM Model 1 in \cite[pp.~23]{bucstuvog15}.} For $\lambda(x,y)>0$,
-$\pi(x,y)$ is a $C$-corpus that describes how often each countable event occurs
-in this hidden information.
+consisting of countable events $c\in C$. $\lambda(x,y)$ describes whether (and,
+possibly, with what probability) a certain $y$ can be the cause for a certain
+observation $x$.\footnote{Most actual instances of $\lambda$ use only integer
+images, i.~e.~$\lambda(X_{\not\bot}\times Y_{\not\bot}) = \brc{0,1}$, thus
+following this intuitive notion. However, the possibility of using fractional
+values for $\lambda(x,y)$ is occasionally useful, e.~g.~to define a counting
+information for the IBM Model 1 in \cite[pp.~23]{bucstuvog15}.} For
+$\lambda(x,y)>0$, $\pi(x,y)$ is a $C$-corpus that describes how often each
+countable event occurs in this hidden information.
 
 Following the assumption that the countable events $C$ fully encode the hidden
 information $Y$, we can use these intuitive notions to describe the original
@@ -323,4 +323,53 @@ probability model $p$ in terms of the counting information.
  \]
 \end{definition}
 
-{\color{red} TODO: Do we need the term \emph{proper counting information}?}
+This definition shows why the introduction of $\bot$ into $X$ and $Y$ was
+useful. By defining $(\varkappa^\flat)_\omega(\bot,\bot)$ as above, we ensure
+$\mnorm\abs{(\varkappa^\flat)_\omega} = 1$. Therefore, $\varkappa^\flat$ is an
+$\Omega$-probability model for $Y\times X$ iff
+$(\varkappa^\flat)_\omega(\bot,\bot) \geq 0$. We call $\varkappa$ \emph{proper}
+in this case.
+
+Since we now have a probability model $p = \varkappa^\flat$ as required by the
+corpus-based step mapping, we can lift its complete-data corpus into the domain
+of the counting information, obtaining a new complete-data corpus
+\[
+ c\!\dangle{\omega,\varkappa}: C \to \zr_{\geq0}, \quad
+ (a,b) \mapsto \sum_{x,y} c\mnorm\dangle{\omega,\varkappa^\flat}(y,x) \cdot \pi(x,y)(a,b).
+\]
+
+We can now apply a maximum-likelihood estimator for $q$ to arrive at the step
+mapping for this class of language models.
+
+\begin{definition}
+ Given a set $\Omega$ and a conditional $\Omega$-probability model $q$ for $A$
+ and $B$, the \emph{conditional maximum likelihood estimator} for $q$ is the mapping
+ \[
+  \cmle_q: \zr_{\geq0}^{A\times B} \to \up(\Omega),
+  \quad
+  c \mapsto \argmax_\omega q_\omega(c).
+ \]
+\end{definition}
+
+Using this definition, the \emph{simple counting step mapping}\footnote{The
+proof that this step mapping is equivalent to
+$\mnorm\stepmap{\varkappa^\flat}_\mathrm{cb}$, and thus also nondecreasing, can
+be found in \cite[p.~13]{bucstuvog15}.} is
+\[
+ \stepmap\varkappa_\mathrm{sc}: \Omega_0 \to \up(\Omega), \quad
+ \omega \to \cmle_q\mbig\kla{c\mnorm\dangle{\omega,\varkappa}} = \argmax_{\omega'} q_{\omega'}\mbig\kla{c\mnorm\dangle{\omega,\varkappa}}.
+\]
+The simple counting step mapping has two advantages over
+$\stepmap\cdot_\mathrm{cb}$: First, many language models can be described in
+terms of the countable events only, such that $\Omega = C$. In this case,
+lemma~\ref{lemma:empirical2} can be used to solve the $\argmax$ by simply
+computing the empirical probability distribution of
+$c\!\dangle{\omega,\varkappa}$.
+
+Second, even if this is not possible, the set of countable events $C$ is
+usually much smaller than the set of all observations $X$ or hidden information
+$Y$, making the evaluation of the $\argmax$ more tractable than for the
+corpus-based step mapping. For example, when considering probabilistic
+context-free grammars, $X$ (the set of all sentences) and $Y$ (the set of all
+parse trees) are both countably infinite, but $C$ (the set of all derivation
+rules) is finite.
