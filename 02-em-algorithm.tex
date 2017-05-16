@@ -8,7 +8,9 @@ subsequent chapters.
 
 \section{Preliminaries}
 
-The set $\brc{0,1,2,\ldots}$ of non-negative integers and the set of non-negative reals shall be denoted by $\zn$ and $\zr_{\geq0}$, respectively. We assume that
+The set $\brc{0,1,2,\ldots}$ of non-negative integers and the set of
+non-negative reals shall be denoted by $\zn$ and $\zr_{\geq0}$, respectively.
+We assume that
 \begin{align*}
  0^0 &:= 1, &
  \log 0 &:= -\infty, &
@@ -19,7 +21,10 @@ The set $\brc{0,1,2,\ldots}$ of non-negative integers and the set of non-negativ
  Given a countable set $X$, a mapping $c: X \to \zr_{\geq0}$ is called a \emph{$X$-corpus}.
 \end{definition}
 
-When used as input for a language model's training algorithm, $X$ is the set of all sentences consisting of words from the language in question, and $c(x)$ describes how often a sentence $x\in X$ occurs in the corpus $c$. The \emph{size} of the corpus is defined as
+When used as input for a language model's training algorithm, $X$ is the set of
+all sentences consisting of words from the language in question, and $c(x)$
+describes how often a sentence $x\in X$ occurs in the corpus $c$. The
+\emph{size} of the corpus is defined as
 \begin{equation*}
  \abs c := \sum_{x\in X} c(x).
 \end{equation*}
@@ -28,16 +33,20 @@ When used as input for a language model's training algorithm, $X$ is the set of 
  A \emph{probability distribution of $X$} is an $X$-corpus of size 1.
 \end{definition}
 
-The set of all such probability distributions is denoted by $\um(X)$. Probability distributions can be derived from corpora:
+The set of all such probability distributions is denoted by $\um(X)$.
+Probability distributions can be derived from corpora:
 
 \begin{definition}
- Given a non-empty and finite $X$-corpus $c$, the \emph{empirical probability distribution} $\tilde c$ is defined as
+ Given a non-empty and finite $X$-corpus $c$, the \emph{empirical probability
+ distribution} $\tilde c$ is defined as
  \[
   \tilde c(x) = \frac{c(x)}{\abs c}.
  \]
 \end{definition}
 
-This expression is not well-defined for $\abs c = 0$ or $\abs c = \infty$, hence the requirement for $c$ to be non-empty and finite. If this cannot be guaranteed, a fall-back function can be added.
+This expression is not well-defined for $\abs c = 0$ or $\abs c = \infty$,
+hence the requirement for $c$ to be non-empty and finite. If this cannot be
+guaranteed, a fall-back function can be added.
 
 \begin{definition}
  Given $p\in\um(X)$, a \emph{normalization mapping with fall-back $p$} is the mapping
@@ -57,7 +66,11 @@ This expression is not well-defined for $\abs c = 0$ or $\abs c = \infty$, hence
  \]
 \end{definition}
 
-The likelihood describes the probability of observing the sentences from the corpus $c$ when sentences occur with the probability distribution described by $p$. A training algorithm will take $c$ as an input, and seek to find an admissible $p$ such that $p(c)$ is maximized. If any $p$ is admissible, then for non-empty and finite $c$, the optimal choice is $p = \tilde c$:
+The likelihood describes the probability of observing the sentences from the
+corpus $c$ when sentences occur with the probability distribution described by
+$p$. A training algorithm will take $c$ as an input, and seek to find an
+admissible $p$ such that $p(c)$ is maximized. If any $p$ is admissible, then
+for non-empty and finite $c$, the optimal choice is $p = \tilde c$:
 
 \begin{lemma}\label{lemma:empirical1}
  Let $c$ be a non-empty and finite $X$-corpus. Then $\tilde c(c) \geq p(c)$ for every $p\in\um(X)$.
@@ -76,7 +89,11 @@ The likelihood describes the probability of observing the sentences from the cor
  \end{align*}
 \end{proof}
 
-However, using $p = \tilde c$ directly is not useful because this probability distribution is grossly overfitted: It will assign zero probability to any sentence not in the original corpus. A useful language model thus limits the set of admissible $p$ by describing the probability distribution in terms of \emph{model parameters} $\omega\in\Omega$.
+However, using $p = \tilde c$ directly is not useful because this probability
+distribution is grossly overfitted: It will assign zero probability to any
+sentence not in the original corpus. A useful language model thus limits the
+set of admissible $p$ by describing the probability distribution in terms of
+\emph{model parameters} $\omega\in\Omega$.
 
 \begin{definition}
  Given a set $\Omega$, an \emph{$\Omega$-probability model for $X$} is a mapping $p:\Omega\to\um(X)$.
@@ -85,7 +102,8 @@ However, using $p = \tilde c$ directly is not useful because this probability di
 Training shall then find $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
 
 \begin{definition}
- Given a set $\Omega$ and an $\Omega$-probability model $p$ for $X$, the \emph{maximum likelihood estimator} for $p$ is the mapping
+ Given a set $\Omega$ and an $\Omega$-probability model $p$ for $X$, the
+ \emph{maximum likelihood estimator} for $p$ is the mapping
  \[
   \mle_p: \zr_{\geq0}^X \to \up(\Omega),
   \quad
@@ -93,10 +111,16 @@ Training shall then find $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
  \]
 \end{definition}
 
-$\mle_p(c)$ is the set of all $\omega$ with maximal likelihood, but training only needs to find a single $\hat\omega \in \mle_p(c)$. Computing $\mle_p(c)$ by brute force is typically not tractible because the set $\Omega$ is infinite (usually countably infinite). However, there is one easily solvable special case.
+$\mle_p(c)$ is the set of all $\omega$ with maximal likelihood, but training
+only needs to find a single $\hat\omega \in \mle_p(c)$. Computing $\mle_p(c)$
+by brute force is typically not tractible because the set $\Omega$ is infinite
+(usually countably infinite). However, there is one easily solvable special
+case.
 
 \begin{lemma}\label{lemma:empirical2}
- Let $c$ be a finite $X$-corpus, and $p$ a $\Omega$-probability model for $X$. If there exists $\hat\omega\in\Omega$ such that $p_{\hat\omega} = \tilde c$, then $\hat\omega\in\mle_p(c)$.
+ Let $c$ be a finite $X$-corpus, and $p$ a $\Omega$-probability model for $X$.
+ If there exists $\hat\omega\in\Omega$ such that $p_{\hat\omega} = \tilde c$,
+ then $\hat\omega\in\mle_p(c)$.
 \end{lemma}
 
 \begin{proof}
@@ -178,23 +202,38 @@ the one that came before.
 
 The step mappings that we will consider will typically consist of two steps:
 \begin{enumerate}
- \item \emph{Expectation:} The training data $c$ is converted into a \emph{complete-data corpus}. Using the $\omega_i$ from the previous iteration, the complete-data corpus estimates how hidden information contributes to the observations in the original corpus.
- \item \emph{Maximization:} A suitable maximum-likelihood estimator is applied to the complete-data corpus to choose $\omega_{i+1}$.
+ \item \emph{Expectation:} The training data $c$ is converted into a
+  \emph{complete-data corpus}. Using the $\omega_i$ from the previous
+  iteration, the complete-data corpus estimates how hidden information
+  contributes to the observations in the original corpus.
+ \item \emph{Maximization:} A suitable maximum-likelihood estimator is applied
+  to the complete-data corpus to choose $\omega_{i+1}$.
 \end{enumerate}
-\cite{bucstuvog15} identify three types of step mappings that build on each other, each one more specific than the one before it. Since the training of Hidden Markov Models will be identified as an instance of the most specific step mapping, the remainder of this chapter will introduce all three in order.
+\cite{bucstuvog15} identify three types of step mappings that build on each
+other, each one more specific than the one before it. Since the training of
+Hidden Markov Models will be identified as an instance of the most specific
+step mapping, the remainder of this chapter will introduce all three in order.
 
 \section{Corpus-based step mapping}
 
-The most general type of complete-data corpus can be obtained by distributing $c(x)$ among the hidden information $y$ according to the probability distribution $p_\omega$:
+The most general type of complete-data corpus can be obtained by distributing
+$c(x)$ among the hidden information $y$ according to the probability
+distribution $p_\omega$:
 \[
  c\!\dangle{\omega,p}(y,x) := \begin{cases}
   c(x) \cdot \frac{p_\omega(y,x)}{p_\omega(x)} & p_\omega(x) \neq 0 \\
   0 & p_\omega(x) = 0
  \end{cases}
 \]
-Recall that $p_\omega(x) = \sum_y p_\omega(y,x)$. Therefore, $\abs{c\!\dangle{\omega,p}} = \abs c$. This corpus now has the correct structure for plugging it into $\mle_p$, yielding the \emph{corpus-based step mapping}\footnote{The proof that this step mapping is non-decreasing can be found in \cite[pp.~10]{bucstuvog15}.}
+Recall that $p_\omega(x) = \sum_y p_\omega(y,x)$. Therefore,
+$\abs{c\!\dangle{\omega,p}} = \abs c$. This corpus now has the correct
+structure for plugging it into $\mle_p$, yielding the \emph{corpus-based step
+mapping}\footnote{The proof that this step mapping is non-decreasing can be
+found in \cite[pp.~10]{bucstuvog15}.}
 \[
  \stepmap p_\mathrm{cb}(p): \Omega_0\to\up(\Omega),
  \quad
  \omega \mapsto \mle_p\mbig\kla{c\!\dangle{\omega,p}} = \argmax_{\omega'} p_{\omega'}\mbig\kla{c\!\dangle{\omega,p}}.
 \]
+
+\section{Simple counting step mapping}
