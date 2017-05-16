@@ -373,3 +373,276 @@ corpus-based step mapping. For example, when considering probabilistic
 context-free grammars, $X$ (the set of all sentences) and $Y$ (the set of all
 parse trees) are both countably infinite, but $C$ (the set of all derivation
 rules) is finite.
+
+\section{Regular tree grammars}
+
+The third and most specific type of step mapping applies to language models
+whose hidden information can be described as trees, such that the countable
+events are labels in these trees' nodes. We therefore need to define a set of
+terms regarding trees and tree grammars first.
+
+\begin{definition}
+ An \emph{alphabet} is a finite set.
+\end{definition}
+
+\begin{definition}
+ Let $\Sigma$ be an alphabet and $V$ be a set. The \emph{set $U_\Sigma(V)$ of
+ unranked trees over $\Sigma$ indexed by $V$} is the smallest set $T$ such that
+ \[
+  V \subseteq T \quad\wedge\quad \forall k\in\zn: \forall \sigma\in\Sigma, t_1,\ldots,t_k\in T: \sigma(t_1,\ldots,t_k)\in T.
+ \]
+\end{definition}
+
+The notation $\sigma(t_1,\ldots,t_k)$ refers to the tree which has the label
+$\sigma$ at its root and the subtrees $t_1,\ldots,t_k$ in that order. For
+$k=0$, we shorten $\sigma() \equiv \sigma$. For $V=\emptyset$, we shorten
+$U_\Sigma(\emptyset) \equiv U_\Sigma$. Trees from $U_\Sigma(V)$ have labels
+from $\Sigma\cup V$ at each node, but labels from $V$ are only permitted at
+leafs. For example, for $\Sigma = \brc{\sigma_1,\sigma_2}$ and
+$V=\brc{v_1,v_2}$:
+
+\[\begin{matrix}
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n)   at (+0,+0.0) { $\sigma_1$ };
+  \node (n1)  at (-1,-1.5) { $\sigma_2$ } edge (n);
+  \node (n2)  at (+1,-1.5) { $\sigma_2$ } edge (n);
+  \node (n11) at (-2,-3.0) { $v_1$ } edge (n1);
+  \node (n12) at (+0,-3.0) { $\sigma_1$ } edge (n1);
+  \node (n21) at (+2,-3.0) { $v_2$ } edge (n2);
+ \end{tikzpicture}
+ &\hspace*{4em}&
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n)   at (+0,+0.0) { $\sigma_1$ };
+  \node (n1)  at (-1,-1.5) { $\sigma_2$ } edge (n);
+  \node (n2)  at (+1,-1.5) { $v_1$ } edge (n);
+  \node (n11) at (-2,-3.0) { $v_1$ } edge (n1);
+  \node (n12) at (+0,-3.0) { $\sigma_1$ } edge (n1);
+  \node (n21) at (+2,-3.0) { $v_2$ } edge (n2);
+  \draw (n2) circle (0.8);
+  \node[draw=none] at (+1.75,-0.75) {!};
+ \end{tikzpicture}
+ \\\\
+ \sigma_1\mbig\kla{\sigma_2(v_1,\sigma_1), \sigma_2(v_2)} \in U_\Sigma(V) &&
+ \sigma_1\mbig\kla{\sigma_2(v_1,\sigma_1), v_1(v_2)} \notin U_\Sigma(V)
+\end{matrix}\]
+
+We refer to positions in the tree using \emph{Gorn notation}. As a quick
+illustration, in the figure below, each node of the left tree is labeled with
+its position in the tree:
+
+\vspace*{-1em}\[
+ \hspace*{3em}
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n)   at (+0,+0.0) { $\eps$ };
+  \node (n1)  at (-1,-1.5) { $1$ } edge (n);
+  \node (n2)  at (+1,-1.5) { $2$ } edge (n);
+  \node (n11) at (-2,-3.0) { $1\ 1$ } edge (n1);
+  \node (n12) at (+0,-3.0) { $1\ 2$ } edge (n1);
+  \node (n21) at (+2,-3.0) { $2\ 1$ } edge (n2);
+ \end{tikzpicture}
+ \hspace*{6em}
+ \begin{tikzpicture}[baseline=(current bounding box.center)]
+  \begin{scope}[every node/.style={rectangle,draw,fill=white,minimum size=2em}]
+   \node (n)   at (+0,+0.0) { $\sigma_1$ };
+   \node (n1)  at (-1,-1.5) { $\sigma_2$ } edge (n);
+   \node (n2)  at (+1,-1.5) { $\sigma_2$ } edge (n);
+   \node (n11) at (-2,-3.0) { $v_1$ } edge (n1);
+   \node (n12) at (+0,-3.0) { $\sigma_1$ } edge (n1);
+   \node (n21) at (+2,-3.0) {} edge (n2);
+  \end{scope}
+  \begin{scope}[every node/.style={inner sep=0},every pin/.style={inner sep=0},pin distance=1cm]
+   \node[draw=none,pin=60:{$t(2\ 1)$}] at (n21.center) { $v_2$ };
+  \end{scope}
+  \begin{scope}[on background layer]
+   \draw[line join=round,draw=black!10,fill=black!10,line width=1.5cm] (n1.center) -- (n11.center) -- (n12.center) -- cycle;
+  \end{scope}
+  \node at (-2.4,-1.7) { $t|_1$ };
+ \end{tikzpicture}
+\]
+
+$\eps$ is the empty word. The set of all positions in a tree $t$ shall be
+denoted by $\pos(t)$. The right tree illustrates some notation that we're going
+to use for trees. For any trees $t,t'$ and position $w\in\pos(t)$,
+\begin{itemize}\setlength\itemsep{-0.3em}
+ \item $t(w)$ is the label at $w$,
+ \item $t|_w$ is the subtree at $w$ (hence, especially, $t|_\eps = t$) and
+ \item $t[t']_w$ is the tree that results from replacing $t|_w$ by $t'$.
+\end{itemize}
+
+\begin{definition}
+ Let $\Sigma$ be an alphabet and $\square\notin\Sigma$. A \emph{1-context over
+ $\Sigma$} is a tree $t\in U_\Sigma(\brc\square)$ such that $\square$ appears
+ at exactly one position in $t$. The set of all such 1-contexts is denoted by
+ $C_\Sigma$.
+\end{definition}
+
+1-contexts are used to describe trees that are not fully known yet: The
+placeholder symbol $\sigma$ stands in for a missing subtree. Given a 1-context
+$t\in C_\Sigma$ and a tree $t'\in U_\Sigma(V)$, we abbreviate $t[t'] :=
+t[t']_w$ such that $t(w) = \square$. In other words, $t[t']$ is the tree that
+results from $t$ when the $\square$ node is replaced by $t'$.
+
+\begin{definition}
+ A \emph{ranked alphabet} is a pair $(R,\rk)$ where $R$ is an alphabet and
+ $\rk:R\to\zn$ is a mapping. $\rk$ is said to assign a \emph{rank} or
+ \emph{arity} or each symbol in $R$.
+\end{definition}
+
+A ranked alphabet is usually denoted only by $R$. The existence of a suitable
+$\rk$ is implied. A symbol $\rho\in R$ may be denoted as $\rho^{(k)}$ where
+$\rk(\rho) = k$, to inform the reader of the symbol's rank.
+
+\begin{definition}
+ Let $R$ be a ranked alphabet and $V$ be a set. The \emph{set $T_R(V)$ of
+ ranked trees over $R$ indexed by $V$} is defined by
+ \[
+  T_R(V) := \mbig\brc{t \in U_R(V) \dmiddle| \forall w\in\pos(t): \rk\mbig\kla{t(w)} = \text{number of children of $w$ in $t$}}.
+ \]
+\end{definition}
+
+In other words, the number of children of each node in $t$ must be equal to the
+rank of its label. For nodes labeled with symbols from $V$, a rank of 0 is
+implied.
+
+\begin{definition}
+ Let $\Sigma$ be an alphabet. A \emph{regular tree grammar (RTG) over $\Sigma$} is a
+ triple $\ug = (Q,q_0,R)$ where
+ \begin{itemize}\setlength\itemsep{-0.3em}
+  \item $Q$ is a nonempty alphabet (of states),
+  \item $q_0\in Q$ is an initial state and
+  \item $R\subset Q^*\times\Sigma\times Q$ is a finite ranked alphabet (of
+   rules) such that every rule $\mbig\kla{(q_1,\ldots,q_k),\sigma,q}\in R$ has
+   rank $k$.
+ \end{itemize}
+\end{definition}
+
+We will write $\mbig\kla{(q_1,\ldots,q_k),\sigma,q}\in R$ as $q\to\sigma(q_1,\ldots,q_k)$ instead.
+
+\begin{definition}
+ Let $\ug=(Q,q_0,R)$ be an RTG over $\Sigma$. The \emph{family
+ $\mbig\kla{D^q(\ug)\dmiddle|q\in Q}$ of partial abstract syntax trees oof
+ $\ug$} is the smallest $Q$-indexed family $(D^q|q\in Q)$ such that, for all
+ $q\in Q$,
+ \[
+  q \in D^q \quad\wedge\quad \forall \rho=\mbig\kla{q\to\sigma(q_1,\ldots,q_k)}\in R,d_i\in D^{q_i}: \rho(d_1,\ldots,d_k) \in D^q.
+ \]
+\end{definition}
+
+
+An RTG describes a language (i.~e.~a countable set) of trees. Trees are derived
+by starting with a tree containing only the a root node with the label $q_0$,
+then successively replacing $Q$-labeled nodes according to the RTG's rule set
+until no more $Q$-labeled nodes are left. The resulting tree is in $U_\Sigma$
+and its syntax tree is in $T_R$. Partial syntax trees are in $T_R(Q)$.
+
+For example, consider the RTG $\ug = \mbig\kla{\brc{q_0,q_1},q_0,R}$ where
+$\Sigma=\brc{a,b,c}$ and
+\[
+ R = \brc{ q_0 \to a(q_0,q_1), \quad q_0 \to b, \quad q_1 \to c }.
+\]
+The tree $a(b,c)$ is derived like this: (Each row shows the partial tree $\in U_\Sigma(Q)$ on the left and the partial syntax tree $\in T_R(Q)$ on the right.)
+\[\begin{matrix}
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n) at (0,0) { $q_0$ };
+ \end{tikzpicture}
+ &&
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n) at (0,0) { $q_0$ };
+ \end{tikzpicture}
+ \\\\[-1em]
+ \downarrow & \text{apply } q_0\to a(q_0,q_1) & \downarrow \\[0.5em]
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n) at (0,0) { $a$ };
+  \node (n1) at (-1,-1.5) { $q_0$ } edge (n);
+  \node (n2) at (+1,-1.5) { $q_1$ } edge (n);
+ \end{tikzpicture}
+ &\hspace*{4em}&
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n) at (0,0) { $q_0 \to a(q_0,q_1)$ };
+  \node (n1) at (-1,-1.5) { $q_0$ } edge (n);
+  \node (n2) at (+1,-1.5) { $q_1$ } edge (n);
+ \end{tikzpicture}
+ \\\\[-1em]
+ \downarrow & \text{apply } q_0\to b & \downarrow \\[0.5em]
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n) at (0,0) { $a$ };
+  \node (n1) at (-1,-1.5) { $b$ } edge (n);
+  \node (n2) at (+1,-1.5) { $q_1$ } edge (n);
+ \end{tikzpicture}
+ &\hspace*{4em}&
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n) at (0,0) { $q_0 \to a(q_0,q_1)$ };
+  \node (n1) at (-1,-1.5) { $q_0\to b$ } edge (n);
+  \node (n2) at (+1,-1.5) { $q_1$ } edge (n);
+ \end{tikzpicture}
+ \\\\[-1em]
+ \downarrow & \text{apply } q_1\to c & \downarrow \\[0.5em]
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n) at (0,0) { $a$ };
+  \node (n1) at (-1,-1.5) { $b$ } edge (n);
+  \node (n2) at (+1,-1.5) { $c$ } edge (n);
+ \end{tikzpicture}
+ &\hspace*{4em}&
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+  \node (n) at (0,0) { $q_0 \to a(q_0,q_1)$ };
+  \node (n1) at (-1,-1.5) { $q_0\to b$ } edge (n);
+  \node (n2) at (+1,-1.5) { $q_1\to c$ } edge (n);
+ \end{tikzpicture}
+\end{matrix}\]
+
+From the syntax tree on the right, the tree on the left can be derived easily
+by substituting the labels $q = \sigma(q_1,\ldots,q_k)\in R$ by the contained
+symbols $\sigma\in\Sigma$. We shall call this projection $\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.
+
+\begin{definition}
+ Let $\ug$ be an RTG over $\Sigma$. The \emph{language of $\ug$} is the set
+ \[
+  \lang\ug := \brc{t\in U_\Sigma | \exists d\in D^{q_0}(\ug): t=\pi_\Sigma(d)}.
+ \]
+ A language $L\subseteq U_\Sigma$ is \emph{recognizable} if there exists an RTG
+ $\ug$ over $\Sigma$ such that $\lang\ug = L$.
+\end{definition}
+
+A useful property of RTGs is \emph{determinism}: An RTG $\ug$ over $\Sigma$ is
+called \emph{deterministic} if, for any $(q_1,\ldots,q_k)\in Q^*$ and
+$\sigma\in\Sigma$, there is at most one $q\in Q$ such that $\mbig\kla{q \to
+\sigma(q_1,\ldots,q_k)} \in R$. A language is called deterministic if it is
+described by a deterministic RTG.
+
+From determinism results unambiguity: An RTG $\ug$ over $\Sigma$ is called
+\emph{unambiguous} if, for every tree $t\in\lang\ug$, there exist exactly one
+syntax tree $d\in D^{q_0}(\ug)$ such that $\pi_\Sigma(d) = t$. To see why, have
+a look at the fully derived tree $t = a(b,c)$ above. Since $\ug$ in this
+example is deterministic, the syntax tree can be recovered from $t$ by
+traversing the nodes from the bottom up and assigning the rules that are used
+at that position. At each position, we know the symbol $\sigma$ at this
+position in the tree and the states $q_1,\ldots,q_k$ from the left sides of the
+rules used for the child nodes. Therefore, the state $q$ (and therefore the
+rule $\rho$) for this position can be chosen deterministically.
+
+\begin{definition}
+ A \emph{probabilistic regular tree grammar (PRTG) over $\Sigma$} is a pair
+ $(\ug,p)$ of an RTG $\ug=(Q,q_0,R)$ over $\Sigma$ and a mapping $p:Q\to\zr_{\geq0}^{Q^*\times\Sigma}$ that is constrained to $R$ in the following way:
+ \[
+  \forall q\in Q, u\in Q^*\times\Sigma: p(q)(u) \neq 0 \Rightarrow (u,q) \in R.
+ \]
+ $(\ug,p)$ is called \emph{proper} if $p\in\um_R(Q^*\times\Sigma|Q)$. The
+ \emph{meaning} of $(\ug,p)$ is the mapping
+ \[
+  \mbig\lang{(\ug,p)}: U_\Sigma \to \zr_0, \quad
+  t \mapsto \sum_{d\in D^{q_0}(\ug): \pi_\Sigma(d)=t} p(d).
+ \]
+ Herein, $p(d) := p\mbig\kla{\pi(d)}$, where $\pi(d)$ is an $R$-corpus with
+ \[
+  \pi(d)(p) := \mbig\abs{\mbig\brc{w\in\pos(d): d(w)=p}}.
+ \]
+\end{definition}
+
+We usually write a PRTG $(\ug,p)$ as just $\ug$ and imply the existence of $p$.
+The meaning function assigns a probability to a tree from $\lang\ug$ by summing
+the probability of all derivations resulting in that tree, where the
+probability of a derivation is the product of the probability of each rule
+occurring in it. This implies that each rule application is statistically
+independent from each other.
+
+{\color{red} TODO inside/outside weights, IO information, IO step mapping}
