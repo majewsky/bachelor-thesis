@@ -54,7 +54,7 @@ guaranteed, a fall-back function can be added.
   \overline p: \zr_{\geq0}^X \to \um(X),
   \quad
   c \mapsto \begin{cases}
-   \tilde c & 0 < \abs c < \infty \\ p & \text{otherwise}
+   \tilde c & \text{if } 0 < \abs c < \infty, \\ p & \text{otherwise}.
   \end{cases}
  \]
 \end{definition}
@@ -209,6 +209,14 @@ The step mappings that we will consider will typically consist of two steps:
  \item \emph{Maximization:} A suitable maximum-likelihood estimator is applied
   to the complete-data corpus to choose $\omega_{i+1}$.
 \end{enumerate}
+
+%TODO: this section may use some citations because it makes claims
+This back and forth of using the current $\omega$ to enrich the training data
+and using the enriched data to find a better $\omega$ will converge towards a
+local maximum of likelihood. The iteration is therefore usually aborted after
+the desired running time has been exceeded, or after the changes of
+$p_{\omega_i}(c)$ per iteration have become smaller than some threshold.
+
 \cite{bucstuvog15} identify three types of step mappings that build on each
 other, each one more specific than the one before it. Since the training of
 Hidden Markov Models will be identified as an instance of the most specific
@@ -221,19 +229,98 @@ $c(x)$ among the hidden information $y$ according to the probability
 distribution $p_\omega$:
 \[
  c\!\dangle{\omega,p}(y,x) := \begin{cases}
-  c(x) \cdot \frac{p_\omega(y,x)}{p_\omega(x)} & p_\omega(x) \neq 0 \\
-  0 & p_\omega(x) = 0
+  c(x) \cdot \frac{p_\omega(y,x)}{p_\omega(x)} & \text{if } p_\omega(x) \neq 0, \\
+  0 & \text{if } p_\omega(x) = 0.
  \end{cases}
 \]
 Recall that $p_\omega(x) = \sum_y p_\omega(y,x)$. Therefore,
 $\abs{c\!\dangle{\omega,p}} = \abs c$. This corpus now has the correct
 structure for plugging it into $\mle_p$, yielding the \emph{corpus-based step
 mapping}\footnote{The proof that this step mapping is non-decreasing can be
-found in \cite[pp.~10]{bucstuvog15}.}
+found in \cite[pp.~10]{bucstuvog15}.}G
 \[
  \stepmap p_\mathrm{cb}(p): \Omega_0\to\up(\Omega),
  \quad
  \omega \mapsto \mle_p\mbig\kla{c\!\dangle{\omega,p}} = \argmax_{\omega'} p_{\omega'}\mbig\kla{c\!\dangle{\omega,p}}.
 \]
 
+For very simple language models, the $\argmax$ can be solved at this point
+already. To apply lemma~\ref{lemma:empirical2}, $\hat\omega$ needs to be found
+such that $p_{\hat\omega} = \widetilde{c\!\dangle{\omega,p}}$. This operation
+is typically hard, which is why a more specific step mapping is helpful.
+
 \section{Simple counting step mapping}
+
+The next such step mapping requires the language model to be described by a
+\emph{counting information}. Before defining this term, some additional
+notation needs to be introduced.
+
+\begin{definition}
+ Let $A$ and $B$ be sets. A mapping $p: B \to \um(A)$ is called
+ \emph{conditional probability distributions of $A$ given $B$}. The set of all
+ such mappings is denoted by $\um(A|B)$.
+\end{definition}
+
+To simply notation, we define $p(a|b) := p(b)(a)$.
+
+\begin{definition}
+ Let $C\subseteq A\times B$ be a set. Then
+ \[
+  \um_C(A|B) := \brc{p\in\um(A|B): \operatorname{supp}(p)\subseteq C}
+ \]
+ is the set of all conditional probability distributions of $A$ given $B$
+ constrained to $C$.
+\end{definition}
+
+\begin{definition}
+ Given a set $\Omega$, a \emph{conditional $\Omega$-probability model for $A$
+ and $B$ (constrained to $C$)} is a mapping $q:\Omega\to\um(A|B)$ (or
+ $q:\Omega\to\um_C(A|B)$).
+\end{definition}
+
+When talking about counting informations (and inside-outside informations in
+the next section), we assume the previously established requirements for $X$,
+$Y$, $\Omega$, $c$ and $p$. Furthermore, we require that $X$ and $Y$ both
+contain a special symbol $\bot$ such that $c(\bot) = 0$. $\bot$ can easily be
+added to any previously defined $X$ and $Y$ without affecting the requirement
+for countability. The notation $U_{\not\bot} := U\setminus\brc\bot$ shall be
+defined for any set $U$.
+
+\begin{definition}
+ Let $A$, $B$ and $C$ be sets such that $C\subseteq A\times B$. A
+ \emph{counting information} is a triple $\varkappa = (q,\lambda,\pi)$ such
+ that
+ \begin{align*}
+  q &: \Omega\to\um_C(A|B), &
+  \lambda &: X_{\not\bot} \times Y_{\not\bot} \to [0,1], &
+  \pi &: X_{\not\bot} \times Y_{\not\bot} \to \zr_{\geq0}^C.
+ \end{align*}
+\end{definition}
+
+The motivation for this definition is to model hidden information $y$ as
+consisting of countable events $c\in C$. $\lambda(x,y)$ describes whether a
+certain $y$ can be the cause for a certain observation $x$.\footnote{Most
+actual instances of $\lambda$ use only integer images,
+i.~e.~$\lambda(X_{\not\bot}\times Y_{\not\bot}) = \brc{0,1}$, thus following
+this intuitive notion. However, the possibility of fractional values for
+$\lambda(x,y)$ is occasionally useful, e.~g.~to define a counting information
+for the IBM Model 1 in \cite[pp.~23]{bucstuvog15}.} For $\lambda(x,y)>0$,
+$\pi(x,y)$ is a $C$-corpus that describes how often each countable event occurs
+in this hidden information.
+
+Following the assumption that the countable events $C$ fully encode the hidden
+information $Y$, we can use these intuitive notions to describe the original
+probability model $p$ in terms of the counting information.
+
+\begin{definition}
+ Given $\varkappa=(q,\lambda,\pi)$, the \emph{induced model} $\varkappa^\flat:\Omega\to\zr_{\geq0}^{Y\times X}$ is given by
+ \[
+  (\varkappa^\flat)_\omega(y,x) := \begin{cases}
+   \lambda(x,y) \cdot q_\omega\mbig\kla{\pi(x,y)} & \text{if } x,y\neq\bot, \\
+   1 - \sum_{x',y'\neq\bot} \lambda(x',y') \cdot q_\omega\mbig\kla{\pi(x',y')} & \text{if } x = y = \bot, \\
+   0 & \text{otherwise}.
+  \end{cases}
+ \]
+\end{definition}
+
+{\color{red} TODO: Do we need the term \emph{proper counting information}?}
