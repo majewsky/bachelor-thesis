@@ -1,4 +1,4 @@
-\chapter{Expectation-maximization algorithm}
+\chapter{Expectation-maximization algorithms}
 
 The generic framework for expectation-maximization (EM) algorithms introduced
 by \cite{bucstuvog15} applies to both language models and translation models.
@@ -18,7 +18,8 @@ We assume that
 \end{align*}
 
 \begin{definition}
- Given a countable set $X$, a mapping $c: X \to \zr_{\geq0}$ is called a \emph{$X$-corpus}.
+ Given a countable set $X$, a mapping $c: X \to \zr_{\geq0}$ is called a
+ \emph{$X$-corpus}.
 \end{definition}
 
 When used as input for a language model's training algorithm, $X$ is the set of
@@ -49,7 +50,8 @@ hence the requirement for $c$ to be non-empty and finite. If this cannot be
 guaranteed, a fall-back function can be added.
 
 \begin{definition}
- Given $p\in\um(X)$, a \emph{normalization mapping with fall-back $p$} is the mapping
+ Given $p\in\um(X)$, a \emph{normalization mapping with fall-back $p$} is the
+ mapping
  \[
   \overline p: \zr_{\geq0}^X \to \um(X),
   \quad
@@ -60,7 +62,8 @@ guaranteed, a fall-back function can be added.
 \end{definition}
 
 \begin{definition}
- Given an $X$-corpus $c$ and $p\in\um(X)$, the \emph{likelihood of $c$ under $p$} is
+ Given an $X$-corpus $c$ and $p\in\um(X)$, the \emph{likelihood of $c$ under
+ $p$} is
  \[
   p(c) := \prod_{x\in X} p(x)^{c(x)}.
  \]
@@ -73,11 +76,13 @@ admissible $p$ such that $p(c)$ is maximized. If any $p$ is admissible, then
 for non-empty and finite $c$, the optimal choice is $p = \tilde c$:
 
 \begin{lemma}\label{lemma:empirical1}
- Let $c$ be a non-empty and finite $X$-corpus. Then $\tilde c(c) \geq p(c)$ for every $p\in\um(X)$.
+ Let $c$ be a non-empty and finite $X$-corpus. Then $\tilde c(c) \geq p(c)$ for
+ every $p\in\um(X)$.
 \end{lemma}
 
 \begin{proof}
- Since $\log$ is monotone, it suffices to show that $\log\tilde c(c) \geq \log p(c)$. Using Gibbs' inequality,
+ Since $\log$ is monotone, it suffices to show that $\log\tilde c(c) \geq \log
+ p(c)$. Using Gibbs' inequality,
  \begin{align*}
   \log \tilde c(c)
   &= \sum_{x\in X} c(x) \cdot \log \tilde c(x)
@@ -96,10 +101,12 @@ set of admissible $p$ by describing the probability distribution in terms of
 \emph{model parameters} $\omega\in\Omega$.
 
 \begin{definition}
- Given a set $\Omega$, an \emph{$\Omega$-probability model for $X$} is a mapping $p:\Omega\to\um(X)$.
+ Given a set $\Omega$, an \emph{$\Omega$-probability model for $X$} is a
+ mapping $p:\Omega\to\um(X)$.
 \end{definition}
 
-Instead of $p(\omega)$, we write $p_\omega$. Training shall then find $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
+Instead of $p(\omega)$, we write $p_\omega$. Training shall then find
+$\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
 
 \begin{definition}
  Given a set $\Omega$ and an $\Omega$-probability model $p$ for $X$, the
@@ -124,7 +131,10 @@ case.
 \end{lemma}
 
 \begin{proof}
- If $c$ is empty, then $p_\omega(c) = 1$ for every $\omega$, and thus $\mle_p(c) = \Omega \ni \hat\omega$. Otherwise, by Lemma~\ref{lemma:empirical1}, $p_{\hat\omega}(c) = \tilde c(c) \geq p_\omega(c)$ for every $\omega\in\Omega$, and thus $\hat\omega \in \mle_p(c)$.
+ If $c$ is empty, then $p_\omega(c) = 1$ for every $\omega$, and thus
+ $\mle_p(c) = \Omega \ni \hat\omega$. Otherwise, by
+ Lemma~\ref{lemma:empirical1}, $p_{\hat\omega}(c) = \tilde c(c) \geq
+ p_\omega(c)$ for every $\omega\in\Omega$, and thus $\hat\omega \in \mle_p(c)$.
 \end{proof}
 
 \section{Algorithmic skeleton}
@@ -158,7 +168,8 @@ parse trees (\emph{supervized training}), the optimal probability distribution
 can be found by simply counting how many times each rule is used across all
 these parse trees, and then computing the empirical probability distribution
 for this corpus. Most of the times, however, the training data will consist
-only of sentences. The information about how to parse the sentences is hidden.
+only of sentences (\emph{unsupervized training}). The information about how to
+parse the sentences is hidden.
 
 The same problem arises with the Hidden Markov Model: When training data is not
 already annotated with state information, the information which states
@@ -194,7 +205,8 @@ to choose the next $\omega_i$ with a higher (or at least equal) likelihood than
 the one that came before.
 
 \begin{definition}
- A \emph{step mapping} is a mapping $\psi:\Omega_0\to\up(\Omega)$ which is nondecreasing in the following manner:
+ A \emph{step mapping} is a mapping $\psi:\Omega_0\to\up(\Omega)$ which is
+ nondecreasing in the following manner:
  \[
   \forall \omega\in\Omega_0: \forall \omega'\in\psi(\Omega): p_\omega(c) \leq p_{\omega'}(c)
  \]
@@ -313,7 +325,8 @@ information $Y$, we can use these intuitive notions to describe the original
 probability model $p$ in terms of the counting information.
 
 \begin{definition}
- Given $\varkappa=(q,\lambda,\pi)$, the \emph{induced model} $\varkappa^\flat:\Omega\to\zr_{\geq0}^{Y\times X}$ is given by
+ Given $\varkappa=(q,\lambda,\pi)$, the \emph{induced model}
+ $\varkappa^\flat:\Omega\to\zr_{\geq0}^{Y\times X}$ is given by
  \[
   (\varkappa^\flat)_\omega(y,x) := \begin{cases}
    \lambda(x,y) \cdot q_\omega\mbig\kla{\pi(x,y)} & \text{if } x,y\neq\bot, \\
@@ -533,14 +546,16 @@ An RTG describes a language (i.~e.~a countable set) of trees. Trees are derived
 by starting with a tree containing only the a root node with the label $q_0$,
 then successively replacing $Q$-labeled nodes according to the RTG's rule set
 until no more $Q$-labeled nodes are left. The resulting tree is in $U_\Sigma$
-and its syntax tree is in $T_R$. Partial syntax trees are in $T_R(Q)$.
+and its abstract syntax tree is in $T_R$. Partial abstract syntax trees are in $T_R(Q)$.
 
 For example, consider the RTG $\ug = \mbig\kla{\brc{q_0,q_1},q_0,R}$ where
 $\Sigma=\brc{a,b,c}$ and
 \[
  R = \brc{ q_0 \to a(q_0,q_1), \quad q_0 \to b, \quad q_1 \to c }.
 \]
-The tree $a(b,c)$ is derived like this: (Each row shows the partial tree $\in U_\Sigma(Q)$ on the left and the partial syntax tree $\in T_R(Q)$ on the right.)
+The tree $a(b,c)$ is derived like this: (Each row shows the partial tree $\in
+U_\Sigma(Q)$ on the left and the partial abstract syntax tree $\in T_R(Q)$ on the
+right.)
 \[\begin{matrix}
  \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
   \node (n) at (0,0) { $q_0$ };
@@ -590,7 +605,7 @@ The tree $a(b,c)$ is derived like this: (Each row shows the partial tree $\in U_
  \end{tikzpicture}
 \end{matrix}\]
 
-From the syntax tree on the right, the tree on the left can be derived easily
+From the abstract syntax tree on the right, the tree on the left can be derived easily
 by substituting the labels $q = \sigma(q_1,\ldots,q_k)\in R$ by the contained
 symbols $\sigma\in\Sigma$. We shall call this projection $\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.
 
@@ -611,9 +626,9 @@ described by a deterministic RTG.
 
 From determinism results unambiguity: An RTG $\ug$ over $\Sigma$ is called
 \emph{unambiguous} if, for every tree $t\in\lang\ug$, there exist exactly one
-syntax tree $d\in D^{q_0}(\ug)$ such that $\pi_\Sigma(d) = t$. To see why, have
+abstract syntax tree $d\in D^{q_0}(\ug)$ such that $\pi_\Sigma(d) = t$. To see why, have
 a look at the fully derived tree $t = a(b,c)$ above. Since $\ug$ in this
-example is deterministic, the syntax tree can be recovered from $t$ by
+example is deterministic, the abstract syntax tree can be recovered from $t$ by
 traversing the nodes from the bottom up and assigning the rules that are used
 at that position. At each position, we know the symbol $\sigma$ at this
 position in the tree and the states $q_1,\ldots,q_k$ from the left sides of the
@@ -622,7 +637,9 @@ rule $\rho$) for this position can be chosen deterministically.
 
 \begin{definition}
  A \emph{probabilistic regular tree grammar (PRTG) over $\Sigma$} is a pair
- $(\ug,p)$ of an RTG $\ug=(Q,q_0,R)$ over $\Sigma$ and a mapping $p:Q\to\zr_{\geq0}^{Q^*\times\Sigma}$ that is constrained to $R$ in the following way:
+ $(\ug,p)$ of an RTG $\ug=(Q,q_0,R)$ over $\Sigma$ and a mapping
+ $p:Q\to\zr_{\geq0}^{Q^*\times\Sigma}$ that is constrained to $R$ in the
+ following way:
  \[
   \forall q\in Q, u\in Q^*\times\Sigma: p(q)(u) \neq 0 \Rightarrow (u,q) \in R.
  \]
@@ -642,7 +659,82 @@ We usually write a PRTG $(\ug,p)$ as just $\ug$ and imply the existence of $p$.
 The meaning function assigns a probability to a tree from $\lang\ug$ by summing
 the probability of all derivations resulting in that tree, where the
 probability of a derivation is the product of the probability of each rule
-occurring in it. This implies that each rule application is statistically
+occurring in it. This implies that rule applications are statistically
 independent from each other.
 
-{\color{red} TODO inside/outside weights, IO information, IO step mapping}
+When describing hidden information in terms of PRTG in the next section, the
+notion of \emph{inside and outside weights} will be useful to judge, broadly
+speaking, how much a certain state contributes to the derivations of a certain
+observation.
+
+\begin{definition}
+ Let $\ug = (Q,q_0,R)$ be a PRTG over $\Sigma$. The \emph{inside weight} of a
+ state $q\in Q$ is given by
+ \[
+  \beta(q) := \sum_{d\in D^q(\ug)\cap T_R} p(d).
+ \]
+\end{definition}
+
+The sum goes over all complete abstract syntax trees rooted at $q$. The inside weight
+describes the collective probability of all derivations starting at $q$. Inside
+weights are usually calculated by noting that each $d\in D^q(\ug)\cap T_R$ must
+have a rule of the form $q\to\ldots$ at its root. The remaining probabilities
+can then be expressed as the inside weights of the states that emerge this rule
+application, giving
+\[
+ \beta(q) = \sum_{q_1,\ldots,q_k,\sigma} p\mbig\kla{q\to\sigma(q_1,\ldots,q_k)} \cdot \beta(q_1) \cdots \beta(q_k).
+\]
+
+The set of all such equations is a non-linear equation system in the $\beta(q)$
+for $q\in Q$. In some cases, this system can be solved intuitively by starting
+with those equations where no $\beta(q_i)$ occurs on the right side, then
+substituting the obtained value in the other equations until they are all
+solved. This is not possible, however, if states derive other states in a
+cyclic way. For example:
+\[
+ R = \brc{\begin{aligned}
+  \rho_1 &= q_0 \to \sigma_1(q_1, q_1), \\
+  \rho_2 &= q_1 \to \sigma_2(q_0), \\
+  \rho_3 &= q_1 \to \sigma_3
+ \end{aligned}} \quad\leadsto\quad
+ \begin{aligned}
+  \beta(q_0) &= p(\rho_1) \cdot \beta(q_1)^2 \\
+  \beta(q_1) &= p(\rho_2) \cdot \beta(q_0) + p(\rho_3)
+ \end{aligned}
+\]
+
+In the general case, \cite[pp.~6]{bucstuvog15} shows that $\beta$ is the least fixpoint of the mapping $F: (\zr_{\geq0}\cup\brc\infty)^Q \to (\zr_{\geq0}\cup\brc\infty)^Q$, given by
+\[
+ F(u)(q) := \sum_{q_1,\ldots,q_k,\sigma} p\mbig\kla{q\to\sigma(q_1,\ldots,q_k)} \cdot u(q_1) \cdots u(q_k).
+\]
+Therefore,
+\[
+ \beta = \lim_{n\to\infty} F^n(u_0) \quad\text{where}\quad u_0(q) := 0 \;\forall q\in Q
+\]
+can be approximated by performing as many iterations of $F$ as desired.
+
+\begin{definition}
+ Let $\ug = (Q,q_0,R)$ be a PRTG over $\Sigma$. The \emph{outside weight} of a state $q\in Q$ is given by
+ \[
+  \alpha(q) := \sum_{d\in D^{q_0}(\ug): \exists d'\in C_R: d = d'[q]} p(d).
+ \]
+\end{definition}
+
+The sum goes over all partial abstract syntax trees, where only one unexpanded
+state is left, and that state is $q$. The outside weight describes the
+collective probability of all derivations that use $q$, but without considering
+at or below $q$. Similar to what we did with inside weights, we can expand this
+definition into
+\[
+ \alpha(q) = \delta_{q_0}^q + \sum_{q',q_1,\ldots,q_k,\sigma,m:q_m=q} \alpha(q') \cdot p\mbig\kla{q'\to\sigma(q_1,\ldots,q_k)} \cdot \prod_{l\neq m} \beta(q_l)
+\]
+
+In this formulation, the sum goes over all rules that derive $q$, that is, $q$
+is among the states $q_1,\ldots,q_k$ on the right hand side of the rule, at
+index $m$. The outside weight $\alpha(q)$ considers the outside weight
+$\alpha(q')$ of the previous state and the inside weight of all states adjacent
+to $q$, but not the inside weight of $q$ itself.
+
+Assuming that the inside weights $\beta(q)$ have already been calculated, the
+equations for $\alpha(q)$ form a linear equation system that can be solved
+efficiently with the standard algorithms for linear equation systems.
