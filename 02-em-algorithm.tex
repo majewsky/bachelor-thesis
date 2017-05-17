@@ -653,6 +653,7 @@ rule $\rho$) for this position can be chosen deterministically.
  \[
   \pi(d)(p) := \mbig\abs{\mbig\brc{w\in\pos(d): d(w)=p}}.
  \]
+ The set of all PRTG over $\Sigma$ shall be denoted as $\ur(\Sigma)$.
 \end{definition}
 
 We usually write a PRTG $(\ug,p)$ as just $\ug$ and imply the existence of $p$.
@@ -735,6 +736,78 @@ index $m$. The outside weight $\alpha(q)$ considers the outside weight
 $\alpha(q')$ of the previous state and the inside weight of all states adjacent
 to $q$, but not the inside weight of $q$ itself.
 
+Finally, we need to account for $q=q_0$, in which case the trivial tree $d$ containing only a $q_0$-labeled root node must be considered. Since $p(d)=1$ for this tree, it is accounted for in the above formula through the Kronecker symbol
+\[
+ \delta_{q_0}^q := \begin{cases}
+  1 & \text{if } q_0 = q, \\
+  0 & \text{otherwise}.
+ \end{cases}
+\]
+
 Assuming that the inside weights $\beta(q)$ have already been calculated, the
 equations for $\alpha(q)$ form a linear equation system that can be solved
 efficiently with the standard algorithms for linear equation systems.
+
+\section{Inside-outside step mapping}
+
+We can now resume the task of describing hidden information in terms of trees,
+such that the countable events, as introduced by the counting information, are
+labels in these trees' nodes. Similar to how a language model can be described
+as a counting information for use with the simple counting step mapping, a
+language model may also be described as an inside-outside information, for use
+with the inside-outside step mapping.
+
+Again, we assume the previous definitions of $X$, $Y$, $c$, $A$, $B$ and $C$
+throughout this section.
+
+\begin{definition}
+ An \emph{inside-outside (IO) information} is a quadruple\footnote{The definitions
+ in this chapter have previously diverged from \cite{bucstuvog15} by omitting
+ the set $Z$, which is only required for translation models, and otherwise set
+ to $Z=\brc\emptyset$ for language models. For IO informations, this leads to
+ additional divergence from the definition in \cite{bucstuvog15}, where $\mu$
+ is introduced as a quintuple $\mu=(q,\pi_1,\pi_2,K,H)$. Both definitions are
+ congruent for language models by letting $\pi_1 := \pi$ and $\pi_2(y) :=
+ \emptyset\in Z$.} $\mu = (q,\pi,K,H)$ such that
+ \begin{itemize}\setlength\itemsep{-0.3em}
+  \item $C\subseteq A\times B$ is a ranked alphabet such that $Y_{\not\bot}\subseteq T_C$ contains ranked trees over $C$,
+  \item $q:\Omega\to\um_C(A|B)$ as for counting informations,
+  \item $\pi:Y_{\not\bot}\to X_{\not\bot}$ maps hidden information to observations,
+  \item $K\in\ur(C)$ is an PRTG with $\lang K = Y_{\not\bot}$ and
+  \item $H:X_{\not\bot}\to\ur(C)$ assigns a PRTG to every observation such that $\lang{H(x)} = \pi^{-1}(x)$.
+ \end{itemize}
+\end{definition}
+
+Each hidden information $y$ is a tree from $T_C$, and a conditional probability
+$q_\omega(a|b)$ can be assigned to each countable event $c = (a,b)$ that occurs
+in the tree. Each hidden information $y$ belongs to exactly one observation
+$x$. The set of all hidden informations $Y_{\not\bot}$ is described by the PRTG
+$K$, and for each observation $x$, the set of all hidden informations leading
+to this observation is described by the PRTG $H(x)$.
+
+The description of a language model using an IO information is strictly more
+powerful than the description via counting informations, since an IO
+information induces a counting information.
+
+\begin{definition}
+ Let $\mu=(q,\pi,K,H)$ be an IO information. The \emph{induced counting
+ information} $\mu^\flat = (q,\lambda,\pi)$ is given by
+ \begin{align*}
+  \lambda(x,y) &:= \begin{cases}
+   1 & \text{if } \pi_1(y) = x, \\
+   0 & \text{otherwise},
+  \end{cases} \\
+  \pi(x,y)(a,b) &:= \begin{cases}
+   \mbig\abs{\mbig\brc{w\in\pos(y): y(w)=(a,b)}} & \text{if } \pi_1(y) = x, \\
+   0 & \text{otherwise},
+  \end{cases}
+ \end{align*}
+\end{definition}
+The induced counting information $\mu^\flat$ is always proper.
+\cite[p.~15]{bucstuvog15}
+
+{\color{red} TODO IO step mapping}
+
+The three types of language models (model $p$, counting information $\varkappa$ and IO information $\mu$) thus form a hierarchy:
+
+{\color{red} TODO replicate that hierarchy picture from bucstuvog15}
