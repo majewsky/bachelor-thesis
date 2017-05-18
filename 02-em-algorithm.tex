@@ -767,14 +767,14 @@ throughout this section.
  to $Z=\brc\emptyset$ for language models. For IO informations, this leads to
  additional divergence from the definition in \cite{bucstuvog15}, where $\mu$
  is introduced as a quintuple $\mu=(q,\pi_1,\pi_2,K,H)$. Both definitions are
- congruent for language models by letting $\pi_1 := \pi$ and $\pi_2(y) :=
- \emptyset\in Z$.} $\mu = (q,\pi,K,H)$ such that
+ congruent for language models by letting $\pi_2(y) :=
+ \emptyset\in Z$.} $\mu = (q,\pi_1,K,H)$ such that
  \begin{itemize}\setlength\itemsep{-0.3em}
   \item $C\subseteq A\times B$ is a ranked alphabet such that $Y_{\not\bot}\subseteq T_C$ contains ranked trees over $C$,
   \item $q:\Omega\to\um_C(A|B)$ as for counting informations,
-  \item $\pi:Y_{\not\bot}\to X_{\not\bot}$ maps hidden information to observations,
+  \item $\pi_1:Y_{\not\bot}\to X_{\not\bot}$ maps hidden information to observations,
   \item $K\in\ur(C)$ is an PRTG with $\lang K = Y_{\not\bot}$ and
-  \item $H:X_{\not\bot}\to\ur(C)$ assigns a PRTG to every observation such that $\lang{H(x)} = \pi^{-1}(x)$.
+  \item $H:X_{\not\bot}\to\ur(C)$ assigns a PRTG to every observation such that $\lang{H(x)} = \pi_1^{-1}(x)$.
  \end{itemize}
 \end{definition}
 
@@ -790,7 +790,7 @@ powerful than the description via counting informations, since an IO
 information induces a counting information.
 
 \begin{definition}
- Let $\mu=(q,\pi,K,H)$ be an IO information. The \emph{induced counting
+ Let $\mu=(q,\pi_1,K,H)$ be an IO information. The \emph{induced counting
  information} $\mu^\flat = (q,\lambda,\pi)$ is given by
  \begin{align*}
   \lambda(x,y) &:= \begin{cases}
@@ -822,7 +822,7 @@ where $(Q,q_0,R)$ is the PRTG $H(x)$ with rule probabilities $p$ given by
 \]
 To understand the formula for $\chi_{\omega,x}(a,b)$, recall that $H(x)$ is an
 RTG such that its derivations, that is: the set of its complete abstract syntax
-trees, is $\pi^{-1}(x)$, the set of all hidden informations that lead to the
+trees, is $\pi_1^{-1}(x)$, the set of all hidden informations that lead to the
 observation $x$. Each of these derivations $d$ has a probability $p(d)$, and
 the sum of all these probabilities is the inside weight $\beta(q_0)$.
 $\xi_{\omega,x}(a,b)$ describes, in simple terms, the contribution of rules
@@ -851,7 +851,7 @@ proposed by \cite{bucstuvog15}:
 \begin{enumerate}
  \item models $p:\Omega\to\um(Y\times X)$
  \item counting informations $\varkappa=(q,\lambda,\pi)$
- \item inside-outside informations $\mu=(q,\pi,K,H)$
+ \item inside-outside informations $\mu=(q,\pi_1,K,H)$
 \end{enumerate}
 Each formalization is stronger than the one before it, as evidenced by the
 $\flat$ operator that converts each formalization into the previous one.
@@ -873,7 +873,7 @@ A step mapping can be defined for each of these formalizations.
 \end{tikzpicture}\end{center}
 
 In the definition of both the counting information $\varkappa=(q,\lambda,\pi)$
-and of the IO information $\mu=(q,\pi,K,H)$, the only part that depends on
+and of the IO information $\mu=(q,\pi_1,K,H)$, the only part that depends on
 $\omega$ is the probability model $q$. All other parts are fixed as soon as the
 language model is instantiated, and are therefore not subject to training. For
 many language models, it is sufficient to choose $\Omega := \um_C(A|B)$ and $q
