@@ -370,7 +370,7 @@ $\mnorm\stepmap{\varkappa^\flat}_\mathrm{cb}$, and thus also nondecreasing, can
 be found in \cite[p.~13]{bucstuvog15}.} is
 \[
  \stepmap\varkappa_\mathrm{sc}: \Omega_0 \to \up(\Omega), \quad
- \omega \to \cmle_q\mbig\kla{c\mnorm\dangle{\omega,\varkappa}} = \argmax_{\omega'} q_{\omega'}\mbig\kla{c\mnorm\dangle{\omega,\varkappa}}.
+ \omega \mapsto \cmle_q\mbig\kla{c\mnorm\dangle{\omega,\varkappa}} = \argmax_{\omega'} q_{\omega'}\mbig\kla{c\mnorm\dangle{\omega,\varkappa}}.
 \]
 The simple counting step mapping has two advantages over
 $\stepmap\cdot_\mathrm{cb}$: First, many language models can be described in
@@ -804,10 +804,87 @@ information induces a counting information.
  \end{align*}
 \end{definition}
 The induced counting information $\mu^\flat$ is always proper.
-\cite[p.~15]{bucstuvog15}
+\cite[p.~15]{bucstuvog15} Using it, we can construct a suitable complete-data corpus:
+\[
+ c\!\dangle{\omega,\mu}: C\to\zr_{\geq0}, \quad
+ (a,b) \mapsto \sum_x c(x) \cdot \chi_{\omega,x}(a,b).
+\]
+Unlike $c\!\dangle{\omega,\varkappa}$, this definition uses the original corpus
+$c$ instead of relying on the complete-data corpus of the previous step
+mapping. In this expression, $(\chi_{\omega,x}|\omega\in\Omega,x\in
+X_{\not\bot})$ is a family of $C$-corpora, defined by
+\[
+ \chi_{\omega,x}(a,b) := \beta(q_0)^{-1} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\in R} \alpha(q) \cdot p(\rho) \cdot \beta(q_1) \cdots \beta(q_k),
+\]
+where $(Q,q_0,R)$ is the PRTG $H(x)$ with rule probabilities $p$ given by
+\[
+ p(\rho) := q_\omega(a|b) \quad\text{for}\quad \rho = \mbig\kla{q\to(a,b)(q_1,\ldots,q_k)}.
+\]
+To understand the formula for $\chi_{\omega,x}(a,b)$, recall that $H(x)$ is an
+RTG such that its derivations, that is: the set of its complete abstract syntax
+trees, is $\pi^{-1}(x)$, the set of all hidden informations that lead to the
+observation $x$. Each of these derivations $d$ has a probability $p(d)$, and
+the sum of all these probabilities is the inside weight $\beta(q_0)$.
+$\xi_{\omega,x}(a,b)$ describes, in simple terms, the contribution of rules
+containing the countable event $(a,b)$ to this total weight (such that
+multiple occurrences of $(a,b)$ in a single derivation are counted multiple
+times). For every such derivation, we have the part that leads up to the state
+$q$ (described by the outside weight $\alpha(q)$), the rule $\rho$ that
+produces $(a,b)$ with probability $p(\rho)$, and the derivations that occur
+below this rule application (described by the inside weights $\beta(q_i)$ of
+the produced states).
 
-{\color{red} TODO IO step mapping}
+Given the complete-data corpus, we can once more apply a maximum-likelihood
+estimator for $q$ to arrive at the \emph{inside-outside step mapping}:
+\[
+ \stepmap\mu_\mathrm{io}: \Omega_0 \to \up(\Omega), \quad
+ \omega \mapsto \cmle_q\mbig\kla{c\mnorm\dangle{\omega,\mu}} = \argmax_{\omega'} q_{\omega'}\mbig\kla{c\mnorm\dangle{\omega,\mu}}.
+\]
+\cite[pp.~16]{bucstuvog15} shows that $\stepmap\mu_\mathrm{io} =
+\mnorm\stepmap{\mu^\flat}_\mathrm{sc}$ for all IO informations $\mu$, from
+which follows that $\stepmap\cdot_\mathrm{io}$ is nondecreasing.
 
-The three types of language models (model $p$, counting information $\varkappa$ and IO information $\mu$) thus form a hierarchy:
+\section{Review}
 
-{\color{red} TODO replicate that hierarchy picture from bucstuvog15}
+This chapter introduced the three different formalizations of language models
+proposed by \cite{bucstuvog15}:
+\begin{enumerate}
+ \item models $p:\Omega\to\um(Y\times X)$
+ \item counting informations $\varkappa=(q,\lambda,\pi)$
+ \item inside-outside informations $\mu=(q,\pi,K,H)$
+\end{enumerate}
+Each formalization is stronger than the one before it, as evidenced by the
+$\flat$ operator that converts each formalization into the previous one.
+A step mapping can be defined for each of these formalizations.
+\begin{center}\begin{tikzpicture}[scale=2,>=stealth]
+ \begin{scope}[every node/.style={rectangle,draw},minimum height=2em]
+  \node (sm) at (+0,+0) { step mapping };
+  \node (cb) at (-2,+1) { model };
+  \node (sc) at (+0,+1) { counting info };
+  \node (io) at (+2,+1) { IO info };
+ \end{scope}
+ \begin{scope}[every node/.style={inner sep=0.5ex}]
+  \draw[thick] (cb.south) edge[->,bend right=30] node [auto,swap,inner sep=0] {$\stepmap\cdot_\mathrm{cb}$} (sm.west);
+  \draw[thick] (sc.south) edge[->] node [auto] {$\stepmap\cdot_\mathrm{sc}$} (sm.north);
+  \draw[thick] (io.south) edge[->,bend left=30] node [auto] {$\stepmap\cdot_\mathrm{io}$} (sm.east);
+  \draw[thick] (sc.west) edge[->] node [auto] {$\flat$} (cb.east);
+  \draw[thick] (io.west) edge[->] node [auto] {$\flat$} (sc.east);
+ \end{scope}
+\end{tikzpicture}\end{center}
+
+In the definition of both the counting information $\varkappa=(q,\lambda,\pi)$
+and of the IO information $\mu=(q,\pi,K,H)$, the only part that depends on
+$\omega$ is the probability model $q$. All other parts are fixed as soon as the
+language model is instantiated, and are therefore not subject to training. For
+many language models, it is sufficient to choose $\Omega := \um_C(A|B)$ and $q
+= \operatorname{id}$ (i.~e.~$q_\omega = \omega$ for all $\omega$).
+
+Applying lemma~\ref{lemma:empirical2}, we see that the empirical probability
+distribution for the complete-data corpus is an element of
+$\stepmap\mu_\mathrm{io}(\omega)$ (and similar for the simple counting step
+mapping). Since the EM algorithm only needs one element from
+$\stepmap\mu_\mathrm{io}(\omega)$, we can use
+\[
+ \stepmap\mu'_\mathrm{io}(\omega) := \mbig\brc{ \widetilde{c\mnorm\dangle{\omega,\mu}} }
+\]
+instead, which is much less expensive to compute than the full $\argmax$.
