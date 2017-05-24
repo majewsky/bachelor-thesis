@@ -1,3 +1,17 @@
-\chapter{The Hidden Markov Model}
+\chapter{The Hidden Markov model}
+
+The definitions in this chapter are based on \cite{vogler2015} and largely
+agree with most other definitions for Hidden Markov models in contemporary
+literature, e.~g.~\cite[pp.~210]{jm09}, except for variable names.
+
+\begin{definition}
+ A \emph{Hidden Markov model} (HMM) is a quintuple $H = (Q,V,\#,t,e)$ such that
+ \begin{itemize}\setlength\itemsep{-0.3em}
+  \item $Q$ is a non-empty alphabet (of states),
+  \item $V$ is a non-empty alphabet (of letters),
+  \item $\#\notin Q\cup V$ is a separate (initial and final) state,
+  \item $t\in\um(Q\cup\brc{\#}|Q\cup\brc{\#})$ and $e\in\um(V|Q)$.
+ \end{itemize}
+\end{definition}
 
 {\color{red}TODO}

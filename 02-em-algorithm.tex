@@ -3,7 +3,7 @@
 The generic framework for expectation-maximization (EM) algorithms introduced
 by \cite{bucstuvog15} applies to both language models and translation models.
 This chapter will introduce terminology and notation from \cite{bucstuvog15} as
-far as is necessary to apply this framework to the Hidden Markov Model in the
+far as is necessary to apply this framework to the Hidden Markov model in the
 subsequent chapters.
 
 \section{Preliminaries}
@@ -171,7 +171,7 @@ for this corpus. Most of the times, however, the training data will consist
 only of sentences (\emph{unsupervized training}). The information about how to
 parse the sentences is hidden.
 
-The same problem arises with the Hidden Markov Model: When training data is not
+The same problem arises with the Hidden Markov model: When training data is not
 already annotated with state information, the information which states
 correspond to which words from the training data remains hidden. Expectation
 maximization algorithms can be used when parts of the training data are hidden
@@ -231,7 +231,7 @@ $p_{\omega_i}(c)$ per iteration have become smaller than some threshold.
 
 \cite{bucstuvog15} identify three types of step mappings that build on each
 other, each one more specific than the one before it. Since the training of
-Hidden Markov Models will be identified as an instance of the most specific
+Hidden Markov models will be identified as an instance of the most specific
 step mapping, the remainder of this chapter will introduce all three in order.
 
 \section{Corpus-based step mapping}
@@ -392,10 +392,46 @@ rules) is finite.
 The third and most specific type of step mapping applies to language models
 whose hidden information can be described as trees, such that the countable
 events are labels in these trees' nodes. We therefore need to define a set of
-terms regarding trees and tree grammars first.
+terms regarding alphabets, trees and tree grammars first.
 
 \begin{definition}
- An \emph{alphabet} is a finite set.
+ An \emph{alphabet} is a finite set. Its members are called \emph{letters}.
+\end{definition}
+
+Terminology and notation regarding alphabets will be useful both for the
+definition of trees in this chapter and for the discussion of the Hidden Markov
+model in the next chapter.
+
+\begin{definition}
+ Let $\sigma$ be an alphabet. for any $n\in\zn$, a sequence $\sigma =
+ \sigma_1\cdots\sigma_n$ of letters $\sigma_1,\ldots,\sigma_n\in\sigma$ is
+ called a \emph{word} over $\sigma$ with \emph{length} $\abs\sigma = n$. for
+ $n=0$, the \emph{empty word} is denoted by $\eps$. Given two words
+ $\sigma=\sigma_1\cdots\sigma_n$ and $\tau=\tau_1\cdots\tau_m$, their
+ \emph{concatenation} is the word
+ \[
+  \sigma\tau := \sigma_1\cdots\sigma_n\tau_1\cdots\tau_m,
+ \]
+ and especially $\sigma\eps := \sigma$ and $\eps\tau := \tau$. The
+ concatenation of two sets $S$ and $T$ of words over $\Sigma$ is given by
+ \[
+  ST := \brc{\sigma\tau|\sigma\in S, \tau\in T}.
+ \]
+\end{definition}
+
+In this regard, the alphabet $\Sigma$ is itself a set of words since letters
+are equivalent to one-letter words.
+
+\begin{definition}
+ Let $\Sigma$ be an alphabet. The \emph{Kleene star} of $\Sigma$ is the set of
+ all words over $\Sigma$, and defined as
+ \[
+  \Sigma^* := \bigcup_{i=0}^\infty \Sigma^i, \quad
+  \text{where }\Sigma^i := \begin{cases}
+   \brc\eps & \text{if } i = 0, \\
+   \Sigma^{i-1}\Sigma & \text{otherwise}.
+  \end{cases}
+ \]
 \end{definition}
 
 \begin{definition}
