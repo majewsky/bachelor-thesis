@@ -37,19 +37,20 @@ correct sentences receive a higher probability than incorrect sentences.
 \]
 
 The probability distribution $p_\omega$ is determined by a \emph{model
-parameter} $\omega\in\Omega$. The language model describes how to obtain
-$p_\omega$ for any $\omega$. $\omega$ is chosen by a suitable \emph{training
-algorithm} using a training corpus $c$ containing known good sentences, such
-that $\omega$ maximizes the likelihood of this corpus,
+parameter} $\omega\in\Omega$. The language model defines $\Omega$ and describes
+how to obtain $p_\omega$ for any $\omega$. $\omega$ is chosen by a suitable
+\emph{training algorithm} using a training corpus $c$ containing known good
+sentences, such that $\omega$ maximizes the likelihood of this corpus,
 \[
  \prod_{v\in c} p_\omega(v).
 \]
 
 \section{N-gram models}
 
-One of the simplest language models is the \emph{bigram model}. It interprets
-the generation of a sentence as a stochastic process, wherein each word is
-chosen with a probability conditional on the word that appeared before it:
+One of the simplest language models is the \emph{bigram model}.
+\cite{vogler2015} It interprets the generation of a sentence as a stochastic
+process, wherein each word is chosen with a probability conditional on the word
+that appeared before it:
 \[
  p(\text{He ate soup.}) = b(\text{He}|\#) \cdot b(\text{ate}|\text{He}) \cdot b(\text{soup}|\text{ate}) \cdot b(\#|\text{soup}),
 \]
@@ -63,24 +64,21 @@ The model parameter $b$ can be chosen by a very simple training algorithm
 \cite[pp.~123]{jm09}: Across the corpus, count all bigrams (i.e., all pairs of
 words occurring one directly after the other) in the corpus, and also count how
 often each word occurs at the start and at the end of a sentence, respectively.
-Then set
-\[
- b(v|v') = \frac{c(v'v)}{\sum_{v''\in \Sigma\cup\brc{\#}} c(v'v'')}
-\]
-where $c(v'v)$ is the number of occurrences of the bigram $v'v$ in the corpus.
-The normalization ensures that $b$ is a probability distribution.
+Then set the bigram probability $b$ to these counts, normalized such that
+$\sum_{v'} b(v|v')=1$ for every $v\in V$.
 
 The bigram model can be generalized to the \emph{N-gram model}, wherein the
 next word is chosen with a probability conditional on the $n-1$ words before
-it. Training then counts $n$-grams, i.~.e~sequences of $n$ words, hence the
+it. Training then counts $n$-grams, i.~e.~sequences of $n$ words, hence the
 name \emph{N-gram model}. The bigram model is recovered for $n=2$.
 
 Besides the already mentioned applications where language models augment
 translators, N-gram models are useful in \emph{augmentive communication}:
 Virtual keyboards on smartphones and tablets predict the next word by looking
 at the previous $n$ words, thus improving typing speed and accuracy.
-\cite{hasan2004n} A similar assistive word prediction system is used by the
-physicist Stephen Hawking. \cite{newelletal1998}
+\cite{hasan2004n} A similar assistive word prediction system is part of speech
+synthesis programs used by disabled persons such as the physicist Stephen
+Hawking. \cite{newelletal1998}
 
 \section{Hidden Markov model}
 
@@ -185,6 +183,12 @@ probability in terms of the N-gram probability. For example, for bigrams:
   0 &\text{otherwise}.
  \end{cases}
 \end{align*}
+
+Training for the Hidden Markov Model is not as straight-forward as for the
+bigram model, since the training corpus typically only contains the observed
+sentences, not the state sequences that produced them. The standard training
+algorithm for Hidden Markov models is the \emph{Baum-Welch algorithm}.
+\cite{baupetsouwei70,baum1972}
 
 \section{Outlook}
 
