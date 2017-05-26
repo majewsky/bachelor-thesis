@@ -14,4 +14,79 @@ literature, e.~g.~\cite[pp.~210]{jm09}, except for variable names.
  \end{itemize}
 \end{definition}
 
+The Hidden Markov model describes a word as being the result of the progression
+of a probabilistic state machine that starts out in $\#$, traverses states from
+$Q$, and in the end reaches $\#$ again. Each time a state from $Q$ is reached,
+a letter from $V$ is emitted. The sequence of all these emitted letters is the
+word that is observed.
+
+When a word $v = v_1\cdots v_n\in V^*$ is observed, is must have been caused by
+a certain sequence of states $q = q_1\cdots q_n\in Q^*$, but it is not known
+which one it was, only that the lengths of both sequences agree. Therefore, by
+the law of total probability,
+\[
+ P(v) = \sum_{q\in Q^n} P(v|q) \cdot P(q).
+\]
+
+%TODO find a reference for "Markov property" (this paragraph is currently more
+%or less copied from en.wikipedia)
+\begin{definition}
+ A stochastic process is said to have the \emph{Markov property} if the
+ conditional probability distribution of future states of the process only
+ depends on the present state, not on the states before or after it.
+\end{definition}
+
+A Hidden Markov model exhibits the Markov property in two separate ways: First,
+the conditional probability distribution of each state depends only on the
+state directly preceding it. Second, the conditional probability distribution
+of each emitted letter depends only on the state that was inhabited at the time
+of emission. These two conditional probability distributions are called $t$ and
+$e$, and are part of the quintuple $H=(Q,V,\#,t,e)$ as defined before.
+
+The progression of the probabilistic state machine of $H$ through the state
+sequence $q=q_1\cdots q_n$ involves several separate stochastic events:
+entering each state $q_1,\ldots,q_n$ in that order, then entering the state
+$\#$ after $n$ other states. Therefore, by the chain rule,
+\[
+ P(q_1\cdots q_n) = P(q_1) \cdot P(q_2|q_1) \cdots P(q_n|q_1,\ldots,q_{n-1}) \cdot P(n|q_1,\ldots,q_n).
+\]
+The last factor, $P(n|q_1,\ldots,q_n)$ is the probability of the state sequence
+having length $n$ if $q_1,\ldots,q_n$ are known or, in other words, the
+probability of the state sequence terminating (by the state machine coming back
+to $\#$) after these $n$ states. Since, by the Markov property, each state only
+depends on the one directly preceding it, we can reformulate all factors in
+terms of the conditional probability distribution $t$:
+\begin{align*}
+ P(q_1) &=: t(q_1|\#), \\
+ P(q_i|q_1,\ldots,q_{i-1}) &= P(q_i|q_{i-1}) =: t(q_i|q_{i-1}) \\
+ P(n|q_1,\ldots,q_n) &= P(n|q_n) =: t(\#|q_n),
+\end{align*}
+and therefore,
+\[
+ P(q_1\cdots q_n) = t(q_1|\#) \cdot t(q_2|q_1) \cdots t(q_n|q_{n-1}) \cdot t(\#|q_n).
+\]
+
+In a similar way, we can rewrite $P(v|q)$ as
+\[
+ P(v_1\cdots v_n|q_1\cdots q_n) = \prod_{i=1}^n P(v_i|q_1\cdots q_n)
+\]
+and codify the second Markov property as
+\[
+ P(v_i|q_1\cdots q_n) = P(v_i|q_i) =: e(v_i|q_i).
+\]
+
+Putting all these results into the original equation for $P(v)$, we obtain
+\[
+ P(v=v_1\cdots v_n) = \sum_{q_1,\ldots,q_n} t(q_1|\#) \cdot e(v_1|q_1) \cdot \prod_{i=2}^n \mbig\brk{t(q_i|q_{i-1}) \cdot e(v_i|q_i)} \cdot t(\#|q_n).
+\]
+
+\section{Forward and backward algorithms}
+
+When $P(v)$ is computed in this manner, the computation takes an exponential
+amount of time in the word length $n$ since $\abs Q^n$ summands need to be
+evaluated. However, for similar state sequences, some subterms can be reused
+across summands, thereby reducing the required computation effort. There are
+two standard schemes for this, the \emph{forward algorithm} and the
+\emph{backward algorithm}.
+
 {\color{red}TODO}
