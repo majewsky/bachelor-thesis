@@ -48,13 +48,13 @@ sequence $q=q_1\cdots q_n$ involves several separate stochastic events:
 entering each state $q_1,\ldots,q_n$ in that order, then entering the state
 $\#$ after $n$ other states. Therefore, by the chain rule,
 \[
- P(q_1\cdots q_n) = P(q_1) \cdot P(q_2|q_1) \cdots P(q_n|q_1,\ldots,q_{n-1}) \cdot P(n|q_1,\ldots,q_n).
+ P(q_1\cdots q_n) = P(q_1,\ldots,q_n,n) = P(q_1) \cdot P(q_2|q_1) \cdots P(q_n|q_1,\ldots,q_{n-1}) \cdot P(n|q_1,\ldots,q_n).
 \]
 The last factor, $P(n|q_1,\ldots,q_n)$ is the probability of the state sequence
 having length $n$ if $q_1,\ldots,q_n$ are known or, in other words, the
 probability of the state sequence terminating (by the state machine coming back
 to $\#$) after these $n$ states. Since, by the Markov property, each state only
-depends on the one directly preceding it, we can reformulate all factors in
+depends on the one directly preceding it, we can reformulate each factor in
 terms of the conditional probability distribution $t$:
 \begin{align*}
  P(q_1) &=: t(q_1|\#), \\

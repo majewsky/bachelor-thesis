@@ -124,7 +124,7 @@ Hawking. \cite{newelletal1998}
     \node (q1) at (0,3) {noun};
     \node (q2) at (0,0) {verb};
    \end{scope}
-   \begin{scope}[every node/.style={rectangle,draw,text height=1.0em,inner sep=1ex,anchor=west}]
+   \begin{scope}[every node/.style={anchor=west}]
     \node (v11) at (4,5) {He};
     \node (v12) at (4,4) {She};
     \node (v13) at (4,3) {soup};
@@ -137,12 +137,12 @@ Hawking. \cite{newelletal1998}
     \draw[->] (q1) edge[bend right=20] node[auto,swap] {$0.5$} (q2);
     \draw[->] (q1) edge[bend right=20] node[auto,swap] {$0.5$} (q0);
     \draw[->] (q2) edge[bend right=20] node[auto,swap] {$1$} (q1);
-    \draw[dashed,->] (q1) edge[bend left=20] node[auto] {$0.3$} (v11);
-    \draw[dashed,->] (q1) edge[bend left=10] node[auto] {$0.3$} (v12);
+    \draw[dashed,->] (q1) edge[bend left=20] node[auto,pos=0.6] {$0.3$} (v11);
+    \draw[dashed,->] (q1) edge[bend left=10] node[auto,pos=0.6] {$0.3$} (v12);
     \draw[dashed,->] (q1) edge node[auto] {$0.25$} (v13);
-    \draw[dashed,->] (q1) edge[bend right=10] node[auto,swap] {$0.15$} (v14);
+    \draw[dashed,->] (q1) edge[bend right=10] node[auto,pos=0.6,swap] {$0.15$} (v14);
     \draw[dashed,->] (q2) edge node[auto] {$0.5$} (v21);
-    \draw[dashed,->] (q2) edge node[auto,swap] {$0.5$} (v22);
+    \draw[dashed,->] (q2) edge node[auto,pos=0.6,swap] {$0.5$} (v22);
    \end{scope}
   \end{tikzpicture}
  \end{align*}
