@@ -89,4 +89,62 @@ across summands, thereby reducing the required computation effort. There are
 two standard schemes for this, the \emph{forward algorithm} and the
 \emph{backward algorithm}.
 
+\begin{definition}
+ Let $H=(Q,V,\#,t,e)$ be an HMM, $q\in Q$ be a state, $v=v_1\cdots v_n\in V^*$
+ be a word, and $i\in\brc{1,\ldots,n}$.\footnote{\cite{vogler2015} uses the
+ term ``time'' and the symbol $t$ for this index. We avoid the symbol $t$
+ because it is already used for the transition probability.} The \emph{forward
+ weight}\footnote{The names ``forward/backward weight'' have been chosen
+ deliberately, because we will see in the next chapter that these values
+ corresponds to the inside and outside weight.} $T_v(i,q)$ is the probability
+ of the HMM being in state $q$ after having emitted the first $i$ letters of
+ $v$. The \emph{backward weight} $S_v(i,q)$ is the probability of the HMM
+ emitting $v$ when the first $i$ letters of $v$ have already been generated and
+ the HMM is in state $q$ after that many letters.
+\end{definition}
+
+The forward weight can be calculated by following the same methods as in the
+previous section for $P(v)$. For $i = 1$, the forward weight describes the
+transition from the initial state $\#$ into $q$, and the emission of $v_1$ in
+that state:
+\[
+ T_v(1,q) = P(v_1,q_1=q) = P(q_1=q) \cdot P(v_1|q_1=q) = t(q|\#) \cdot e(v_1|q).
+\]
+For $i\geq 2$, the forward weight can be calculated iteratively by first
+obtaining the forward weights $T_v(i-1,q')$ for any possible previous state
+$q'\in Q$, because
+\[
+ T_v(i,q) = P(v_1,\ldots,v_i,q_i=q) = \sum_{q'\in Q} P(v_1,\ldots,v_i,q_{i-1}=q',q_i=q)
+\]
+by the law of total probability, and then, by the chain rule and the Markov
+properties of the HMM,
+\begin{align*}
+ T_v(i,q)
+  &= \sum_{q'\in Q} P(v_1,\ldots,v_{i-1},q_{i-1}=q') \cdot P(q_i=q|q_{i-1}=q') \cdot P(v_i|q_i=q) \\
+  &= \sum_{q'\in Q} T_v(i-1,q') \cdot t(q|q') \cdot e(v_i|q) \\
+  &= e(v_i|q) \cdot \sum_{q'\in Q} T_v(i-1,q') \cdot t(q|q').
+\end{align*}
+The probability $P(v)$ can then be computed in a similar way as
+\[
+ P(v) = P(v_1,\ldots,v_n,n) = \sum_{q\in Q} P(v_1,\ldots,v_n,q_n=q) \cdot P(n|q_n=q) = \sum_{q\in Q} T_v(n,q) \cdot t(\#|q).
+\]
+In order to compute $P(v)$, the full matrix of $\mbig\kla{T_v(i,q)}_{i,q}$ must
+be computed. Each of these forward weights can be computed in $O\mbig\kla{\abs
+Q}$ time because $\abs Q$ summands need to be added. Therefore, $P(v)$ can be
+computed in $O\mbig\kla{n \cdot \abs Q^2}$ time, which is much better than the
+exponential time required for the initial formula for $P(v)$.
+
+The same time complexity arises when $P(v)$ is being restated in terms of
+backward weights. Backward weights can be computed in a similar manner to
+forward weights, with the difference of iterating in opposite temporal order.
+\begin{align*}
+ P(v) &= \sum_{q\in Q} t(q|\#) \cdot e(v_1|q) \cdot S_v(1,q) \\
+ \text{where } S_v(i,q) &= \begin{cases}
+  t(\#|q) & \text{if }i=n, \\
+  \sum_{q'\in Q} t(q'|q) \cdot e(v_{i+1}|q') \cdot S(i+1,q') & \text{otherwise}.
+ \end{cases}
+\end{align*}
+
+\section{The Baum-Welch algorithm}
+
 {\color{red}TODO}
