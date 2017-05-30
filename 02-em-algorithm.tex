@@ -153,9 +153,9 @@ case.
   \algorithmheader         $\Omega$-probability model $p$ for $Y\times X$
   \algorithmheader         some initial parameter $\omega_0 \in \Omega_0$ where $\Omega_0 := \brc{\omega\in\Omega: p_\omega(c) \neq 0}$
   \algorithmheader[Implicit:] step mapping $\psi:\Omega_0\to\up(\Omega)$
-  \algorithmheader            \hspace{1em} such that $\omega'\in\psi(\omega)$ implies $p_\omega(c) \leq p_{\omega'}(c)$
+  \algorithmheader            \hspace{1em} such that $\omega'\in\psi(\omega)$ implies $p_\omega(c) \leq p_{\omega'}(c)$ (\emph{nondecreasing})
   \algorithmheader[Output:] sequence $\omega_1,\omega_2,\ldots\in\Omega_0$
-  \algorithmheader            \hspace{1em} such that $p_{\omega_0}(c), p_{\omega_1}(c), p_{\omega_2}(c)$ nondecreasing
+  \algorithmheader            \hspace{1em} such that $p_{\omega_0}(c), p_{\omega_1}(c), p_{\omega_2}(c),\ldots$ nondecreasing
 
   \STATE $i\leftarrow 0$
   \WHILE{not converged}
@@ -170,11 +170,11 @@ The major complication that occurs when trying to train a typical language
 model is that not all required data is present in the corpus. For example, a
 probabilistic context-free grammar is described by the probability distribution
 of derivation rules. \cite{laryou90} When the training data consists of full
-parse trees (\emph{supervized training}), the optimal probability distribution
+parse trees (\emph{supervised training}), the optimal probability distribution
 can be found by simply counting how many times each rule is used across all
 these parse trees, and then computing the empirical probability distribution
 for this corpus. Most of the times, however, the training data will consist
-only of sentences (\emph{unsupervized training}). The information about how to
+only of sentences (\emph{unsupervised training}). The information about how to
 parse the sentences is hidden.
 
 The same problem arises with the Hidden Markov model: When training data is not
