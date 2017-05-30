@@ -56,9 +56,9 @@ that appeared before it:
 \]
 where the model parameter $b$ is a conditional probability distribution of
 $\Sigma\cup\brc{\#}$ given $\Sigma\cup\brc{\#}$ and $\#$ is a placeholder word
-that stands in for the start and end of the sentence. More generally,
+that stands in for the start and end of the sentence. More generally, for $v=v_1\cdots v_n\in\Sigma^*$,
 \[
- p(v = v_1\cdots v_n) = b(v_1|\#) \cdot \prod_{i=2}^n b(v_i|v_{i-1}) \cdot b(\#|v_n).
+ p(v) = b(v_1|\#) \cdot \prod_{i=2}^n b(v_i|v_{i-1}) \cdot b(\#|v_n).
 \]
 The model parameter $b$ can be chosen by a very simple training algorithm
 \cite[pp.~123]{jm09}: Across the corpus, count all bigrams (i.e., all pairs of
