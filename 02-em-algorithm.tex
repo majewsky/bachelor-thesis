@@ -14,7 +14,7 @@ We assume that
 \begin{align*}
  0^0 &:= 1, &
  \log 0 &:= -\infty, &
- 0 (-\infty) &= \log 0^0 = 1.
+ 0 \cdot (-\infty) &= \log 0^0 = 0.
 \end{align*}
 
 \begin{definition}
@@ -26,9 +26,13 @@ When used as input for a language model's training algorithm, $X$ is the set of
 all sentences consisting of words from the language in question, and $c(x)$
 describes how often a sentence $x\in X$ occurs in the corpus $c$. The
 \emph{size} of the corpus is defined as
-\begin{equation*}
- \abs c := \sum_{x\in X} c(x).
-\end{equation*}
+\[
+ \abs c := \sum_{x\in X} c(x)
+\]
+and its \emph{support} is
+\[
+ \operatorname{supp}(c) := \brc{x\in X: c(x)\neq0}.
+\]
 
 \begin{definition}
  A \emph{probability distribution of $X$} is an $X$-corpus of size 1.
@@ -64,6 +68,8 @@ guaranteed, a fall-back function can be added.
 \begin{definition}
  Given an $X$-corpus $c$ and $p\in\um(X)$, the \emph{likelihood of $c$ under
  $p$} is
+ % TODO: Darren says it's confusing to have two definitions for what p(...) means.
+ % Maybe use a notation like p[c] for the likelihood? Check
  \[
   p(c) := \prod_{x\in X} p(x)^{c(x)}.
  \]
@@ -120,7 +126,7 @@ $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
 
 $\mle_p(c)$ is the set of all $\omega$ with maximal likelihood, but training
 only needs to find a single $\hat\omega \in \mle_p(c)$. Computing $\mle_p(c)$
-by brute force is typically not tractible because the set $\Omega$ is infinite
+by brute force is typically not tractable because the set $\Omega$ is infinite
 (usually countably infinite). However, there is one easily solvable special
 case.
 
@@ -172,7 +178,7 @@ only of sentences (\emph{unsupervized training}). The information about how to
 parse the sentences is hidden.
 
 The same problem arises with the Hidden Markov model: When training data is not
-already annotated with state information, the information which states
+already annotated with state information, the information about which states
 correspond to which words from the training data remains hidden. Expectation
 maximization algorithms can be used when parts of the training data are hidden
 in such a way.
@@ -447,7 +453,7 @@ $\sigma$ at its root and the subtrees $t_1,\ldots,t_k$ in that order. For
 $k=0$, we shorten $\sigma() \equiv \sigma$. For $V=\emptyset$, we shorten
 $U_\Sigma(\emptyset) \equiv U_\Sigma$. Trees from $U_\Sigma(V)$ have labels
 from $\Sigma\cup V$ at each node, but labels from $V$ are only permitted at
-leafs. For example, for $\Sigma = \brc{\sigma_1,\sigma_2}$ and
+leaves. For example, for $\Sigma = \brc{\sigma_1,\sigma_2}$ and
 $V=\brc{v_1,v_2}$:
 
 \[\begin{matrix}
@@ -519,14 +525,14 @@ to use for trees. For any trees $t,t'$ and position $w\in\pos(t)$,
 \end{itemize}
 
 \begin{definition}
- Let $\Sigma$ be an alphabet and $\square\notin\Sigma$. A \emph{1-context over
- $\Sigma$} is a tree $t\in U_\Sigma(\brc\square)$ such that $\square$ appears
- at exactly one position in $t$. The set of all such 1-contexts is denoted by
- $C_\Sigma$.
+ Let $\Sigma$ be an alphabet and $\square\notin\Sigma$ be some symbol. A
+ \emph{1-context over $\Sigma$} is a tree $t\in U_\Sigma(\brc\square)$ such
+ that $\square$ appears at exactly one position in $t$. The set of all such
+ 1-contexts is denoted by $C_\Sigma$.
 \end{definition}
 
 1-contexts are used to describe trees that are not fully known yet: The
-placeholder symbol $\sigma$ stands in for a missing subtree. Given a 1-context
+placeholder symbol $\square$ stands in for a missing subtree. Given a 1-context
 $t\in C_\Sigma$ and a tree $t'\in U_\Sigma(V)$, we abbreviate $t[t'] :=
 t[t']_w$ such that $t(w) = \square$. In other words, $t[t']$ is the tree that
 results from $t$ when the $\square$ node is replaced by $t'$.
@@ -534,7 +540,7 @@ results from $t$ when the $\square$ node is replaced by $t'$.
 \begin{definition}
  A \emph{ranked alphabet} is a pair $(R,\rk)$ where $R$ is an alphabet and
  $\rk:R\to\zn$ is a mapping. $\rk$ is said to assign a \emph{rank} or
- \emph{arity} or each symbol in $R$.
+ \emph{arity} to each symbol in $R$.
 \end{definition}
 
 A ranked alphabet is usually denoted only by $R$. The existence of a suitable
@@ -722,9 +728,9 @@ application, giving
  \beta(q) = \sum_{q_1,\ldots,q_k,\sigma} p\mbig\kla{q\to\sigma(q_1,\ldots,q_k)} \cdot \beta(q_1) \cdots \beta(q_k).
 \]
 
-The set of all such equations is a non-linear equation system in the $\beta(q)$
+The set of all such equations is a non-linear equation system in the variables $\beta(q)$
 for $q\in Q$. In some cases, this system can be solved intuitively by starting
-with those equations where no $\beta(q_i)$ occurs on the right side, then
+with those equations where no $\beta(q_i)$ occurs on the right-hand side, then
 substituting the obtained value in the other equations until they are all
 solved. This is not possible, however, if states derive other states in a
 cyclic way. For example:
