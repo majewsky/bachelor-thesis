@@ -96,7 +96,7 @@ two standard schemes for this, the \emph{forward algorithm} and the
  because it is already used for the transition probability.} The \emph{forward
  weight}\footnote{The names ``forward/backward weight'' have been chosen
  deliberately, because we will see in the next chapter that these values
- corresponds to the inside and outside weight.} $T_v(i,q)$ is the probability
+ correspond to the inside and outside weight.} $T_v(i,q)$ is the probability
  of the HMM being in state $q$ after having emitted the first $i$ letters of
  $v$. The \emph{backward weight} $S_v(i,q)$ is the probability of the HMM
  emitting $v$ when the first $i$ letters of $v$ have already been generated and
@@ -141,10 +141,115 @@ forward weights, with the difference of iterating in opposite temporal order.
  P(v) &= \sum_{q\in Q} t(q|\#) \cdot e(v_1|q) \cdot S_v(1,q) \\
  \text{where } S_v(i,q) &= \begin{cases}
   t(\#|q) & \text{if }i=n, \\
-  \sum_{q'\in Q} t(q'|q) \cdot e(v_{i+1}|q') \cdot S(i+1,q') & \text{otherwise}.
+  \sum_{q'\in Q} t(q'|q) \cdot e(v_{i+1}|q') \cdot S_v(i+1,q') & \text{otherwise}.
  \end{cases}
 \end{align*}
 
 \section{The Baum-Welch algorithm}
+
+\begin{algorithm}[p!]
+ \caption{Baum-Welch algorithm as stated in \cite{vogler2015}. To reach a local
+ maximum for the corpus likelihood $p(c)$, the outermost loop needs to be
+ executed until $(t,e)$ stop changing, possibly infinitely long. The loop
+ condition is stated as ``not converged'' to capture that the loop is typically
+ aborted once the changes to $(t,e)$ per iteration fall below some manually
+ chosen threshold. \label{alg:bw-vogler}}
+ \begin{algorithmic}[1]
+  \algorithmheader[Input:] HMM $H_0 = (Q,V,\#,t_0,e_0)$; $V^+$-corpus $h$
+  \algorithmheader[Variables:] $t:\um(Q\cup\brc{\#}|Q\cup\brc{\#})$, $e:\um(V|Q)$
+  \algorithmheader             $\cnt_\mathrm{tr}: \mbig\kla{Q\cup\brc{\#}}\times\mbig\kla{Q\cup\brc{\#}}\to\zr_{\geq0}$
+  \algorithmheader             $\cnt_\mathrm{em}: V\times Q\to\zr_{\geq0}$
+  \algorithmheader[Output:] HMM $H = (Q,V,\#,t,e)$
+  \algorithmheader such that $p_H(c) \geq p_{H_0}(c)$ and $H$ maximizes $p_H(c)$ locally
+  \STATE $(t,e) \leftarrow (t_0,e_0)$
+  \WHILE{not converged}
+   \STATE consider the HMM $(Q,V,\#,t,e)$
+   \STATE $\cnt_\mathrm{tr}(q,q') \leftarrow 0$ \SUFFIXFOR{$q,q'\in Q\cup\brc{\#}$}
+   \STATE $\cnt_\mathrm{em}(w,q) \leftarrow 0$ \SUFFIXFOR{$q\in Q$ and $w\in V$}
+   \FOR{$v=v_1\cdots v_n\in\operatorname{supp}(h)$}
+    \FOR{$i=1,2,\ldots,n-1$}
+     \FOR{$q,q'\in Q$}
+      \STATE $\cnt_\mathrm{tr}(q,q') \leftarrow \cnt_\mathrm{tr}(q,q') + h(v) \cdot U_v(i,q',q)$
+     \ENDFOR
+    \ENDFOR
+    \FOR{$i=1,2,\ldots,n$}
+     \FOR{$q\in Q$}
+      \STATE $\cnt_\mathrm{em}(v_i,q) \leftarrow \cnt_\mathrm{tr}(v_i,q) + h(v) \cdot R_v(i,q)$
+     \ENDFOR
+    \ENDFOR
+    \FOR{$q\in Q$}
+     \STATE $\cnt_\mathrm{tr}(q,\#) \leftarrow \cnt_\mathrm{tr}(q,\#) + h(v) \cdot R_v(1,q)$
+     \STATE $\cnt_\mathrm{tr}(\#,q) \leftarrow \cnt_\mathrm{tr}(\#,q) + h(v) \cdot R_v(n,q)$
+    \ENDFOR
+   \ENDFOR
+   \FOR{$q,q'\in Q\cup\brc{\#}$}
+    \STATE $t(q|q') \leftarrow \frac{\cnt_\mathrm{tr}(q,q')}{\sum_{q''} \cnt_\mathrm{tr}(q'',q')}$
+   \ENDFOR
+   \FOR{$q\in Q$ and $w\in V$}
+    \STATE $e(w|q) \leftarrow \frac{\cnt_\mathrm{em}(w,q)}{\sum_{w'} \cnt_\mathrm{em}(w',q)}$
+   \ENDFOR
+  \ENDWHILE
+ \end{algorithmic}
+\end{algorithm}
+
+The Baum-Welch algorithm is first stated in \cite{baupetsouwei70}, but since
+notational conventions have changed considerably since then, we are going to
+use a contemporary formulation in \cite{vogler2015} as a reference (see
+algorithm~\ref{alg:bw-vogler} on page~\pageref{alg:bw-vogler}).
+
+The algorithm uses two terms that have not yet been introduced: $U_v(i,q',q)$ is
+defined as the probability of the HMM progressing from state $q'$ into state
+$q$ at time $i+1$ while emitting the sentence $v$. $R_v(i,q)$ is the probability
+of the HMM being in state $q$ at time $i$ while emitting the sentence $v$.
+\begin{align*}
+ U_v(i,q',q) &:= P(q_i = q',q_{i+1} = q|v) && \text{for } i\in\brc{1,\ldots,\abs v-1}, q,q'\in Q \\
+ R_v(i,q) &:= P(q_i=q|v) && \text{for } i\in\brc{1,\ldots,\abs v},q\in Q
+\end{align*}
+
+Both $U_v$ and $R_v$ can be expressed in terms of the forward and backward weights
+$T_v$ and $S_v$, by applying the same calculation rules for probabilities that were
+already used for deriving the formulas for $P(v)$, $T_v$ and $S_v$.
+\begin{align*}
+ R_v(i,q)
+  &= P(q_i=q|v) = \frac{P(v_1,\ldots,v_n,n,q_i=q)}{P(v)} \\
+  &= \frac{P(v_1,\ldots,v_i,q_i=q) \cdot P(v_{i+1},\ldots,v_n,n|q_i=q)}{P(v)} \\
+  &= \frac{T_v(i,q) \cdot S_v(i,q)}{P(v)}
+\end{align*}
+
+And analogously,
+\begin{align*}
+ U_v(i,q',q)
+  &= P(q_i = q',q_{i+1} = q|v) = \frac{P(v_1,\ldots,v_n,n,q_i=q',q_{i+1}=q)}{P(v)} \\
+  &= \frac1{P(v)} \cdot \brk{\begin{matrix}
+   P(v_1,\ldots,v_i,q_i=q') \cdot P(q_{i+1}=q|q_i=q') \\
+   \cdot\; P(v_{i+1}|q_{i+1}=q) \cdot P(v_{i+2},\ldots,v_n,n|q_{i+1}=q)
+  \end{matrix}} \\
+  &= \frac{T_v(i,q') \cdot t(q|q') \cdot e(v|q) \cdot S_v(i+1,q)}{P(v)}
+\end{align*}
+
+\section{Deriving the Baum-Welch algorithm}
+
+Primary literature such as \cite{vogler2015} describes Baum-Welch as an
+instance of the EM algorithm. And indeed, the basic structure of the algorithm
+looks similar to the types of EM algorithms that we have introduced in chapter
+2 in several ways:
+\begin{itemize}
+ \item $t$ and $e$ are the model parameters that are iteratively optimized.
+ \item $\cnt_\mathrm{tr}$ and $\cnt_\mathrm{em}$ act like complete-data
+  corpora. They are computed using the previous model parameters, then new
+  model parameters are obtained by taking the empirical probability
+  distribution of these corpora, which is the efficient solution to the
+  conditional maximum-likelihood estimator that is suggested by
+  lemma~\ref{lemma:empirical2}.
+ \item The hidden information is the state sequence $q$ that produces the
+  sentence $v$ from the corpus. It can be destructured into countable events in
+  several ways (e.~g.~states only, pairs of time and states, or pairs of
+  subsequent states).
+ \item The way that forward weights and backward weights appear in the computation of $\cnt_\mathrm{tr}$ and $\cnt_\mathrm{em}$ is similar to how inside and outside weights appear in the computation of the inside-outside complete-data corpus.
+\end{itemize}
+
+Therefore, in the remainder of this chapter, we will show that the Baum-Welch
+algorithm can be obtained from the generic EM algorithm from chapter~2 by
+suitable instantiation of the inside-outside step mapping.
 
 {\color{red}TODO}
