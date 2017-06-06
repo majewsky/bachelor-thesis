@@ -771,8 +771,8 @@ can be approximated by performing as many iterations of $F$ as desired.
 The sum goes over all partial abstract syntax trees, where only one unexpanded
 state is left, and that state is $q$. The outside weight describes the
 collective probability of all derivations that use $q$, but without considering
-at or below $q$. Similar to what we did with inside weights, we can expand this
-definition into
+derivations at or below $q$. Similar to what we did with inside weights, we can
+expand this definition into
 \[
  \alpha(q) = \delta_{q_0}^q + \sum_{q',q_1,\ldots,q_k,\sigma,m:q_m=q} \alpha(q') \cdot p\mbig\kla{q'\to\sigma(q_1,\ldots,q_k)} \cdot \prod_{l\neq m} \beta(q_l)
 \]
