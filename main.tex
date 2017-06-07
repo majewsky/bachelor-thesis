@@ -54,10 +54,9 @@
 \usepackage[bottom]{footmisc}
 
 \newcounter{theorem}
-\theoremstyle{plain}
+\theoremstyle{definition}
 \newtheorem{theorem}[theorem]{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
-\theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 
 \numberwithin{theorem}{chapter}
@@ -79,8 +78,10 @@
 \delimdef\dangle#1{\dleft\langle#1\dright\rangle}
 \delimdef\skal#1#2{\dleft\langle#1,#2\dright\rangle}
 \delimdef\norm#1{\dleft\|#1\dright\|}
-\delimdef\lang#1{\dleft[\!\dleft[#1\dright]\!\dright]}
-\delimdef\stepmap#1{\dleft(\!\dleft[#1\dright]\!\dright)}
+
+\usepackage{stmaryrd}
+\delimdef\lang#1{\dleft\llbracket#1\dright\rrbracket}
+\delimdef\stepmap#1{\llparenthesis#1\rrparenthesis}
 
 \newcommand\ub{\mathcal B}
 \newcommand\ug{\mathcal G}

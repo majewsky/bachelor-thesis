@@ -10,7 +10,7 @@ the following two candidate sentences for the same input audio sample:
 \end{align*}
 
 Both sentences sound the same, but the second candidate sentence should be
-discarded because it is syntactically wrong. As another example, a translator
+discarded because it is syntactically wrong. As another example, a translation
 algorithm that translates from another language to English might generate the
 following two candidate sentences for some input text:
 \begin{align*}
@@ -21,9 +21,9 @@ following two candidate sentences for some input text:
 Both sentences are syntactically correct, but the first sentence should be
 preferred because it conforms to the customary rules for adjective ordering in
 the English language. Finally, consider a spelling correction process that is
-applied to the following sentence: \cite{kukich1992}
+applied to the following sentence:
 \begin{align*}
- \text{The design \textbf{an} construction of the system will take more than a year.}
+ \text{The design \textbf{an} construction of the system will take more than a year. \cite{kukich1992}}
 \end{align*}
 
 Possible replacements for the syntactically wrong word ``an'' include ``a'' and
@@ -31,16 +31,17 @@ Possible replacements for the syntactically wrong word ``an'' include ``a'' and
 choose the best result from a set of candidates.
 \cite{stolcke2002,youngetal2005} A language model assigns a probability $p_\omega(v)$
 to each sentence $v\in V^*$ (with words from the set $V$), such that
-correct sentences receive a higher probability than incorrect sentences.
+correct sentences receive a higher probability than incorrect sentences, e.~g.,
 \[
- 1 > p_\omega\mbig\kla{\text{He ate soup.}} > p_\omega\mbig\kla{\text{He aid soup.}} > p_\omega\mbig\kla{\text{He He He soup.}} > 0
+ 1 > p_\omega\mbig\kla{\text{He ate soup.}} > p_\omega\mbig\kla{\text{He aid soup.}} > p_\omega\mbig\kla{\text{He He He soup.}} > 0.
 \]
 
 The probability distribution $p_\omega$ is determined by a \emph{model
 parameter} $\omega\in\Omega$. The language model defines $\Omega$ and describes
-how to obtain $p_\omega$ for any $\omega$. $\omega$ is chosen by a suitable
-\emph{training algorithm} using a training corpus $c$ containing known good
-sentences, such that $\omega$ maximizes the likelihood of this corpus,
+how to obtain $p_\omega$ for any model parameter $\omega$. The model parameter
+is chosen by a suitable \emph{training algorithm} using a training corpus $c$
+containing known good sentences, such that $\omega$ maximizes the likelihood of
+this corpus, i.~e.,
 \[
  \prod_{v\in c} p_\omega(v).
 \]
@@ -88,7 +89,7 @@ will introduce a general framework for EM algorithms that first appeared in
 One of the simplest language models is the \emph{bigram model}.
 \cite{vogler2015} It interprets the generation of a sentence as a stochastic
 process, wherein each word is chosen with a probability conditional on the word
-that appeared before it: (see~figure~\ref{fig:01-bigram})
+that appeared before it: (see~Figure~\ref{fig:01-bigram})
 \[
  p(\text{He ate soup.}) = b(\text{He}|\#) \cdot b(\text{ate}|\text{He}) \cdot b(\text{soup}|\text{ate}) \cdot b(\#|\text{soup}).
 \]
@@ -97,7 +98,7 @@ $V\cup\brc{\#}$ given $V\cup\brc{\#}$ and $\#$ is a placeholder word
 that stands in for the start and end of the sentence.
 
 The model parameter $b$ can be chosen by a very simple training algorithm
-\cite[pp.~123]{jm09}: All bigrams, i.~e.~pairs of words occurring one after the
+\cite[pp.~123]{jm09}: All bigrams, i.~e., pairs of words occurring one after the
 other, are counted across the corpus. This includes bigrams containing the
 sentence delimiter word $\#$. Then, the counts are normalized into a
 conditional probability distribution by setting
@@ -108,7 +109,7 @@ conditional probability distribution by setting
 
 The bigram model can be generalized to the \emph{N-gram model}, wherein the
 next word is chosen with a probability conditional on the $n-1$ words before
-it. Training then counts $n$-grams, i.~e.~sequences of $n$ words, hence the
+it. Training then counts $n$-grams, i.~e., sequences of $n$ words, hence the
 name \emph{N-gram model}. The bigram model is recovered for $n=2$.
 
 Besides the already mentioned applications where language models augment

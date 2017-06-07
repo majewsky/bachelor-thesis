@@ -149,11 +149,11 @@ forward weights, with the difference of iterating in opposite temporal order.
 
 \begin{algorithm}[p!]
  \caption{Baum-Welch algorithm as stated in \cite{vogler2015}. To reach a local
- maximum for the corpus likelihood $p(c)$, the outermost loop needs to be
- executed until $(t,e)$ stop changing, possibly infinitely long. The loop
- condition is stated as ``not converged'' to capture that the loop is typically
- aborted once the changes to $(t,e)$ per iteration fall below some manually
- chosen threshold. \label{alg:bw-vogler}}
+ maximum (or saddle point) for the corpus likelihood $p(c)$, the outermost loop
+ needs to be executed until $(t,e)$ stop changing, possibly infinitely long.
+ The loop condition is stated as ``not converged'' to capture that the loop is
+ typically aborted once the changes to $(t,e)$ per iteration fall below some
+ manually chosen threshold. \label{alg:bw-vogler}}
  \begin{algorithmic}[1]
   \algorithmheader[Input:] HMM $H_0 = (Q,V,\#,t_0,e_0)$; $V^+$-corpus $h$
   \algorithmheader[Variables:] $t:\um(Q\cup\brc{\#}|Q\cup\brc{\#})$, $e:\um(V|Q)$
