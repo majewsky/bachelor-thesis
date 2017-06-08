@@ -20,56 +20,32 @@ We assume that
 
 \begin{definition}
  Given a countable set $X$, a mapping $c\colon X \to \zr_{\geq0}$ is called a
- \emph{$X$-corpus}.
+ \emph{$X$-corpus}. Its \emph{size} and \emph{support} are defined as
+ \begin{align*}
+  \abs c &:= \sum_{x\in X} c(x) &
+  \text{and} &&
+  \operatorname{supp}(c) &:= \brc{x\in X\colon c(x)\neq0},
+ \end{align*}
+ respectively. The corpus $c$ is called \emph{empty} if $\abs c = 0$, \emph{finite} if
+ $\abs c<\infty$, and \emph{probability distribution of $X$} if $\abs c = 1$.
+ The set of all probability distributions of $X$ is denoted by $\um(X)$.
 \end{definition}
 
 When used as input for a language model's training algorithm, $X$ is the set of
 all sentences consisting of words from the language in question, and $c(x)$
 describes how often a sentence $x\in X$ occurs in the corpus $c$.
-
-\begin{definition}
- Let $c$ be an $X$-corpus. Its \emph{size} is defined as
- \[
-  \abs c := \sum_{x\in X} c(x)
- \]
- and its \emph{support} is
- \[
-  \operatorname{supp}(c) := \brc{x\in X: c(x)\neq0}.
- \]
- The corpus is called \emph{empty} if $\abs c = 0$, and \emph{finite} if
- $\abs c<\infty$.
-\end{definition}
-
-\begin{definition}
- A \emph{probability distribution of $X$} is an $X$-corpus of size 1.
-\end{definition}
-
-The set of all such probability distributions is denoted by $\um(X)$.
 Probability distributions can be derived from corpora as follows.
 
 \begin{definition}
  Given a non-empty and finite $X$-corpus $c$, the \emph{empirical probability
  distribution} $\tilde c$ is defined as
  \[
-  \tilde c(x) = \frac{c(x)}{\abs c}.
+  \tilde c(x) = \frac{c(x)}{\abs c}.\qedhere
  \]
 \end{definition}
 
 This expression is not well-defined for $\abs c = 0$ or $\abs c = \infty$,
-hence the requirement for $c$ to be non-empty and finite. If this cannot be
-guaranteed, a fall-back function can be added.
-
-\begin{definition}
- Given $p\in\um(X)$, a \emph{normalization mapping with fall-back $p$} is the
- mapping
- \[
-  \overline p\colon \mnorm\kla{\zr_{\geq0}}^X \to \um(X),
-  \quad
-  c \mapsto \begin{cases}
-   \tilde c & \text{if } 0 < \abs c < \infty, \\ p & \text{otherwise}.
-  \end{cases}
- \]
-\end{definition}
+hence the requirement for $c$ to be non-empty and finite.
 
 \begin{definition}
  Given an $X$-corpus $c$ and $p\in\um(X)$, the \emph{likelihood of $c$ under
@@ -78,7 +54,7 @@ guaranteed, a fall-back function can be added.
  % Maybe use a notation like p[c] for the likelihood? (As a counterpoint,
  % consistency with bucstuvog15 is a huge bonus.)
  \[
-  p(c) := \prod_{x\in X} p(x)^{c(x)}.
+  p(c) := \prod_{x\in X} p(x)^{c(x)}. \qedhere
  \]
 \end{definition}
 
@@ -95,8 +71,8 @@ the following lemma.
 \end{lemma}
 
 \begin{proof}
- Since $\log$ is monotone, it suffices to show that $\log\tilde c(c) \geq \log
- p(c)$. Using Gibbs' inequality,
+ It suffices to show that $\log\tilde c(c) \geq \log p(c)$, since $\log$ is
+ monotone. Using Gibbs' inequality,
  \begin{align*}
   \log \tilde c(c)
   &= \sum_{x\in X} c(x) \cdot \log \tilde c(x)
@@ -125,17 +101,17 @@ $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
 \begin{definition}
  Let $f\colon A\to B$ be a mapping from sets $A$ to $B$. The \emph{argmax} of $f$ is the set
  \[
-  \argmax_{a\in A} f(a) := \brc{a\in A|\forall a'\in A: f(a) \geq f(a')}.
+  \argmax_{a\in A} f(a) := \brc{a\in A|\forall a'\in A: f(a) \geq f(a')}.\qedhere
  \]
 \end{definition}
 
 \begin{definition}
- Given a set $\Omega$ and an $\Omega$-probability model $p$ for $X$, the
+ Given an $\Omega$-probability model $p$ for $X$, the
  \emph{maximum likelihood estimator} for $p$ is the mapping
  \[
   \mle_p\colon \zr_{\geq0}^X \to \up(\Omega),
   \quad
-  c \mapsto \argmax_{\omega\in\Omega} p_\omega(c).
+  c \mapsto \argmax_{\omega\in\Omega} p_\omega(c).\qedhere
  \]
 \end{definition}
 
@@ -196,9 +172,7 @@ The same problem arises with the Hidden Markov model: When training data is not
 already annotated with state information, the information about which states
 correspond to which words from the training data remains hidden. Expectation
 maximization algorithms can be used when parts of the training data are hidden
-in such a way.
-
-For the remainder, let\label{02-basic-requirements}
+in such a way. For the remainder, let\label{02-basic-requirements}
 \begin{itemize}\setlength\itemsep{-0.3em}
  \item $X$ and $Y$ be countable sets,
  \item $\Omega$ be a set,
@@ -207,7 +181,7 @@ For the remainder, let\label{02-basic-requirements}
 \end{itemize}
 
 The corpus $c$ represents the set of training data. Each $x\in\operatorname{supp}(c)$ is
-an \emph{observation}. To judge its probability under a $p_\omega$, additional
+an \emph{observation}. To judge its probability under any $p_\omega$, additional
 \emph{hidden information} $y\in Y$ is required. For notational convenience, we define
 \begin{align*}
  p_\omega(c) &:= \prod_{x\in X} p_\omega(x)^{c(x)}, &
@@ -217,7 +191,7 @@ an \emph{observation}. To judge its probability under a $p_\omega$, additional
 That is, even though $p_\omega$ is a probability distribution over $Y\times X$,
 we allow to take the likelihood of the $X$-corpus $c$ under $p$ by aggregating
 the probabilities for all hidden information $y$ that lead to a certain
-observation $x$.
+observation $x$ according to the law of total probability.
 
 The basic pattern for expectation maximization is outlined in
 Algorithm~\ref{alg:skeleton}. The algorithm starts with an initial $\omega_0$
@@ -230,14 +204,14 @@ the one that came before.
  mapping} is a mapping $\psi\colon\Omega_0\to\up(\Omega)$ which is nondecreasing in
  the following manner:
  \[
-  \forall \omega\in\Omega_0: \forall \omega'\in\psi(\omega): p_\omega(c) \leq p_{\omega'}(c)
+  \forall \omega\in\Omega_0: \forall \omega'\in\psi(\omega): p_\omega(c) \leq p_{\omega'}(c). \qedhere
  \]
 \end{definition}
 
 The step mappings that we will consider will typically consist of two steps:
 \begin{enumerate}
  \item \emph{Expectation:} The training data $c$ is converted into a
-  \emph{complete-data corpus}. Using the $\omega_i$ from the previous
+  \emph{complete-data corpus}. Using $\omega_i$ from the previous
   iteration, the complete-data corpus estimates how hidden information
   contributes to the observations in the original corpus.
  \item \emph{Maximization:} A suitable maximum-likelihood estimator is applied
@@ -247,14 +221,15 @@ The step mappings that we will consider will typically consist of two steps:
 %TODO: this section may use some citations because it makes claims
 This back and forth of using the current $\omega$ to enrich the training data
 and using the enriched data to find a better $\omega$ will converge towards a
-local maximum or saddle point of likelihood. The iteration is therefore usually
+local maximum or saddle point of likelihood. The iteration is usually
 aborted after the desired running time has been exceeded, or after the changes
 of $p_{\omega_i}(c)$ per iteration have become smaller than some threshold.
 
 \cite{bucstuvog15} identify three types of step mappings that build on each
 other, each one more specific than the one before it. Since the training of
 Hidden Markov models will be identified as an instance of the most specific
-step mapping, the remainder of this chapter will introduce all three in order.
+step mapping, the inside-outside step mapping, the remainder of this chapter
+will introduce all three in order.
 
 \section{Corpus-based step mapping}
 
@@ -295,12 +270,12 @@ notation needs to be introduced.
  such mappings is denoted by $\um(A|B)$.
 \end{definition}
 
-To simply notation, we define $p(a|b) := \mbig\kla{p(b)}(a)$.
+To simplify notation, we define $p(a|b) := \mbig\kla{p(b)}(a)$.
 
 \begin{definition}
  Let $C\subseteq A\times B$ be a set. Then
  \[
-  \um_C(A|B) := \brc{p\in\um(A|B): \operatorname{supp}(p)\subseteq C}
+  \um_C(A|B) := \brc{p\in\um(A|B)\colon \operatorname{supp}(p)\subseteq C}
  \]
 is the \emph{set of all conditional probability distributions of $A$ given $B$
  constrained to $C$}.
@@ -329,40 +304,41 @@ defined for any set $U$.
   q &\colon \Omega\to\um_C(A|B), &
   \lambda &\colon X_{\not\bot} \times Y_{\not\bot} \to [0,1], &
   \pi &\colon X_{\not\bot} \times Y_{\not\bot} \to \zr_{\geq0}^C.
+  \qedhere
  \end{align*}
 \end{definition}
 
 The motivation for this definition is to model hidden information $y$ as
-consisting of countable events $c\in C$. $\lambda(x,y)$ describes whether (and,
-possibly, with what probability) a certain $y$ can be the cause for a certain
-observation $x$.\footnote{Most instances of $\lambda$ use only integer
-images, i.~e.~$\lambda(X_{\not\bot}\times Y_{\not\bot}) = \brc{0,1}$, thus
-following this intuitive notion. However, the possibility of using fractional
-values for $\lambda(x,y)$ is occasionally useful, e.~g.~to define a counting
-information for the IBM Model 1 in \cite[pp.~23]{bucstuvog15}.} For
-$\lambda(x,y)>0$, $\pi(x,y)$ is a $C$-corpus that describes how often each
-countable event occurs in this hidden information.
+consisting of countable events $c\in C$. The mapping $\lambda$ describes
+whether (and, possibly, with what probability) a certain $y$ can be the cause
+for a certain observation $x$.\footnote{Most instances of $\lambda$ use only
+integer images, i.~e.~$\lambda(X_{\not\bot}\times Y_{\not\bot}) = \brc{0,1}$,
+thus following this intuitive notion. However, the possibility of using
+fractional values for $\lambda(x,y)$ is occasionally useful, e.~g.~to define a
+counting information for the IBM Model 1 in \cite[pp.~23]{bucstuvog15}.} For
+$\lambda(x,y)>0$, the $C$-corpus $\pi(x,y)$ describes how often each countable
+event occurs in this hidden information.
 
 Following the assumption that the countable events $C$ fully encode the hidden
 information $Y$, we can use these intuitive notions to describe the original
 probability model $p$ in terms of the counting information.
 
+\pagebreak
 \begin{definition}
  Given $\varkappa=(q,\lambda,\pi)$, the \emph{induced model}
- $\varkappa^\flat\colon\Omega\to\zr_{\geq0}^{Y\times X}$ is given by
+ $\varkappa^\flat\colon\Omega\to\zr^{Y\times X}$ is given by
  \[
   (\varkappa^\flat)_\omega(y,x) := \begin{cases}
    \lambda(x,y) \cdot q_\omega\mbig\kla{\pi(x,y)} & \text{if } x,y\neq\bot, \\
    1 - \sum_{x',y'\neq\bot} \lambda(x',y') \cdot q_\omega\mbig\kla{\pi(x',y')} & \text{if } x = y = \bot, \\
    0 & \text{otherwise}.
-  \end{cases}
+  \end{cases}\qedhere
  \]
 \end{definition}
 
-This definition shows why the introduction of $\bot$ into $X$ and $Y$ was
-useful. By defining $(\varkappa^\flat)_\omega(\bot,\bot)$ as above, we ensure
-$\mnorm\abs{(\varkappa^\flat)_\omega} = 1$. Therefore, $\varkappa^\flat$ is an
-$\Omega$-probability model for $Y\times X$ iff
+This shows why the introduction of $\bot$ into $X$ and $Y$ was useful. The
+definition ensures that $\mnorm\abs{(\varkappa^\flat)_\omega} = 1$. Therefore,
+$\varkappa^\flat$ is an $\Omega$-probability model for $Y\times X$ iff
 $(\varkappa^\flat)_\omega(\bot,\bot) \geq 0$. We call $\varkappa$ \emph{proper}
 in this case.
 
@@ -374,33 +350,29 @@ of the counting information, obtaining a new complete-data corpus
  (a,b) \mapsto \sum_{x,y} c\mnorm\dangle{\omega,\varkappa^\flat}(y,x) \cdot \mbig\kla{\pi(x,y)}(a,b).
 \]
 
-We can now apply a maximum-likelihood estimator for $q$ to arrive at the step
-mapping for this class of language models.
-
 \begin{definition}
  Given a set $\Omega$ and a conditional $\Omega$-probability model $q$ for $A$
  and $B$, the \emph{conditional maximum likelihood estimator} for $q$ is the mapping
  \[
   \cmle_q\colon \zr_{\geq0}^{A\times B} \to \up(\Omega),
   \quad
-  c \mapsto \argmax_\omega q_\omega(c).
+  c \mapsto \argmax_\omega q_\omega(c). \qedhere
  \]
 \end{definition}
 
-Using this definition, the \emph{simple counting step mapping}\footnote{The
-proof that this step mapping is equivalent to
-$\mnorm\stepmap{\varkappa^\flat}_\mathrm{cb}$, and thus also nondecreasing, can
-be found in \cite[p.~13]{bucstuvog15}.} is
+Using this definition, the \emph{simple counting step mapping} is
 \[
  \stepmap\varkappa_\mathrm{sc}\colon \Omega_0 \to \up(\Omega), \quad
  \omega \mapsto \cmle_q\mbig\kla{c\mnorm\dangle{\omega,\varkappa}} = \argmax_{\omega'} q_{\omega'}\mbig\kla{c\mnorm\dangle{\omega,\varkappa}}.
 \]
+\cite[p.~13]{bucstuvog15} show that this step mapping is
+equivalent to $\mnorm\stepmap{\varkappa^\flat}_\mathrm{cb}$, and thus also
+nondecreasing.
 The simple counting step mapping has two advantages over
 $\stepmap\cdot_\mathrm{cb}$: First, many language models can be described in
 terms of the countable events only, such that $\Omega = C$. In this case,
-Lemma~\ref{lemma:empirical2} can be used to solve the $\argmax$ by simply
-computing the empirical probability distribution of
-$c\!\dangle{\omega,\varkappa}$.
+Lemma~\ref{lemma:empirical2} can be used to solve the $\argmax$ by computing
+the empirical probability distribution of $c\!\dangle{\omega,\varkappa}$.
 
 Second, even if this is not possible, the set of countable events $C$ is
 usually much smaller than the set of all observations $X$ or hidden information
@@ -414,8 +386,8 @@ rules) is finite.
 
 The third and most specific type of step mapping applies to language models
 whose hidden information can be described as trees, such that the countable
-events are labels in these trees' nodes. We therefore need to define a set of
-terms regarding alphabets, trees and tree grammars first.
+events are labels in these trees' nodes. We therefore need to introduce some
+terminology regarding alphabets and trees first.
 
 \begin{definition}
  An \emph{alphabet} is a finite set. Its elements are called \emph{letters}.
@@ -441,26 +413,29 @@ applied in chapter 3 and beyond.}
   \sigma\tau := \sigma_1\cdots\sigma_n\tau_1\cdots\tau_m,
  \]
  and especially $\sigma\eps := \sigma$ and $\eps\tau := \tau$. The
- concatenation of two sets $S$ and $T$ of words over $\Sigma$ is given by
+ concatenation of two sets $S$ and $T$ of words over $\Sigma$ is
  \[
-  S\cdot T := \brc{\sigma\tau|\sigma\in S, \tau\in T}.
+  S\cdot T := \brc{\sigma\tau|\sigma\in S, \tau\in T}.\qedhere
  \]
 \end{definition}
 
-In this regard, the alphabet $\Sigma$ is itself a set of words since letters
-are isomorphic to one-letter words.
+In this regard, the alphabet $\Sigma$ can be considered to be a set of words
+since letters are isomorphic to one-letter words.
 
 \begin{definition}
  Let $\Sigma$ be an alphabet. The \emph{Kleene star} of $\Sigma$ is the set of
- all words over $\Sigma$ and defined as
+ all words over $\Sigma$, i.~e.,
  \[
   \Sigma^* := \bigcup_{i=0}^\infty \Sigma^i, \quad
   \text{where }\Sigma^i := \begin{cases}
    \brc\eps & \text{if } i = 0, \\
    \Sigma^{i-1}\cdot\Sigma & \text{otherwise}.
-  \end{cases}
+  \end{cases}\qedhere
  \]
 \end{definition}
+
+We also use $\Sigma^+ := \Sigma^* \setminus\brc{\eps}$ to refer to the set of
+\emph{nonempty words} over $\Sigma$.
 
 \begin{definition}
  Let $\Sigma$ be an alphabet and $V$ be a set such that $\Sigma\cap
@@ -468,6 +443,7 @@ are isomorphic to one-letter words.
  indexed by $V$} is the smallest set $T$ such that
  \[
   V \subseteq T \quad\text{and}\quad \forall k\in\zn: \forall \sigma\in\Sigma, t_1,\ldots,t_k\in T: \sigma(t_1,\ldots,t_k)\in T.
+  \qedhere
  \]
 \end{definition}
 
@@ -476,35 +452,40 @@ $\sigma$ at its root and the subtrees $t_1,\ldots,t_k$ in that order. For
 $k=0$, we write $\sigma$ instead of $\sigma()$. For $V=\emptyset$, we write
 $U_\Sigma$ instead of $U_\Sigma(\emptyset)$. Trees from $U_\Sigma(V)$ have
 labels from $\Sigma\cup V$ at each node, but labels from $V$ are only permitted
-at leaves. For example, for $\Sigma = \brc{\sigma_1,\sigma_2}$ and
-$V=\brc{v_1,v_2}$:
+at leaves (see Figure~\ref{fig:02-trees1}). We refer to positions in the tree
+using \emph{Gorn notation}.
 
-\[\begin{matrix}
- \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
-  \node (n)   at (+0,+0.0) { $\sigma_1$ };
-  \node (n1)  at (-1,-1.5) { $\sigma_2$ } edge (n);
-  \node (n2)  at (+1,-1.5) { $\sigma_2$ } edge (n);
-  \node (n11) at (-2,-3.0) { $v_1$ } edge (n1);
-  \node (n12) at (+0,-3.0) { $\sigma_1$ } edge (n1);
-  \node (n21) at (+2,-3.0) { $v_2$ } edge (n2);
- \end{tikzpicture}
- &\hspace*{4em}&
- \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
-  \node (n)   at (+0,+0.0) { $\sigma_1$ };
-  \node (n1)  at (-1,-1.5) { $\sigma_2$ } edge (n);
-  \node (n2)  at (+1,-1.5) { $v_1$ } edge (n);
-  \node (n11) at (-2,-3.0) { $v_1$ } edge (n1);
-  \node (n12) at (+0,-3.0) { $\sigma_1$ } edge (n1);
-  \node (n21) at (+2,-3.0) { $v_2$ } edge (n2);
-  \draw (n2) circle (0.8);
-  \node[draw=none] at (+1.75,-0.75) {!};
- \end{tikzpicture}
- \\\\
- \sigma_1\mbig\kla{\sigma_2(v_1,\sigma_1), \sigma_2(v_2)} \in U_\Sigma(V) &&
- \sigma_1\mbig\kla{\sigma_2(v_1,\sigma_1), v_1(v_2)} \notin U_\Sigma(V)
-\end{matrix}\]
-
-We refer to positions in the tree using \emph{Gorn notation}.
+\begin{figure}[t!]
+ \[\begin{matrix}
+  \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+   \node (n)   at (+0,+0.0) { $\sigma_1$ };
+   \node (n1)  at (-1,-1.5) { $\sigma_2$ } edge (n);
+   \node (n2)  at (+1,-1.5) { $\sigma_2$ } edge (n);
+   \node (n11) at (-2,-3.0) { $v_1$ } edge (n1);
+   \node (n12) at (+0,-3.0) { $\sigma_1$ } edge (n1);
+   \node (n21) at (+2,-3.0) { $v_2$ } edge (n2);
+  \end{tikzpicture}
+  &\hspace*{4em}&
+  \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+   \node (n)   at (+0,+0.0) { $\sigma_1$ };
+   \node (n1)  at (-1,-1.5) { $\sigma_2$ } edge (n);
+   \node (n2)  at (+1,-1.5) { $v_1$ } edge (n);
+   \node (n11) at (-2,-3.0) { $v_1$ } edge (n1);
+   \node (n12) at (+0,-3.0) { $\sigma_1$ } edge (n1);
+   \node (n21) at (+2,-3.0) { $v_2$ } edge (n2);
+   \draw (n2) circle (0.8);
+   \node[draw=none] at (+1.75,-0.75) {!};
+  \end{tikzpicture}
+  \\\\
+  \sigma_1\mbig\kla{\sigma_2(v_1,\sigma_1), \sigma_2(v_2)} \in U_\Sigma(V) &&
+  \sigma_1\mbig\kla{\sigma_2(v_1,\sigma_1), v_1(v_2)} \notin U_\Sigma(V)
+ \end{matrix}\]
+ \caption{
+  Example (left) and counter-example (right) for trees from $U_\Sigma(V)$,
+  where $\Sigma = \{\sigma_1,\sigma_2\}$ and $V = \{v_1,v_2\}$.
+  \label{fig:02-trees1}
+ }
+\end{figure}
 
 \begin{definition}
  Given $t\in U_\Sigma(V)$, the set of \emph{positions} in $t$ is defined recursively by
@@ -513,42 +494,51 @@ We refer to positions in the tree using \emph{Gorn notation}.
    \brc\eps & t = v\in V, \\
    \brc\eps\cup \bigcup_{i=1}^k \brc{i} \cdot \pos(t_i) & t = \sigma(t_1,\ldots,t_k).
   \end{cases}
+  \qedhere
  \]
 \end{definition}
 
-Positions are words from $\zn^*$. As an illustration, in the figure below, each
-node of the left tree is labeled with its position in the tree. The right tree
-illustrates some further notation for trees, which is defined below.
+Positions are words from $\zn^*$. Figure~\ref{fig:02-trees2} illustrates the
+set of positions in a tree, and some of the operations on positions defined
+below.
 
-\vspace*{-1em}\[
- \hspace*{3em}
- \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
-  \node (n)   at (+0,+0.0) { $\eps$ };
-  \node (n1)  at (-1,-1.5) { $1$ } edge (n);
-  \node (n2)  at (+1,-1.5) { $2$ } edge (n);
-  \node (n11) at (-2,-3.0) { $1\ 1$ } edge (n1);
-  \node (n12) at (+0,-3.0) { $1\ 2$ } edge (n1);
-  \node (n21) at (+2,-3.0) { $2\ 1$ } edge (n2);
- \end{tikzpicture}
- \hspace*{6em}
- \begin{tikzpicture}[baseline=(current bounding box.center)]
-  \begin{scope}[every node/.style={rectangle,draw,fill=white,minimum size=2em}]
-   \node (n)   at (+0,+0.0) { $\sigma_1$ };
-   \node (n1)  at (-1,-1.5) { $\sigma_2$ } edge (n);
-   \node (n2)  at (+1,-1.5) { $\sigma_2$ } edge (n);
-   \node (n11) at (-2,-3.0) { $v_1$ } edge (n1);
-   \node (n12) at (+0,-3.0) { $\sigma_1$ } edge (n1);
-   \node (n21) at (+2,-3.0) {} edge (n2);
-  \end{scope}
-  \begin{scope}[every node/.style={inner sep=0},every pin/.style={inner sep=0},pin distance=1cm]
-   \node[draw=none,pin=60:{$t(2\ 1)$}] at (n21.center) { $v_2$ };
-  \end{scope}
-  \begin{scope}[on background layer]
-   \draw[line join=round,draw=black!10,fill=black!10,line width=1.5cm] (n1.center) -- (n11.center) -- (n12.center) -- cycle;
-  \end{scope}
-  \node at (-2.4,-1.7) { $t|_1$ };
- \end{tikzpicture}
-\]
+\begin{figure}[t!]
+ \vspace*{-1em}\[
+  \hspace*{3em}
+  \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
+   \node (n)   at (+0,+0.0) { $\eps$ };
+   \node (n1)  at (-1,-1.5) { $1$ } edge (n);
+   \node (n2)  at (+1,-1.5) { $2$ } edge (n);
+   \node (n11) at (-2,-3.0) { $1\ 1$ } edge (n1);
+   \node (n12) at (+0,-3.0) { $1\ 2$ } edge (n1);
+   \node (n21) at (+2,-3.0) { $2\ 1$ } edge (n2);
+  \end{tikzpicture}
+  \hspace*{6em}
+  \begin{tikzpicture}[baseline=(current bounding box.center)]
+   \begin{scope}[every node/.style={rectangle,draw,fill=white,minimum size=2em}]
+    \node (n)   at (+0,+0.0) { $\sigma_1$ };
+    \node (n1)  at (-1,-1.5) { $\sigma_2$ } edge (n);
+    \node (n2)  at (+1,-1.5) { $\sigma_2$ } edge (n);
+    \node (n11) at (-2,-3.0) { $v_1$ } edge (n1);
+    \node (n12) at (+0,-3.0) { $\sigma_1$ } edge (n1);
+    \node (n21) at (+2,-3.0) {} edge (n2);
+   \end{scope}
+   \begin{scope}[every node/.style={inner sep=0},every pin/.style={inner sep=0},pin distance=1cm]
+    \node[draw=none,pin=60:{$t(2\ 1)$}] at (n21.center) { $v_2$ };
+   \end{scope}
+   \begin{scope}[on background layer]
+    \draw[line join=round,draw=black!10,fill=black!10,line width=1.5cm] (n1.center) -- (n11.center) -- (n12.center) -- cycle;
+   \end{scope}
+   \node at (-2.4,-1.7) { $t|_1$ };
+  \end{tikzpicture}
+ \]
+ \caption{
+  Left: A tree from $U_{\zn^*}$ in which every node is labeled with its
+  position within the tree. Right: Illustration of the operations $t(w)$ and
+  $t|_w$ for a tree $t$ and positions $w\in\pos(t)$.
+  \label{fig:02-trees2}
+ }
+\end{figure}
 
 \begin{definition}
  Given $t\in U_\Sigma(V)$ and $w\in\pos(t)$, $t(w)$ denotes the \emph{label} in $t$ at position $w$, i.~e.,
@@ -573,6 +563,15 @@ illustrates some further notation for trees, which is defined below.
    \sigma(t_1,\ldots,t_{i-1},t_i[t']_{w'},t_{i+1},t_k) & t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw'.
   \end{cases}
  \]
+ %TODO: Gibt es hierfür eine Standard-Notation? Wird nur noch einmal unten verwendet bei der Einführung von T_R.
+ Finally, $\osucc(t)$ denotes the set of \emph{successors} of $t$, i.~e.,
+ \[
+  \osucc(t) := \begin{cases}
+   \emptyset & t = v\in V, \\
+   \brc{t_1,\ldots,t_k} & t = \sigma(t_1,\ldots,t_k).
+  \end{cases}
+  \qedhere
+ \]
 \end{definition}
 
 \begin{definition}
@@ -582,51 +581,51 @@ illustrates some further notation for trees, which is defined below.
  1-contexts is denoted by $C_\Sigma$.
 \end{definition}
 
+\pagebreak
+
 1-contexts are used to describe trees that are not fully known yet: The
-placeholder symbol $\square$ stands in for a missing subtree. Given a 1-context
+symbol $\square$ is a placeholder for a missing subtree. Given a 1-context
 $t\in C_\Sigma$ and a tree $t'\in U_\Sigma(V)$, we abbreviate $t[t'] :=
 t[t']_w$ such that $t(w) = \square$. In other words, $t[t']$ is the tree that
-results from $t$ when the $\square$ node is replaced by $t'$.
+results from $t$ when the node labeled with $\square$ is replaced by $t'$.
 
 \begin{definition}
  A \emph{ranked alphabet} is a pair $(R,\rk)$ where $R$ is an alphabet and
- $\rk:R\to\zn$ is a mapping. $\rk$ is said to assign a \emph{rank} or
+ $\rk\colon R\to\zn$ is a mapping. $\rk$ is said to assign a \emph{rank} or
  \emph{arity} to each symbol in $R$.
 \end{definition}
 
 A ranked alphabet is usually denoted only by $R$. The existence of a suitable
-$\rk$ is implied. A symbol $\rho\in R$ may be denoted as $\rho^{(k)}$ where
-$\rk(\rho) = k$, to inform the reader of the symbol's rank.
+$\rk$ is implied.
 
 \begin{definition}
  Let $R$ be a ranked alphabet and $V$ be a set. The \emph{set $T_R(V)$ of
  ranked trees over $R$ indexed by $V$} is defined by
  \[
-  % TODO: need formal definition for "number of children of w in t"
-  T_R(V) := \mbig\brc{t \in U_R(V) \dmiddle| \forall w\in\pos(t): t(w)\in R\Rightarrow \rk\mbig\kla{t(w)} = \text{number of children of $w$ in $t$}}.
+  T_R(V) := \mbig\brc{t \in U_R(V) \dmiddle| \forall w\in\pos(t): t(w)\in R\Rightarrow \rk\mbig\kla{t(w)} = \mbig\abs{\osucc\mbig\kla{t|_w}}}.
+  \qedhere
  \]
 \end{definition}
 
-In other words, the number of children of each node in $t$ labeled with a
-symbol from $R$ must be equal to the rank of its label.
+In other words, the number of children of each node in $t$ with a label from
+$R$ must be equal to the rank of that label.
 
 \begin{definition}
- Let $\Sigma$ be an alphabet. A \emph{regular tree grammar (RTG) over $\Sigma$} is a
- triple $\ug = (Q,q_0,R)$ where
- \begin{itemize}\setlength\itemsep{-0.3em}
-  \item $Q$ is a nonempty alphabet (of states),
-  \item $q_0\in Q$ is an initial state and
-  \item $R\subset Q^*\times\Sigma\times Q$ is a finite ranked alphabet (of
-   rules) such that every rule $\mbig\kla{(q_1,\ldots,q_k),\sigma,q}\in R$ has
-   rank $k$.
- \end{itemize}
+ Given an alphabet $\Sigma$, a \emph{regular tree grammar (RTG) over $\Sigma$}
+ is a triple $\ug = (Q,q_0,R)$ where $Q$ is a nonempty alphabet (of states),
+ $q_0\in Q$ is an initial state, and $R\subset Q^*\times\Sigma\times Q$ is a
+ finite ranked alphabet (of rules) such that
+ \[
+  \forall \rho = \mbig\kla{(q_1,\ldots,q_k),\sigma,q}\in R\colon \rk(\rho) = k.
+  \qedhere
+ \]
 \end{definition}
 
-We will write $\mbig\kla{(q_1,\ldots,q_k),\sigma,q}\in R$ as $q\to\sigma(q_1,\ldots,q_k)$.
+We will write $\mbig\kla{(q_1,\ldots,q_k),\sigma,q}$ as $q\to\sigma(q_1,\ldots,q_k)$.
 
 \begin{definition}
- Let $\ug=(Q,q_0,R)$ be an RTG over $\Sigma$. The \emph{family
- $\mbig\kla{D^q(\ug)\dmiddle|q\in Q}$ of partial abstract syntax trees of
+ Let $\ug=(Q,q_0,R)$ be an RTG. The \emph{family
+ $\mbig\kla{D^q(\ug)\!\dmiddle|\!q\in Q}$ of partial abstract syntax trees of
  $\ug$} is the smallest $Q$-indexed family $(D^q|q\in Q)$ such that, for all
  $q\in Q$,
  \[
@@ -636,12 +635,11 @@ We will write $\mbig\kla{(q_1,\ldots,q_k),\sigma,q}\in R$ as $q\to\sigma(q_1,\ld
  D^{q_0}(\ug)$ that does not have any nodes labeled with symbols from $Q$.
 \end{definition}
 
-An RTG generates a language (i.~e.~a countable set) of trees. Trees are derived
+An RTG generates a language (i.~e.,~a countable set) of trees. Trees are derived
 by starting with a tree containing only the a root node with the label $q_0$,
 then successively replacing $Q$-labeled nodes according to the RTG's rule set
 until no more $Q$-labeled nodes are left. The resulting tree is in $U_\Sigma$
 and its abstract syntax tree is in $T_R$. Partial abstract syntax trees are in $T_R(Q)$.
-
 For example, consider the RTG $\ug = \mbig\kla{\brc{q_0,q_1},q_0,R}$ where
 $\Sigma=\brc{a,b,c}$ and
 \[
@@ -709,9 +707,11 @@ projection $\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.
  \[
   \lang\ug := \brc{t\in U_\Sigma | \exists d\in D^{q_0}(\ug)\colon t=\pi_\Sigma(d)}.
  \]
- A language $L\subseteq U_\Sigma$ is \emph{recognizable} if there exists an RTG
+ A language $L\subseteq U_\Sigma$ is \emph{regular} if there exists an RTG
  $\ug$ over $\Sigma$ such that $\lang\ug = L$.
 \end{definition}
+
+\pagebreak
 
 A useful property of RTGs is \emph{determinism}: An RTG $\ug$ over $\Sigma$ is
 called \emph{deterministic} if, for any $(q_1,\ldots,q_k)\in Q^*$ and
@@ -764,10 +764,11 @@ speaking, how much a certain state contributes to the derivations of a certain
 observation.
 
 \begin{definition}
- Let $\ug = (Q,q_0,R)$ be a PRTG over $\Sigma$. The \emph{inside weight} of a
- state $q\in Q$ is given by
+ Let $\ug = (Q,q_0,R)$ be a PRTG. The \emph{inside weight} of a state $q\in Q$
+ is given by
  \[
   \beta(q) := \sum_{d\in D^q(\ug)\cap T_R} p(d).
+  \qedhere
  \]
 \end{definition}
 
@@ -799,7 +800,9 @@ cyclic way. For example:
  \end{aligned}
 \]
 
-In the general case, \cite[pp.~6]{bucstuvog15} show that $\beta$ is the least fixpoint of the mapping $F: (\zr_{\geq0}\cup\brc\infty)^Q \to (\zr_{\geq0}\cup\brc\infty)^Q$, given by
+In the general case, \cite[pp.~6]{bucstuvog15} show that the inside weights
+$\beta$ are the least fixpoint of the mapping $F: (\zr_{\geq0}\cup\brc\infty)^Q
+\to (\zr_{\geq0}\cup\brc\infty)^Q$, given by
 \[
  \mbig\kla{F(u)}(q) := \sum_{q_1,\ldots,q_k,\sigma} p\mbig\kla{q\to\sigma(q_1,\ldots,q_k)} \cdot u(q_1) \cdots u(q_k).
 \]
@@ -810,9 +813,10 @@ Therefore,
 can be approximated by performing as many iterations of $F$ as desired.
 
 \begin{definition}
- Let $\ug = (Q,q_0,R)$ be a PRTG over $\Sigma$. The \emph{outside weight} of a state $q\in Q$ is given by
+ Let $\ug = (Q,q_0,R)$ be a PRTG. The \emph{outside weight} of a state $q\in Q$ is given by
  \[
   \alpha(q) := \sum_{d\in D^{q_0}(\ug): \exists d'\in C_R: d = d'[q]} p(d).
+  \qedhere
  \]
 \end{definition}
 
@@ -869,11 +873,15 @@ throughout this section.
   \item $q\colon\Omega\to\um_C(A|B)$ as for counting informations,
   \item $\pi_1\colon Y_{\not\bot}\to X_{\not\bot}$ maps hidden information to observations,
   \item $K\in\ur(C)$ is a unambiguous RTG with $\lang K = Y_{\not\bot}$ and
-  \item $H\colon X_{\not\bot}\to\ur(C)$ assigns an unambiguous RTG to every observation such that $\lang{H(x)} = \pi_1^{-1}(x)$.
+  \item $H\colon X_{\not\bot}\to\ur(C)$ assigns an unambiguous RTG to every observation such that 
+   \[
+    \forall x\in X_{\not\bot}\colon \lang{H(x)} = \pi_1^{-1}(x).
+   \]
  \end{itemize}
  Furthermore, we require that, for every $\omega\in\Omega$, the PRTG $(K,p'_\omega)$ is proper, where
  \[
   p'_\omega\mbig\kla{q\to(a,b)(q_1,\ldots,q_k)} = q_\omega(a|b).
+  \qedhere
  \]
 \end{definition}
 
@@ -881,8 +889,9 @@ Each hidden information $y$ is a tree from $T_C$, and a conditional probability
 $q_\omega(a|b)$ can be assigned to each countable event $c = (a,b)$ that occurs
 in the tree. Each hidden information $y$ belongs to exactly one observation
 $x$. The set of all hidden informations $Y_{\not\bot}$ is generated by the PRTG
-$K$, and for each observation $x$, the set of all hidden informations leading
-to this observation is generated by the PRTG $H(x)$.
+$(K,p_\omega')$, and for each observation $x$, the set of all hidden
+informations leading to this observation is generated by the PRTG
+$\mbig\kla{H(x),p_\omega'}$.
 
 The description of a language model using an IO information is a special case of
 the description via counting informations, since an IO information induces a
@@ -900,6 +909,7 @@ counting information.
    \mbig\abs{\mbig\brc{w\in\pos(y): y(w)=(a,b)}} & \text{if } \pi_1(y) = x, \\
    0 & \text{otherwise}.
   \end{cases}
+  \qedhere
  \end{align*}
 \end{definition}
 The induced counting information $\mu^\flat$ is always proper.
@@ -913,12 +923,10 @@ $c$ instead of relying on the complete-data corpus of the previous step
 mapping. In this expression, $(\chi_{\omega,x}|\omega\in\Omega,x\in
 X_{\not\bot})$ is a family of $C$-corpora, defined by
 \[
- \chi_{\omega,x}(a,b) := \beta(q_0)^{-1} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\in R} \alpha(q) \cdot p(\rho) \cdot \beta(q_1) \cdots \beta(q_k),
+ \chi_{\omega,x}(a,b) := \beta(q_0)^{-1} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\in R} \alpha(q) \cdot p_\omega'(\rho) \cdot \beta(q_1) \cdots \beta(q_k),
 \]
-where $(Q,q_0,R)$ is the PRTG $H(x)$ with rule probabilities $p$ given by
-\[
- p(\rho) := q_\omega(a|b) \quad\text{for}\quad \rho = \mbig\kla{q\to(a,b)(q_1,\ldots,q_k)}.
-\]
+where $(Q,q_0,R)$ is the PRTG $H(x)$ with rule probabilities $p_\omega'$ as defined above.
+
 To understand the formula for $\chi_{\omega,x}(a,b)$, recall that $H(x)$ is an
 RTG such that its derivations, that is: the set of its complete abstract syntax
 trees, is $\pi_1^{-1}(x)$, the set of all hidden informations that lead to the
@@ -971,16 +979,15 @@ A step mapping can be defined for each of these formalizations.
  \end{scope}
 \end{tikzpicture}\end{center}
 
-In the definition of both the counting information $\varkappa=(q,\lambda,\pi)$
-and of the IO information $\mu=(q,\pi_1,K,H)$, the only part that depends on
-$\omega$ is the probability model $q$. All other parts are fixed as soon as the
-language model is instantiated, and are therefore not subject to training. For
-many language models, it is sufficient to choose $\Omega := \um_C(A|B)$ and $q
-= \operatorname{id}$ (i.~e.~$q_\omega = \omega$ for all $\omega$).
-Applying Lemma~\ref{lemma:empirical2}, we see that the empirical probability
-distribution for the complete-data corpus is an element of
-$\stepmap\mu_\mathrm{io}(\omega)$ (and similar for the simple counting step
-mapping). Since the EM algorithm only needs one element from
+In the definition of both $\varkappa=(q,\lambda,\pi)$ and $\mu=(q,\pi_1,K,H)$,
+the only part that depends on $\omega$ is the probability model $q$. All other
+parts are fixed as soon as the language model is instantiated, and are
+therefore not subject to training. For many language models, it is sufficient
+to choose $\Omega := \um_C(A|B)$ and $q = \operatorname{id}$ (i.~e.,~$q_\omega =
+\omega$ for all $\omega$).  Applying Lemma~\ref{lemma:empirical2}, we see that
+the empirical probability distribution for the complete-data corpus is an
+element of $\stepmap\mu_\mathrm{io}(\omega)$ (and similar for the simple
+counting step mapping). Since the EM algorithm only needs one element from
 $\stepmap\mu_\mathrm{io}(\omega)$, we can use
 \[
  \stepmap\mu'_\mathrm{io}(\omega) := \mbig\brc{ \widetilde{c\mnorm\dangle{\omega,\mu}} }

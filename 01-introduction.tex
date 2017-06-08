@@ -94,10 +94,10 @@ that appeared before it: (see~Figure~\ref{fig:01-bigram})
  p(\text{He ate soup.}) = b(\text{He}|\#) \cdot b(\text{ate}|\text{He}) \cdot b(\text{soup}|\text{ate}) \cdot b(\#|\text{soup}).
 \]
 The model parameter is $b$, a conditional probability distribution of
-$V\cup\brc{\#}$ given $V\cup\brc{\#}$ and $\#$ is a placeholder word
+$V\cup\brc{\#}$ given $V\cup\brc{\#}$, where $\#$ is a placeholder word
 that stands in for the start and end of the sentence.
 
-The model parameter $b$ can be chosen by a very simple training algorithm
+The model parameter can be chosen by a very simple training algorithm
 \cite[pp.~123]{jm09}: All bigrams, i.~e., pairs of words occurring one after the
 other, are counted across the corpus. This includes bigrams containing the
 sentence delimiter word $\#$. Then, the counts are normalized into a
@@ -153,10 +153,10 @@ such as the physicist Stephen Hawking. \cite{newelletal1998}
   \end{scope}
  \end{tikzpicture}
  \caption{Graphic representation of an example instance of the Hidden Markov
- model, with the hidden states ``noun'' and ``verb''; adapted from
- \cite{nel13}. Arrows $q\to q'$ represent nonzero transition probabilities
- $t(q'|q)$. Dashed arrows $q\dashrightarrow v$ represent nonzero emission
- probabilities $e(v|q)$.\label{fig:01-hmm}}
+ model, with hidden states ``noun'' and ``verb''; adapted from
+ \cite{nel13}. Arrows $q\to q'$ and dashed arrows $q\dashrightarrow v$
+ represent nonzero transition and emission probabilities $t(q'|q)$ and
+ $e(v|q)$, respectively.\label{fig:01-hmm}}
 \end{figure}
 
 A further generalization of N-gram models leads to the \emph{Hidden Markov
@@ -167,7 +167,6 @@ progresses to a new state according to a transition probability distribution
 $t$ dependent on the previous state, and the next word is predicted by an
 emission probability distribution $e$ dependent on the new state. The symbol
 $\#$ is used as the initial and final state of the state machine.
-\pagebreak % for figure to appear here
 
 For example, if the state sequence that generated the sentence ``He ate soup''
 was ``\#-noun-verb-noun-\#'', then the probability of that sentence would be
@@ -201,6 +200,7 @@ sentences, not the state sequences that produced them. The standard training
 algorithm for Hidden Markov models is the \emph{Baum-Welch algorithm}.
 \cite{baupetsouwei70,baum1972}
 
+% TODO: check chapter forward-references after content is finalized
 Chapter 3 will define Hidden Markov models more formally, and discuss
 algorithms that act on them. Chapter 4 will specifically focus on the
 Baum-Welch algorithm, and show that it is an instance of the general EM

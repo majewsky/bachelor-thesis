@@ -1,5 +1,5 @@
 \documentclass[
- paper=A4,pagesize=automedia,fontsize=12pt,
+ paper=A4,pagesize=automedia,fontsize=11pt,
  BCOR=10mm,DIV=16,
  twoside,headinclude,footinclude=false,
  bibtotocnumbered,          % show bibl. refs in TOC
@@ -57,7 +57,11 @@
 \theoremstyle{definition}
 \newtheorem{theorem}[theorem]{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{definition}[theorem]{Definition}
+\newtheorem{definition*}[theorem]{Definition}
+
+\newenvironment{definition}%
+ {\begin{definition*}\pushQED{\qed}}%
+ {\popQED\end{definition*}}%
 
 \numberwithin{theorem}{chapter}
 \numberwithin{equation}{chapter}
@@ -98,6 +102,7 @@
 \newcommand\mle{\operatorname{mle}}
 \newcommand\cmle{\operatorname{cmle}}
 \newcommand\pos{\operatorname{pos}}
+\newcommand\osucc{\operatorname{succ}}
 \newcommand\rk{\operatorname{rk}}
 \newcommand\cnt{\operatorname{count}}
 
@@ -109,25 +114,25 @@
 
 \begin{titlepage}
  \begin{center}
-  \vspace*{4em}
+  \vspace*{5em}
 
   \begin{singlespace}\bfseries\Huge
    Training of Hidden Markov models as an instance of the expectation maximization algorithm
   \end{singlespace}
 
-  \vspace*{4em}
+  \vspace*{5em}
 
   \begin{singlespace}\large
    Bachelorarbeit \\ zur Erlangung des Hochschulgrades \\ Bachelor of Science
   \end{singlespace}\medskip
 
-  \vspace*{3em}
+  \vspace*{4em}
 
   vorgelegt von \\
   {\large Dipl.-Phys.~Stefan Majewsky} \\
   geboren am 06.11.1989 in Schwerin
 
-  \vspace*{3em}
+  \vspace*{4em}
 
   \begin{singlespace}\large
    Technische Universität Dresden \\
@@ -136,7 +141,7 @@
    Lehrstuhl für Grundlagen der Programmierung
   \end{singlespace}
 
-  \vspace*{3em}
+  \vspace*{4em}
 
   \begin{singlespace}
    Betreuer: Dipl.-Inf.~Kilian~Gebhardt \\
