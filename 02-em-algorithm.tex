@@ -75,7 +75,8 @@ guaranteed, a fall-back function can be added.
  Given an $X$-corpus $c$ and $p\in\um(X)$, the \emph{likelihood of $c$ under
  $p$} is
  % TODO: Darren says it's confusing to have two definitions for what p(...) means.
- % Maybe use a notation like p[c] for the likelihood? Check
+ % Maybe use a notation like p[c] for the likelihood? (As a counterpoint,
+ % consistency with bucstuvog15 is a huge bonus.)
  \[
   p(c) := \prod_{x\in X} p(x)^{c(x)}.
  \]
@@ -503,9 +504,21 @@ $V=\brc{v_1,v_2}$:
  \sigma_1\mbig\kla{\sigma_2(v_1,\sigma_1), v_1(v_2)} \notin U_\Sigma(V)
 \end{matrix}\]
 
-We refer to positions in the tree using \emph{Gorn notation}. As a quick
-illustration, in the figure below, each node of the left tree is labeled with
-its position in the tree:
+We refer to positions in the tree using \emph{Gorn notation}.
+
+\begin{definition}
+ Given $t\in U_\Sigma(V)$, the set of \emph{positions} in $t$ is defined recursively by
+ \[
+  \pos(t) := \begin{cases}
+   \brc\eps & t = v\in V, \\
+   \brc\eps\cup \bigcup_{i=1}^k \brc{i} \cdot \pos(t_i) & t = \sigma(t_1,\ldots,t_k).
+  \end{cases}
+ \]
+\end{definition}
+
+Positions are words from $\zn^*$. As an illustration, in the figure below, each
+node of the left tree is labeled with its position in the tree. The right tree
+illustrates some further notation for trees, which is defined below.
 
 \vspace*{-1em}\[
  \hspace*{3em}
@@ -537,15 +550,30 @@ its position in the tree:
  \end{tikzpicture}
 \]
 
-%TODO: formal definitions for Gorn notation and the notations listed below
-$\eps$ is the empty word. The set of all positions in a tree $t$ shall be
-denoted by $\pos(t)$. The right tree illustrates some notation that we're going
-to use for trees. For any trees $t,t'$ and position $w\in\pos(t)$,
-\begin{itemize}\setlength\itemsep{-0.3em}
- \item $t(w)$ is the label at $w$,
- \item $t|_w$ is the subtree at $w$ (hence, especially, $t|_\eps = t$) and
- \item $t[t']_w$ is the tree that results from replacing $t|_w$ by $t'$.
-\end{itemize}
+\begin{definition}
+ Given $t\in U_\Sigma(V)$ and $w\in\pos(t)$, $t(w)$ denotes the \emph{label} in $t$ at position $w$, i.~e.,
+ \[
+  t(w) := \begin{cases}
+   v & t = v\in V \text{ and } w=\eps, \\
+   \sigma & t = \sigma(t_1,\ldots,t_k) \text{ and } w = \eps, \\
+   t_i(w') & t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw' \text{ where } i\in\zn, w'\in\pos(t_i).
+  \end{cases}
+ \]
+ where $i\in\zn$ and $w'\in\pos(t_i)$. Moreover, $t|_w$ denotes the \emph{subtree} in $t$ at position $w$, i.~e.,
+ \[
+  t|_w := \begin{cases}
+   t & w = \eps, \\
+   t_i|_{w'} & t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw',
+  \end{cases}
+ \]
+ and for any $t'\in U_\Sigma(V)$, $t[t']_w$ denotes the tree that results from replacing $t|_w$ by $t'$, i.~e.,
+ \[
+  t[t']_w := \begin{cases}
+   t' & w = \eps, \\
+   \sigma(t_1,\ldots,t_{i-1},t_i[t']_{w'},t_{i+1},t_k) & t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw'.
+  \end{cases}
+ \]
+\end{definition}
 
 \begin{definition}
  Let $\Sigma$ be an alphabet and $\square\notin\Sigma$ be some symbol. A
