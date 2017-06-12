@@ -1,6 +1,6 @@
 \Title{Training of Hidden Markov models as an instance of the expectation maximization algorithm}
 \Author{Stefan Majewsky}
-\Keywords{hidden markov model \sep expectation maximization algorithm \sep EM algorithm}
+\Keywords{hidden markov model \sep expectation maximization algorithm \sep EM algorithm \sep Baum-Welch algorithm}
 \Org{Lehrstuhl für Grundlagen der Programmierung, Institut für Theoretische Informatik, Fakultät Informatik, Technische Universität Dresden}
 
 \Copyright{Copyright 2017 Stefan Majewsky}

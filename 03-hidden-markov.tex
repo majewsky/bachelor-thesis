@@ -1,29 +1,35 @@
 \chapter{The Hidden Markov model}
 
-The definitions in this chapter are based on \cite{vogler2015} and largely
-agree with most other definitions for Hidden Markov models in contemporary
-literature, e.~g.~\cite[pp.~210]{jm09}, except for variable names.
+The definitions in this chapter are based on \cite[pp.~210]{jm09}, but use
+different variable names in several places to avoid conflicts with the notation
+from chapter~2.
 
 \begin{definition}
- A \emph{Hidden Markov model} (HMM) is a quintuple $H = (Q,V,\#,t,e)$ such that
+ A \emph{Hidden Markov model} (HMM) is a quintuple\footnote{This definition
+ diverges in structure from \cite{jm09} in one significant way: It uses a
+ single state $\#$ instead of a pair of initial state $q_0$ and final state
+ $q_F$. This allows us to use a single probability distribution $t$ to describe
+ all state transitions, instead of the triple of matrices $(a_{0i})_i$,
+ $(a_{ij})_{(i,j)}$, and $(a_{iF})_i$ that appear in \cite{jm09}.} $H =
+ (Q,V,\#,t,e)$ such that
  \begin{itemize}\setlength\itemsep{-0.3em}
   \item $Q$ is a non-empty alphabet (of states),
-  \item $V$ is a non-empty alphabet (of letters),
+  \item $V$ is a non-empty alphabet (of words),
   \item $\#\notin Q\cup V$ is a separate (initial and final) state,
-  \item $t\in\um(Q\cup\brc{\#}|Q\cup\brc{\#})$ and $e\in\um(V|Q)$.
+  \item $t\in\um(Q\cup\brc{\#}|Q\cup\brc{\#})$ and $e\in\um(V|Q)$. \qedhere
  \end{itemize}
 \end{definition}
 
-The Hidden Markov model describes a word as being the result of the progression
-of a probabilistic state machine that starts out in $\#$, traverses states from
-$Q$, and in the end reaches $\#$ again. Each time a state from $Q$ is reached,
-a letter from $V$ is emitted. The sequence of all these emitted letters is the
-word that is observed.
+The Hidden Markov model describes a sentence as being the result of the
+progression of a probabilistic state machine that starts out in $\#$, traverses
+states from $Q$, and in the end reaches $\#$ again. Each time a state from $Q$
+is reached, a word from $V$ is emitted. The sequence of all these emitted words
+is the sentence that is observed.
 
-When a word $v = v_1\cdots v_n\in V^*$ is observed, is must have been caused by
-a certain sequence of states $q = q_1\cdots q_n\in Q^*$, but it is not known
-which one it was, only that the lengths of both sequences agree. Therefore, by
-the law of total probability,
+When a sentence $v = v_1\cdots v_n\in V^+$ is observed, is must have been
+caused by a certain sequence of states $q = q_1\cdots q_n\in Q^*$, but it is
+not known which one it was, only that the lengths of both sequences agree.
+Therefore, by the law of total probability,
 \[
  P(v) = \sum_{q\in Q^n} P(v|q) \cdot P(q).
 \]
@@ -39,7 +45,7 @@ the law of total probability,
 A Hidden Markov model exhibits the Markov property in two separate ways: First,
 the conditional probability distribution of each state depends only on the
 state directly preceding it. Second, the conditional probability distribution
-of each emitted letter depends only on the state that was inhabited at the time
+of each emitted word depends only on the state that was inhabited at the time
 of emission. These two conditional probability distributions are called $t$ and
 $e$, and are part of the quintuple $H=(Q,V,\#,t,e)$ as defined before.
 
@@ -53,12 +59,12 @@ $\#$ after $n$ other states. Therefore, by the chain rule,
 The last factor, $P(n|q_1,\ldots,q_n)$ is the probability of the state sequence
 having length $n$ if $q_1,\ldots,q_n$ are known or, in other words, the
 probability of the state sequence terminating (by the state machine coming back
-to $\#$) after these $n$ states. Since, by the Markov property, each state only
-depends on the one directly preceding it, we can reformulate each factor in
-terms of the conditional probability distribution $t$:
+to $\#$) after these $n$ states. Since, by the first Markov property, each
+state only depends on the one directly preceding it, we can reformulate each
+factor in terms of the conditional probability distribution $t$:
 \begin{align*}
  P(q_1) &=: t(q_1|\#), \\
- P(q_i|q_1,\ldots,q_{i-1}) &= P(q_i|q_{i-1}) =: t(q_i|q_{i-1}) \\
+ P(q_i|q_1,\ldots,q_{i-1}) &= P(q_i|q_{i-1}) =: t(q_i|q_{i-1}), \\
  P(n|q_1,\ldots,q_n) &= P(n|q_n) =: t(\#|q_n),
 \end{align*}
 and therefore,
@@ -83,24 +89,24 @@ Putting all these results into the original equation for $P(v)$, we obtain
 \section{Forward and backward algorithms}
 
 When $P(v)$ is computed in this manner, the computation takes an exponential
-amount of time in the word length $n$ since $\abs Q^n$ summands need to be
+amount of time in the sentence length $n$ since $\abs Q^n$ summands need to be
 evaluated. However, for similar state sequences, some subterms can be reused
 across summands, thereby reducing the required computation effort. There are
 two standard schemes for this, the \emph{forward algorithm} and the
 \emph{backward algorithm}.
 
 \begin{definition}
- Let $H=(Q,V,\#,t,e)$ be an HMM, $q\in Q$ be a state, $v=v_1\cdots v_n\in V^*$
- be a word, and $i\in\brc{1,\ldots,n}$.\footnote{\cite{vogler2015} uses the
+ Let $H=(Q,V,\#,t,e)$ be an HMM, $q\in Q$ be a state, $v=v_1\cdots v_n\in V^+$
+ be a sentence, and $i\in\brc{1,\ldots,n}$.\footnote{\cite{jm09} uses the
  term ``time'' and the symbol $t$ for this index. We avoid the symbol $t$
  because it is already used for the transition probability.} The \emph{forward
  weight}\footnote{The names ``forward/backward weight'' have been chosen
- deliberately, because we will see in the next chapter that these values
+ deliberately, because we will see in the next section that these values
  correspond to the inside and outside weight.} $T_v(i,q)$ is the probability
- of the HMM being in state $q$ after having emitted the first $i$ letters of
+ of the HMM being in state $q$ after having emitted the first $i$ words of
  $v$. The \emph{backward weight} $S_v(i,q)$ is the probability of the HMM
- emitting $v$ when the first $i$ letters of $v$ have already been generated and
- the HMM is in state $q$ after that many letters.
+ generated $v$ when the first $i$ words of $v$ have already been generated and
+ the HMM is in state $q$ after that many words.
 \end{definition}
 
 The forward weight can be calculated by following the same methods as in the
@@ -148,12 +154,18 @@ forward weights, with the difference of iterating in opposite temporal order.
 \section{The Baum-Welch algorithm}
 
 \begin{algorithm}[p!]
- \caption{Baum-Welch algorithm as stated in \cite{vogler2015}. To reach a local
+ \caption{Baum-Welch algorithm, based on \cite[p.~226]{jm09}. To reach a local
  maximum (or saddle point) for the corpus likelihood $p(c)$, the outermost loop
  needs to be executed until $(t,e)$ stop changing, possibly infinitely long.
  The loop condition is stated as ``not converged'' to capture that the loop is
  typically aborted once the changes to $(t,e)$ per iteration fall below some
- manually chosen threshold. \label{alg:bw-vogler}}
+ manually chosen threshold.\\[1em]
+ The formulation of the algorithm has been altered from \cite{jm09} to also
+ train the transition probabilities for the initial and final state, and to
+ support a corpus with multiple sentences of different length (by taking sums
+ over the time index $i$ in the E-step rather than in the M-step). The same
+ alterations have already been successfully applied to an implementation of HMM
+ in \cite{nel13}. \label{alg:bw-vogler}}
  \begin{algorithmic}[1]
   \algorithmheader[Input:] HMM $H_0 = (Q,V,\#,t_0,e_0)$; $V^+$-corpus $h$
   \algorithmheader[Variables:] $t:\um(Q\cup\brc{\#}|Q\cup\brc{\#})$, $e:\um(V|Q)$
@@ -194,13 +206,13 @@ forward weights, with the difference of iterating in opposite temporal order.
 
 The Baum-Welch algorithm is first stated in \cite{baupetsouwei70}, but since
 notational conventions have changed considerably since then, we are going to
-use a contemporary formulation in \cite{vogler2015} as a reference (see
-algorithm~\ref{alg:bw-vogler} on page~\pageref{alg:bw-vogler}).
+use a contemporary formulation in \cite{jm09} as a reference (see
+Algorithm~\ref{alg:bw-vogler} on page~\pageref{alg:bw-vogler}).
 
 The algorithm uses two terms that have not yet been introduced: $U_v(i,q',q)$ is
 defined as the probability of the HMM progressing from state $q'$ into state
-$q$ at time $i+1$ while emitting the sentence $v$. $R_v(i,q)$ is the probability
-of the HMM being in state $q$ at time $i$ while emitting the sentence $v$.
+$q$ at time $i+1$ while generating the sentence $v$. $R_v(i,q)$ is the probability
+of the HMM being in state $q$ at time $i$ while generating the sentence $v$.
 \begin{align*}
  U_v(i,q',q) &:= P(q_i = q',q_{i+1} = q|v) && \text{for } i\in\brc{1,\ldots,\abs v-1}, q,q'\in Q \\
  R_v(i,q) &:= P(q_i=q|v) && \text{for } i\in\brc{1,\ldots,\abs v},q\in Q
@@ -224,15 +236,14 @@ And analogously,
    P(v_1,\ldots,v_i,q_i=q') \cdot P(q_{i+1}=q|q_i=q') \\
    \cdot\; P(v_{i+1}|q_{i+1}=q) \cdot P(v_{i+2},\ldots,v_n,n|q_{i+1}=q)
   \end{matrix}} \\
-  &= \frac{T_v(i,q') \cdot t(q|q') \cdot e(v|q) \cdot S_v(i+1,q)}{P(v)}
+  &= \frac{T_v(i,q') \cdot t(q|q') \cdot e(v|q) \cdot S_v(i+1,q)}{P(v)}.
 \end{align*}
 
 \section{Deriving the Baum-Welch algorithm}
 
-Primary literature such as \cite{vogler2015} describes Baum-Welch as an
-instance of the EM algorithm. And indeed, the basic structure of the algorithm
-looks similar to the types of EM algorithms that we have introduced in chapter
-2 in several ways:
+\cite{jm09} describes Baum-Welch as an instance of the EM algorithm. And
+indeed, the basic structure of the algorithm looks similar to the types of EM
+algorithms that we have introduced in chapter 2 in several ways:
 \begin{itemize}
  \item $t$ and $e$ are the model parameters that are iteratively optimized.
  \item $\cnt_\mathrm{tr}$ and $\cnt_\mathrm{em}$ act like complete-data
@@ -245,7 +256,10 @@ looks similar to the types of EM algorithms that we have introduced in chapter
   sentence $v$ from the corpus. It can be destructured into countable events in
   several ways (e.~g.~states only, pairs of time and states, or pairs of
   subsequent states).
- \item The way that forward weights and backward weights appear in the computation of $\cnt_\mathrm{tr}$ and $\cnt_\mathrm{em}$ is similar to how inside and outside weights appear in the computation of the inside-outside complete-data corpus.
+ \item The way that forward weights and backward weights appear in the
+  computation of $\cnt_\mathrm{tr}$ and $\cnt_\mathrm{em}$ is similar to how
+  inside and outside weights appear in the computation of the inside-outside
+  complete-data corpus.
 \end{itemize}
 
 Therefore, in the remainder of this chapter, we will show that the Baum-Welch
