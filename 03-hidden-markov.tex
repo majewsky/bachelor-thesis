@@ -20,6 +20,8 @@ from chapter~2.
  \end{itemize}
 \end{definition}
 
+From here on, we will abbreviate $Q\cup\brc{\#}$ as $Q_\#$.
+
 The Hidden Markov model describes a sentence as being the result of the
 progression of a probabilistic state machine that starts out in $\#$, traverses
 states from $Q$, and in the end reaches $\#$ again. Each time a state from $Q$
@@ -168,17 +170,18 @@ forward weights, with the difference of iterating in opposite temporal order.
  in \cite{nel13}. \label{alg:bw-vogler}}
  \begin{algorithmic}[1]
   \algorithmheader[Input:] HMM $H_0 = (Q,V,\#,t_0,e_0)$; $V^+$-corpus $h$
-  \algorithmheader[Variables:] $t:\um(Q\cup\brc{\#}|Q\cup\brc{\#})$, $e:\um(V|Q)$
-  \algorithmheader             $\cnt_\mathrm{tr}: \mbig\kla{Q\cup\brc{\#}}\times\mbig\kla{Q\cup\brc{\#}}\to\zr_{\geq0}$
+  \algorithmheader[Variables:] $t:\um(Q_\#|Q_\#)$, $e:\um(V|Q)$
+  \algorithmheader             $\cnt_\mathrm{tr}: Q_\#\times Q_\#\to\zr_{\geq0}$
   \algorithmheader             $\cnt_\mathrm{em}: V\times Q\to\zr_{\geq0}$
   \algorithmheader[Output:] HMM $H = (Q,V,\#,t,e)$
   \algorithmheader such that $p_H(c) \geq p_{H_0}(c)$ and $H$ maximizes $p_H(c)$ locally
   \STATE $(t,e) \leftarrow (t_0,e_0)$
   \WHILE{not converged}
    \STATE consider the HMM $(Q,V,\#,t,e)$
-   \STATE $\cnt_\mathrm{tr}(q,q') \leftarrow 0$ \SUFFIXFOR{$q,q'\in Q\cup\brc{\#}$}
+   \STATE $\cnt_\mathrm{tr}(q,q') \leftarrow 0$ \SUFFIXFOR{$q,q'\in Q_\#$}
    \STATE $\cnt_\mathrm{em}(w,q) \leftarrow 0$ \SUFFIXFOR{$q\in Q$ and $w\in V$}
    \FOR{$v=v_1\cdots v_n\in\operatorname{supp}(h)$}
+    \STATE calculate all forward weights $T_v(i,q)$ and backward weights $S_v(i,q)$
     \FOR{$i=1,2,\ldots,n-1$}
      \FOR{$q,q'\in Q$}
       \STATE $\cnt_\mathrm{tr}(q,q') \leftarrow \cnt_\mathrm{tr}(q,q') + h(v) \cdot U_v(i,q',q)$
@@ -194,7 +197,7 @@ forward weights, with the difference of iterating in opposite temporal order.
      \STATE $\cnt_\mathrm{tr}(\#,q) \leftarrow \cnt_\mathrm{tr}(\#,q) + h(v) \cdot R_v(n,q)$
     \ENDFOR
    \ENDFOR
-   \FOR{$q,q'\in Q\cup\brc{\#}$}
+   \FOR{$q,q'\in Q_\#$}
     \STATE $t(q|q') \leftarrow \frac{\cnt_\mathrm{tr}(q,q')}{\sum_{q''} \cnt_\mathrm{tr}(q'',q')}$
    \ENDFOR
    \FOR{$q\in Q$ and $w\in V$}
@@ -251,7 +254,7 @@ algorithms that we have introduced in chapter 2 in several ways:
   model parameters are obtained by taking the empirical probability
   distribution of these corpora, which is the efficient solution to the
   conditional maximum-likelihood estimator that is suggested by
-  lemma~\ref{lemma:empirical2}.
+  Lemma~\ref{lemma:empirical2}.
  \item The hidden information is the state sequence $q$ that produces the
   sentence $v$ from the corpus. It can be destructured into countable events in
   several ways (e.~g.~states only, pairs of time and states, or pairs of
@@ -266,4 +269,136 @@ Therefore, in the remainder of this chapter, we will show that the Baum-Welch
 algorithm can be obtained from the generic EM algorithm from chapter~2 through
 suitable instantiation of the inside-outside step mapping.
 
-{\color{red}TODO}
+\subsection{Model parameter and countable events}
+
+For the remainder of this section, let $H = (Q,V,\#,t,e)$ be an HMM.
+Observations are sentences with words from $V$, i.~e.,
+\[
+ X = V^+.
+\]
+
+An IO information contains only one component which can be subject to training:
+the model parameter $\omega$ which chooses the conditional probability
+distribution
+\[
+ q_\omega \in \um_C(A|B).
+\]
+
+For a HMM, $q_\omega$ must describe both the transmission and emission
+probability. We therefore choose
+\[
+ \Omega := \um(Q_\#|Q_\#) \times\um(V|Q)
+\]
+such that every model parameter $\omega=(t,e)$ is a pair of transition and
+emission probability for~$H$. Moreover, we choose
+\begin{align*}
+ A &:= Q_\#\cup V, \\
+ B &:= Q_\# \times \brc{E,T}, \\
+ C &:= \mbig\brc{\mbig\kla{q',(q,T)}\mid q,q'\in Q_\#} \cup \mbig\brc{\mbig\kla{v,(q,E)}\mid v\in V, q\in Q}, \\
+ q_{\omega=(t,e)}\mbig\kla{a\!\dmiddle|\!(q,b)} &:= \begin{cases}
+  t(a|q) & \text{if } b = T \text{ and } a\in Q_\#, \\
+  e(a|q) & \text{if } b = E \text{ and } a\in V \text{ and } q \neq\#, \\
+  1 & \text{if } b = E \text{ and } a = q = \#, \\
+  0 & \text{otherwise.}
+ \end{cases}
+\end{align*}
+
+Herein, $E$ and $T$ are symbols such that $E,T\notin Q\cup V$ that denote if a
+countable event $c\in C$ is a transition event
+\[
+ c = \mbig\kla{q',(q,T)} \text{ with probability } q_{(t,e)}(c) = t(q'|q).
+\]
+or an emission event
+\[
+ c = \mbig\kla{v,(q,E)} \text{ with probability } q_{(t,e)}(c) = e(v|q).
+\]
+
+The choice of $q_\omega\mbig\kla{\#\!\dmiddle|\!(\#,E)}=1$ as above ensures that
+$q_\omega\in\um_C(A|B)$ for all $\omega=(t,e)$.
+
+\begin{proof}
+ Let $\omega=(t,e)\in\Omega$. It is easy to see that
+ $\operatorname{supp}(q_\omega)\subseteq C$ since $q_\omega(a|b)$ was defined
+ as 0 for any $c\notin C$. According to Definition~\ref{def:02-cpd}, what
+ remains to be shown is that $q_\omega\mbig\kla{(q,b)}\in\um(A)$ for every
+ $(q,b)\in B$. For $q\in Q_\#$ and $b = T$,
+ \[
+  \sum_{a\in A} q_{(t,e)}\mbig\kla{q'\!\dmiddle|\!(q,T)} = \sum_{q'\in Q_\#} q_{(t,e)}\mbig\kla{q'\!\dmiddle|\!(q,E)} = \sum_{q'\in Q_\#} t(q'|q) = 1
+ \]
+ because $t\in\um(Q_\#|Q_\#)$. Analogously, for $q\in Q$ and $b = E$, we have
+ \[
+  \sum_{a\in A} q_{(t,e)}\mbig\kla{a\!\dmiddle|\!(q,E)} = \sum_{v\in V} q_{(t,e)}\mbig\kla{v\!\dmiddle|\!(q,E)} = \sum_{v\in V} e(v|q) = 1
+ \]
+ because $e\in\um(V|Q)$. It remains to see that
+ \[
+  \sum_{a\in A} q_\omega\mbig\kla{a\!\dmiddle|\!(\#,E)} = 1,
+ \]
+ which is ensured by the only nonzero contribution to this sum being
+ $q_\omega\mbig\kla{\#\!\dmiddle|\!(\#,E)} = 1$.
+\end{proof}
+
+It shall be noted that the countable event $\mbig\kla{\#,(\#,E)}$ is only used
+to ensure $q_\omega\in\um_C(A|B)$. It does not appear in any $y\in Y$.
+
+\subsection{Tree-shaped hidden information}
+
+\begin{figure}[t!]
+ \centering
+ \begin{tikzpicture}[every node/.style={rectangle,draw}]
+  \node(t0) at (0,0) { $\text{noun},(\#,T)$ };
+  \node(t1) at (0,-1.5) { $\text{verb},(\text{noun},T)$ } edge[thick] (t0);
+  \node(t2) at (0,-3.0) { $\text{noun},(\text{verb},T)$ } edge[thick] (t1);
+  \node(t3) at (0,-4.5) { $\#,(\text{noun},T)$ }          edge[thick] (t2);
+  \node(e1) at (4,-1.5) { $\text{he},(\text{noun},E)$ };
+  \node(e2) at (4,-3.0) { $\text{ate},(\text{verb},E)$ };
+  \node(e3) at (4,-4.5) { $\text{soup},(\text{noun},E)$ };
+  \draw[thick] (t0.south east) -- (e1.north west);
+  \draw[thick] (t1.south east) -- (e2.north west);
+  \draw[thick] (t2.south east) -- (e3.north west);
+ \end{tikzpicture}
+ \caption{Example for a hidden information $y\in Y\subseteq T_C$ corresponding
+ to the observation $x = \text{``He ate soup.''}$ and the state sequence
+ ``noun-verb-noun''.\label{fig:03-example-y}}
+\end{figure}
+
+In order to describe hidden information $y\in Y$ as a ranked tree of countable
+events from $C$, we assign a rank to each $c = \mbig\kla{a,(q,b)}\in C$ as follows:
+\begin{align*}
+ \rk\mbig\kla{a,(q,b)} := \begin{cases}
+  0 & \text{if } b = E, \\
+  2 & \text{if } b = T \text{ and } q\neq\#, \\
+  0 & \text{if } b = T \text{ and } q = \#.
+ \end{cases}
+\end{align*}
+
+The intuition for this choice is that each transition event causes two further
+events: the emission event in the state that was entered, and the transition
+event into the state after that. Emission events do not result in further
+events because of the Markov property, and a transition event into the $\#$
+state marks the end of the stochastic process after which no further events
+occur. This rank assignment results in trees such as the one in
+Figure~\ref{fig:03-example-y}.
+
+The trees $y\in Y$ are generated by the tree grammars $H(x)$ and $K$. We define
+\[
+ K := \mbig\brc{Q_K, (\#,0,T), R_K} \quad\text{where}\quad Q_K = Q_\# \times \zn \times \brc{E,T}
+\]
+and $R_K$ contains the following rules:
+\begin{align*}
+ (\#,0,T) &\to \mbig\kla{q,(\#,T)}\mbig\kla{(q,1,T),(q,1,E)} &&\forall q\in Q, \\
+ (q,i,T) &\to \mbig\kla{q',(q,T)}\mbig\kla{(q',i+1,T),(q',i+1,E)} &&\forall q,q'\in Q \text{ and } i\geq1, \\
+ (q,i,T) &\to \mbig\kla{\#,(q,T)} &&\forall q\in Q\text{ and } i\geq 1, \\
+ (q,i,E) &\to \mbig\kla{v,(q,E)} &&\forall q\in Q\text{ and } i\geq 1 \text{ and } v\in V.
+\end{align*}
+
+The IO information requires that $K$ is unambiguous. It is easy to see that
+this is the case: $K$ is deterministic because each $c\in C$ is produced by at
+most one rule from $R_K$, and all deterministic RTG are also unambiguous
+(see~page~\pageref{lemma:02-deterministic-is-unambiguous}).
+
+
+
+
+
+
+{\color{red}TODO: $H(x)$, $\pi_1$, $Y$ as $\sum_x \pi_1^{-1}(x)$; $\alpha$, $\beta$, $\chi$, $c\dangle{\omega,\mu}$, $\stepmap\mu_\mathrm{io}$}

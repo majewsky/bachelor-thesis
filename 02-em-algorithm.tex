@@ -264,7 +264,7 @@ The next such step mapping requires the language model to be described by a
 \emph{counting information}. Before defining this term, some additional
 notation needs to be introduced.
 
-\begin{definition}
+\begin{definition}\label{def:02-cpd}
  Let $A$ and $B$ be sets. A mapping $p\colon B \to \um(A)$ is called
  \emph{conditional probability distribution of $A$ given $B$}. The set of all
  such mappings is denoted by $\um(A|B)$.
@@ -719,6 +719,7 @@ $\sigma\in\Sigma$, there is at most one $q\in Q$ such that $\mbig\kla{q \to
 \sigma(q_1,\ldots,q_k)} \in R$. A language is called deterministic if it is
 described by a deterministic RTG.
 
+\label{lemma:02-deterministic-is-unambiguous}
 From determinism results unambiguity: An RTG $\ug$ over $\Sigma$ is called
 \emph{unambiguous} if, for every tree $t\in\lang\ug$, there exists exactly one
 abstract syntax tree $d\in D^{q_0}(\ug)$ such that $\pi_\Sigma(d) = t$. To see why, have
