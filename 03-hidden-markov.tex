@@ -1,4 +1,4 @@
-\chapter{The Hidden Markov model}
+H\chapter{The Hidden Markov model}
 
 The definitions in this chapter are based on \cite[pp.~210]{jm09}, but use
 different variable names in several places to avoid conflicts with the notation
@@ -10,7 +10,7 @@ from chapter~2.
  single state $\#$ instead of a pair of initial state $q_0$ and final state
  $q_F$. This allows us to use a single probability distribution $t$ to describe
  all state transitions, instead of the triple of matrices $(a_{0i})_i$,
- $(a_{ij})_{(i,j)}$, and $(a_{iF})_i$ that appear in \cite{jm09}.} $H =
+ $(a_{ij})_{(i,j)}$, and $(a_{iF})_i$ that appear in \cite{jm09}.} $\uh =
  (Q,V,\#,t,e)$ such that
  \begin{itemize}\setlength\itemsep{-0.3em}
   \item $Q$ is a non-empty alphabet (of states),
@@ -49,9 +49,9 @@ the conditional probability distribution of each state depends only on the
 state directly preceding it. Second, the conditional probability distribution
 of each emitted word depends only on the state that was inhabited at the time
 of emission. These two conditional probability distributions are called $t$ and
-$e$, and are part of the quintuple $H=(Q,V,\#,t,e)$ as defined before.
+$e$, and are part of the quintuple $\uh=(Q,V,\#,t,e)$ as defined before.
 
-The progression of the probabilistic state machine of $H$ through the state
+The progression of the probabilistic state machine of $\uh$ through the state
 sequence $q=q_1\cdots q_n$ involves several separate stochastic events:
 entering each state $q_1,\ldots,q_n$ in that order, then entering the state
 $\#$ after $n$ other states. Therefore, by the chain rule,
@@ -98,7 +98,7 @@ two standard schemes for this, the \emph{forward algorithm} and the
 \emph{backward algorithm}.
 
 \begin{definition}
- Let $H=(Q,V,\#,t,e)$ be an HMM, $q\in Q$ be a state, $v=v_1\cdots v_n\in V^+$
+ Let $\uh=(Q,V,\#,t,e)$ be an HMM, $q\in Q$ be a state, $v=v_1\cdots v_n\in V^+$
  be a sentence, and $i\in\brc{1,\ldots,n}$.\footnote{\cite{jm09} uses the
  term ``time'' and the symbol $t$ for this index. We avoid the symbol $t$
  because it is already used for the transition probability.} The \emph{forward
@@ -169,12 +169,12 @@ forward weights, with the difference of iterating in opposite temporal order.
  alterations have already been successfully applied to an implementation of HMM
  in \cite{nel13}. \label{alg:bw-vogler}}
  \begin{algorithmic}[1]
-  \algorithmheader[Input:] HMM $H_0 = (Q,V,\#,t_0,e_0)$; $V^+$-corpus $h$
+  \algorithmheader[Input:] HMM $\uh_0 = (Q,V,\#,t_0,e_0)$; $V^+$-corpus $h$
   \algorithmheader[Variables:] $t:\um(Q_\#|Q_\#)$, $e:\um(V|Q)$
   \algorithmheader             $\cnt_\mathrm{tr}: Q_\#\times Q_\#\to\zr_{\geq0}$
   \algorithmheader             $\cnt_\mathrm{em}: V\times Q\to\zr_{\geq0}$
-  \algorithmheader[Output:] HMM $H = (Q,V,\#,t,e)$
-  \algorithmheader such that $p_H(c) \geq p_{H_0}(c)$ and $H$ maximizes $p_H(c)$ locally
+  \algorithmheader[Output:] HMM $\uh = (Q,V,\#,t,e)$
+  \algorithmheader such that $p_\uh(c) \geq p_{\uh_0}(c)$ and $\uh$ maximizes $p_\uh(c)$ locally
   \STATE $(t,e) \leftarrow (t_0,e_0)$
   \WHILE{not converged}
    \STATE consider the HMM $(Q,V,\#,t,e)$
@@ -271,7 +271,7 @@ suitable instantiation of the inside-outside step mapping.
 
 \subsection{Model parameter and countable events}
 
-For the remainder of this section, let $H = (Q,V,\#,t,e)$ be an HMM.
+For the remainder of this section, let $\uh = (Q,V,\#,t,e)$ be an HMM.
 Observations are sentences with words from $V$, i.~e.,
 \[
  X = V^+.
@@ -290,7 +290,7 @@ probability. We therefore choose
  \Omega := \um(Q_\#|Q_\#) \times\um(V|Q)
 \]
 such that every model parameter $\omega=(t,e)$ is a pair of transition and
-emission probability for~$H$. Moreover, we choose
+emission probability for~$\uh$. Moreover, we choose
 \begin{align*}
  A &:= Q_\#\cup V, \\
  B &:= Q_\# \times \brc{E,T}, \\
@@ -313,8 +313,9 @@ or an emission event
  c = \mbig\kla{v,(q,E)} \text{ with probability } q_{(t,e)}(c) = e(v|q).
 \]
 
-The choice of $q_\omega\mbig\kla{\#\!\dmiddle|\!(\#,E)}=1$ as above ensures that
-$q_\omega\in\um_C(A|B)$ for all $\omega=(t,e)$.
+Although the countable event $\mbig\kla{\#,(\#,E)}$ is not used in any $y\in
+Y$, the choice of $q_\omega\mbig\kla{\#\!\dmiddle|\!(\#,E)}=1$ as above is
+necessary to ensure that $q_\omega\in\um_C(A|B)$ for all $\omega=(t,e)$.
 
 \begin{proof}
  Let $\omega=(t,e)\in\Omega$. It is easy to see that
@@ -337,24 +338,21 @@ $q_\omega\in\um_C(A|B)$ for all $\omega=(t,e)$.
  $q_\omega\mbig\kla{\#\!\dmiddle|\!(\#,E)} = 1$.
 \end{proof}
 
-It shall be noted that the countable event $\mbig\kla{\#,(\#,E)}$ is only used
-to ensure $q_\omega\in\um_C(A|B)$. It does not appear in any $y\in Y$.
-
 \subsection{Tree-shaped hidden information}
 
 \begin{figure}[t!]
  \centering
- \begin{tikzpicture}[every node/.style={rectangle,draw}]
+ \begin{tikzpicture}[every node/.style={rectangle,draw,minimum width=3cm}]
   \node(t0) at (0,0) { $\text{noun},(\#,T)$ };
   \node(t1) at (0,-1.5) { $\text{verb},(\text{noun},T)$ } edge[thick] (t0);
   \node(t2) at (0,-3.0) { $\text{noun},(\text{verb},T)$ } edge[thick] (t1);
   \node(t3) at (0,-4.5) { $\#,(\text{noun},T)$ }          edge[thick] (t2);
-  \node(e1) at (4,-1.5) { $\text{he},(\text{noun},E)$ };
-  \node(e2) at (4,-3.0) { $\text{ate},(\text{verb},E)$ };
-  \node(e3) at (4,-4.5) { $\text{soup},(\text{noun},E)$ };
-  \draw[thick] (t0.south east) -- (e1.north west);
-  \draw[thick] (t1.south east) -- (e2.north west);
-  \draw[thick] (t2.south east) -- (e3.north west);
+  \node(e1) at (-4,-1.5) { $\text{he},(\text{noun},E)$ };
+  \node(e2) at (-4,-3.0) { $\text{ate},(\text{verb},E)$ };
+  \node(e3) at (-4,-4.5) { $\text{soup},(\text{noun},E)$ };
+  \draw[thick] (t0.south west) -- (e1.north east);
+  \draw[thick] (t1.south west) -- (e2.north east);
+  \draw[thick] (t2.south west) -- (e3.north east);
  \end{tikzpicture}
  \caption{Example for a hidden information $y\in Y\subseteq T_C$ corresponding
  to the observation $x = \text{``He ate soup.''}$ and the state sequence
@@ -366,8 +364,8 @@ events from $C$, we assign a rank to each $c = \mbig\kla{a,(q,b)}\in C$ as follo
 \begin{align*}
  \rk\mbig\kla{a,(q,b)} := \begin{cases}
   0 & \text{if } b = E, \\
-  2 & \text{if } b = T \text{ and } q\neq\#, \\
-  0 & \text{if } b = T \text{ and } q = \#.
+  2 & \text{if } b = T \text{ and } a\neq\#, \\
+  0 & \text{if } b = T \text{ and } a = \#.
  \end{cases}
 \end{align*}
 
@@ -385,8 +383,8 @@ The trees $y\in Y$ are generated by the tree grammars $H(x)$ and $K$. We define
 \]
 and $R_K$ contains the following rules:
 \begin{align*}
- (\#,0,T) &\to \mbig\kla{q,(\#,T)}\mbig\kla{(q,1,T),(q,1,E)} &&\forall q\in Q, \\
- (q,i,T) &\to \mbig\kla{q',(q,T)}\mbig\kla{(q',i+1,T),(q',i+1,E)} &&\forall q,q'\in Q \text{ and } i\geq1, \\
+ (\#,0,T) &\to \mbig\kla{q,(\#,T)}\mbig\kla{(q,1,E),(q,1,T)} &&\forall q\in Q, \\
+ (q,i,T) &\to \mbig\kla{q',(q,T)}\mbig\kla{(q',i+1,E),(q',i+1,T)} &&\forall q,q'\in Q \text{ and } i\geq1, \\
  (q,i,T) &\to \mbig\kla{\#,(q,T)} &&\forall q\in Q\text{ and } i\geq 1, \\
  (q,i,E) &\to \mbig\kla{v,(q,E)} &&\forall q\in Q\text{ and } i\geq 1 \text{ and } v\in V.
 \end{align*}
@@ -396,9 +394,96 @@ this is the case: $K$ is deterministic because each $c\in C$ is produced by at
 most one rule from $R_K$, and all deterministic RTG are also unambiguous
 (see~page~\pageref{lemma:02-deterministic-is-unambiguous}).
 
+Using $K$, we can define the set $Y$ of hidden information as
+\[
+ Y := \lang K \cup \brc\bot.
+\]
 
+\begin{figure}[t!]
+ \begin{align*}
+  \pi_X\left(\begin{tikzpicture}[every node/.style={rectangle,draw,minimum width=1.9cm},baseline=(current bounding box.center)]
+   \node (t0) at (0,0) { $q_1,(\#,T)$ };
+   \node (t1) at (0,-1) { $q_2,(q_1,T)$ } edge[thick] (t0);
+   \node (t2) at (0,-2) { $\#,(q_2,T)$ } edge[thick] (t1);
+   \node (e1) at (-2,-0.8) { $v_1,(q_1,E)$ }; \draw [thick] (t0.west) -- (e1.north);
+   \node (e2) at (-2,-2) { $v_2,(q_2,E)$ }; \draw [thick] (t1.south west) -- (e2.north);
+  \end{tikzpicture}\right)
+  &=
+   \underbrace{\pi_X\left(\begin{tikzpicture}[every node/.style={rectangle,draw,minimum width=1.9cm},baseline=(current bounding box.center)]
+    \node (e1) at (0,0) { $v_1,(q_1,E)$ };
+   \end{tikzpicture}\right)}_{=v_1}
+   \pi_X\left(\begin{tikzpicture}[every node/.style={rectangle,draw,minimum width=1.9cm},baseline=(current bounding box.center)]
+    \node (t1) at (0,0) { $q_2,(q_1,T)$ };
+    \node (t2) at (0,-1) { $\#,(q_2,T)$ } edge[thick] (t1);
+    \node (e2) at (-2,-1) { $v_2,(q_2,E)$ }; \draw [thick] (t1.west) -- (e2.north);
+   \end{tikzpicture}\right)
+  \\
+  &= v_1
+   \underbrace{\pi_X\left(\begin{tikzpicture}[every node/.style={rectangle,draw,minimum width=1.9cm},baseline=(current bounding box.center)]
+    \node (e2) at (0,0) { $v_2,(q_2,E)$ };
+   \end{tikzpicture}\right)}_{=v_2}
+   \underbrace{\pi_X\left(\begin{tikzpicture}[every node/.style={rectangle,draw,minimum width=1.9cm},baseline=(current bounding box.center)]
+    \node (t2) at (0,0) { $\#,(q_2,T)$ };
+   \end{tikzpicture}\right)}_{=\eps}
+   = v_1v_2
+ \end{align*}
+ \caption{\label{fig:03-readoff}%
+  Example for how $\pi_X$ can be used to read the generated sentence from a hidden information tree, where the HMM has states $Q = \{q_1,q_2,\ldots\}$ and words $V = \{v_1,v_2,\ldots\}$.
+ }
+\end{figure}
 
+Furthermore, we can introduce a mapping $\pi_X: T_C \to V^*$ that reads the
+generated sentence from a tree $t\in T_C$ (see Figure~\ref{fig:03-readoff}),
+i.~e.,
+\[
+ \pi_X(t) := \begin{cases}
+  \eps & \text{if } t = \mbig\kla{\#,(q,T)}, \\
+  v    & \text{if } t = \mbig\kla{v,(q,E)}, \\
+  \pi_X(t_1)\pi_X(t_2) & \text{if } t = \mbig\kla{q',(q,T)}(t_1,t_2).
+ \end{cases}
+\]
 
+From that follows the mapping $\pi_1: Y_{\not\bot} \to X_{\not\bot}$ that the
+IO information requires by restricting the domain of $\pi_X$ to
+$Y_{\not\bot}$\footnote{The definition of $\pi_1$ relies on $\pi_X$ since the
+recursive definition of $\pi_X$ requires it to be defined for arguments from
+$T_C$ that are not in $Y_{\not\bot}$.}, i.~e.,
+\[
+ \pi_1(y) := \pi_X(y) \quad\forall y\in Y_{\not\bot}.
+\]
 
+Finally, the IO information requires a mapping $H: X_{\not\bot}\to\ur(C)$ such
+that $H(x)$ generates all $y$ with $\pi_1(y)=x$. We can define $H(x)$ by
+starting from $K$, then restricting the ruleset such that only the sentence $x$
+can be generated. This is particularly easy because the states $q\in Q_K$ used
+by the RTG $K$ already track the time index $i$ which is necessary to determine
+which word $x_i$ can be emitted.
 
-{\color{red}TODO: $H(x)$, $\pi_1$, $Y$ as $\sum_x \pi_1^{-1}(x)$; $\alpha$, $\beta$, $\chi$, $c\dangle{\omega,\mu}$, $\stepmap\mu_\mathrm{io}$}
+For any $x=x_1\cdots x_n\in X_{\not\bot} = V^+$, we have
+\[
+ H(x) := \mbig\brc{Q_K,(\#,0,T),R_x}
+\]
+where $R_x$ contains the following rules:
+\begin{align*}
+ (\#,0,T) &\to \mbig\kla{q,(\#,T)}\mbig\kla{(q,1,E),(q,1,T)} &&\forall q\in Q, \\
+ (q,i,T) &\to \mbig\kla{q',(q,T)}\mbig\kla{(q',i+1,E),(q',i+1,T)} &&\forall q,q'\in Q \text{ and } i\in\brc{1,\ldots,n-1}, \\
+ (q,n,T) &\to \mbig\kla{\#,(q,T)} &&\forall q\in Q, \\
+ (q,i,E) &\to \mbig\kla{x_i,(q,E)} &&\forall q\in Q\text{ and } i\in\brc{1,\ldots,n}.
+\end{align*}
+
+Compared to $R_K$, the second type of rules (counting from the top) is
+restricted to $i < n$ and the third type of rules is restricted to $i = n$, so
+that the state sequence is limited to exactly $n$ states from $Q$ (without
+$\#$). Moreover, the fourth type of rules is restricted to emitting the word
+$x_i$ according to the desired observation $x$. It is easy to see that
+\[
+ \pi_1(y) = x \quad\forall y\in\lang{H(x)}
+\]
+or, in other words, $\lang{H(x)} = \pi_1^{-1}(x)$ as required by the definition
+of the IO information. By all the considerations in this subsection, the tuple
+$\mu_\uh := (q,\pi_1,K,H)$ therefore fulfils Definition~\ref{02:def-io-info} and
+is, in fact, an IO information.
+
+\subsection{Inside and outside weights}
+
+{\color{red}TODO: $\alpha$, $\beta$, $\chi$, $c\dangle{\omega,\mu}$, $\stepmap\mu_\mathrm{io}$}
