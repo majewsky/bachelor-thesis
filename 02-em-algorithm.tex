@@ -272,10 +272,10 @@ notation needs to be introduced.
 
 To simplify notation, we define $p(a|b) := \mbig\kla{p(b)}(a)$.
 
-\begin{definition}
+\begin{definition}\label{def:02-cpd-restr}
  Let $C\subseteq A\times B$ be a set. Then
  \[
-  \um_C(A|B) := \brc{p\in\um(A|B)\colon \operatorname{supp}(p)\subseteq C}
+  \um_C(A|B) := \mbig\brc{p\in\um(A|B)\!\dmiddle|\! \forall (a,b)\in A\times B\colon (a,b)\notin C \Rightarrow p(a|b) = 0}
  \]
 is the \emph{set of all conditional probability distributions of $A$ given $B$
  constrained to $C$}.
