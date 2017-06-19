@@ -494,7 +494,7 @@ For any $x=x_1\cdots x_n\in V^+$, we have
  H(x) := \mbig\brc{Q_x,(T,\#,0),R_x} \quad\text{where}\quad Q_x = \brc{E,T} \times Q_\# \times \brc{0,\ldots,n}
 \]
 and $R_x$ contains the following rules:
-\begin{align*}\ref{03-h-rules}
+\begin{align*}\label{03-h-rules}
  (T,\#,0) &\to \mbig\kla{q,(\#,T)}\mbig\kla{(E,q,1),(T,q,1)} &&\forall q\in Q, \\
  (T,q,i) &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q',i+1),(T,q',i+1)} &&\forall q,q'\in Q \text{ and } i\in\brc{1,\ldots,n-1}, \\
  (T,q,n) &\to \mbig\kla{\#,(q,T)} &&\forall q\in Q, \\
@@ -549,7 +549,7 @@ We decompose the proof for this equivalence into two lemmas.
 The proofs for these lemmas can be found in Appendices~\ref{appendix:03-consistent-yield} and~\ref{appendix:03-language-partition}. For each $x\in X_{\not\bot}$, we have
 \[
  \pi_1^{-1}(x)
- = \mbig\brc{y\in Y_{\not\bot} \dmiddle| \pi_1(y) = x}
+ = \mbig\brc{y\in \underbrace{Y_{\not\bot}}_{=\lang K} \dmiddle| \pi_1(y) = x}
  = \bigcup_{x'\in X_{\not\bot}} \mbig\brc{y\in\mbig\lang{H(x')} \dmiddle| \pi_1(y) = x}
 \]
 by Lemma~\ref{lemma:03-language-partition}. Then, because of
