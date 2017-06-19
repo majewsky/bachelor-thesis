@@ -462,6 +462,7 @@ Using $K$, we can define the set $Y$ of hidden information as
  }
 \end{figure}
 
+\label{def:03-def-pi-x}
 Furthermore, we can introduce a mapping $\pi_X: T_C \to V^*$ that reads the
 generated sentence from a tree $t\in T_C$ (see Figure~\ref{fig:03-readoff}),
 i.~e.,
@@ -490,10 +491,10 @@ track the time index $i$ since $i$ determines which word $x_i$ can be emitted.
 
 For any $x=x_1\cdots x_n\in V^+$, we have
 \[
- H(x) := \mbig\brc{Q_x,(\#,0,T),R_x} \quad\text{where}\quad Q_x = \brc{E,T} \times Q_\# \times \brc{0,\ldots,n}
+ H(x) := \mbig\brc{Q_x,(T,\#,0),R_x} \quad\text{where}\quad Q_x = \brc{E,T} \times Q_\# \times \brc{0,\ldots,n}
 \]
 and $R_x$ contains the following rules:
-\begin{align*}
+\begin{align*}\ref{03-h-rules}
  (T,\#,0) &\to \mbig\kla{q,(\#,T)}\mbig\kla{(E,q,1),(T,q,1)} &&\forall q\in Q, \\
  (T,q,i) &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q',i+1),(T,q',i+1)} &&\forall q,q'\in Q \text{ and } i\in\brc{1,\ldots,n-1}, \\
  (T,q,n) &\to \mbig\kla{\#,(q,T)} &&\forall q\in Q, \\
@@ -537,7 +538,7 @@ We decompose the proof for this equivalence into two lemmas.
 
 \begin{lemma}\label{lemma:03-language-partition}
  With the definitions shown above, the set $\mbig\brc{\mnorm\lang{H(x)}
- \dmiddle| x\in X_{\not\bot}}$ is a partition of the language $\lang K$, i.~.e,
+ \dmiddle| x\in X_{\not\bot}}$ is a partition of the language $\lang K$, i.~e.,
  \[
   \mbig\lang K = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}
   \quad\text{and}\quad

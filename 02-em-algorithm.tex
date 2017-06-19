@@ -623,7 +623,7 @@ $R$ must be equal to the rank of that label.
 
 We will write $\mbig\kla{(q_1,\ldots,q_k),\sigma,q}$ as $q\to\sigma(q_1,\ldots,q_k)$.
 
-\begin{definition}
+\begin{definition}\label{def:02-past}
  Let $\ug=(Q,q_0,R)$ be an RTG. The \emph{family
  $\mbig\kla{D^q(\ug)\!\dmiddle|\!q\in Q}$ of partial abstract syntax trees of
  $\ug$} is the smallest $Q$-indexed family $(D^q|q\in Q)$ such that, for all
@@ -700,12 +700,12 @@ the right.)
 From the (partial) abstract syntax tree on the right, the tree on the left can be derived easily
 by substituting the labels $q = \sigma(q_1,\ldots,q_k)\in R$ by the contained
 symbols $\sigma\in\Sigma$, without changing labels from $Q$. We shall call this
-projection $\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.
+projection $\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.\label{def:02-pi-sigma}
 
-\begin{definition}
+\begin{definition}\label{def:02-rtg-lang}
  Let $\ug$ be an RTG over $\Sigma$. The \emph{language of $\ug$} is the set
  \[
-  \lang\ug := \brc{t\in U_\Sigma | \exists d\in D^{q_0}(\ug)\colon t=\pi_\Sigma(d)}.
+  \lang\ug := \brc{t\in T_\Sigma | \exists d\in D^{q_0}(\ug)\colon t=\pi_\Sigma(d)}.
  \]
  A language $L\subseteq U_\Sigma$ is \emph{regular} if there exists an RTG
  $\ug$ over $\Sigma$ such that $\lang\ug = L$.
