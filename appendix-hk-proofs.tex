@@ -1,0 +1,25 @@
+\section{Proof for Lemma~\ref{lemma:03-consistent-yield}}\label{appendix:03-consistent-yield}
+
+Let $x\in X_{\not\bot} = V^*$. We are going to show that
+\[
+ \mbig\brc{\pi_1(y) \dmiddle| y\in\mbig\lang{H(x)}} = \brc{x}.
+\]
+
+{\color{red}TODO}
+
+\section{Proof for Lemma~\ref{lemma:03-language-partition}}\label{appendix:03-language-partition}
+
+The second part of the lemma follows directly from Lemma~\ref{lemma:03-consistent-yield}.
+\[
+ \forall x,x'\in X_{\not\bot}\colon\; \mbig\lang{H(x)} \cap \mbig\lang{H(x')} = \emptyset
+\]
+because, for every $y\in\mbig\lang{H(x)}$, $\pi_1(y) = x\neq x'$ and therefore
+$y\notin\mbig\lang{H(x')}$, and vice versa. It remains to be shown that
+\[
+ \mbig\lang K = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}
+\]
+or, in other words,
+\[
+ \forall y\in \mbig\lang K\colon \exists x\in X_{\not\bot}\colon\; y\in\mbig\lang{H(x)}.
+\]
+{\color{red}TODO}
