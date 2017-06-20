@@ -16,22 +16,22 @@ $d\in D^{(T,\#,0)}\mbig\kla{H(x)}\cap T_{R_x}$, where $\pi_C(d) = y$. We can
 therefore write
 \[
  \Pi_1(x)
- = \mbig\brc{\pi_1\mbig\kla{\pi_C(d_0)} \!\dmiddle|\! d_0\in \hat D^{(T,\#,0)}}
- = \pi_1\mBig\kla{\pi_C\mbig\kla{\hat D^{(T,\#,0)}}},
+ = \mbig\brc{\pi_1\mbig\kla{\pi_C(d_0)} \!\dmiddle|\! d_0\in \hat D_x^{(T,\#,0)}}
+ = \pi_1\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,\#,0)}}},
 \]
-where $\hat D^q$ is an abbreviation for $D^q\mbig\kla{H(x)}\cap T_{R_x}$. Let
+where $\hat D_x^q$ is an abbreviation for $D^q\mbig\kla{H(x)}\cap T_{R_x}$. Let
 $q\in Q_x$. Each $d\in D^q\mbig\kla{H(x)}$ can have one of the following two
 forms according to Definition~\ref{def:02-past}:
 \begin{align*}
  d_0 &= q, &&\text{or} \\
- d_0 &= \rho(d_1,\ldots,d_k) &&\text{where~} \rho\in R_x \text{ with } \rk(\rho) = k \text{ and} d_1\in D^{q_1}\mbig\kla{H(x)}, \ldots, d_k\in D^{q_k}\mbig\kla{H(x)}.
+ d_0 &= \rho(d_1,\ldots,d_k) &&\text{where~} \rho\in R_x \text{ with } \rk(\rho) = k \text{ and } d_1\in D^{q_1}\mbig\kla{H(x)}, \ldots, d_k\in D^{q_k}\mbig\kla{H(x)}.
 \end{align*}
-If $d\in \hat D^q$, the first form is not allowed because $ q\notin T_{R_x}$.
+If $d\in \hat D_x^q$, the first form is not allowed because $ q\notin T_{R_x}$.
 Furthermore, in the second form, the subtrees $d_1$ through $d_k$ must also be
 from $T_{R_x}$. We therefore have
 \[
- \hat D^q = \bigcup_{\rho=(q\to c(q_1,\ldots,q_k))\in R_x}
- \mbig\brc{\rho(d_1,\ldots,d_k) \!\dmiddle|\! d_1\in\hat D^1,\ldots, d_k\in\hat D^k}.
+ \hat D_x^q = \bigcup_{\rho=(q\to c(q_1,\ldots,q_k))\in R_x}
+ \mbig\brc{\rho(d_1,\ldots,d_k) \!\dmiddle|\! d_1\in\hat D_x^1,\ldots, d_k\in\hat D_x^k}.
 \]
 For each $q\in Q_x$, this expression can be expanded by selecting the admissible
 rules $\rho$. For this purpose, we assign the following names to the rules in $R_x$.
@@ -43,19 +43,19 @@ rules $\rho$. For this purpose, we assign the following names to the rules in $R
 \end{align*}
 We then have
 \begin{align*}
- \hat D^{(T,\#,0)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,1}(q')(d_1,d_2) \!\dmiddle|\! d_1\in\hat D^{(E,q',1)}, d_2\in\hat D^{(T,q',1)}}, \\
- \hat D^{(T,q,i)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,2}(q,q',i)(d_1,d_2) \!\dmiddle|\! d_1\in\hat D^{(E,q',i+1)}, d_2\in\hat D^{(T,q',i+1)}}, \\
- \hat D^{(T,q,n)} &= \mbig\brc{\rho_{x,3}(q)}, \\
- \hat D^{(E,q,j)} &= \mbig\brc{\rho_{x,4}(q,j)}
+ \hat D_x^{(T,\#,0)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,1}(q')(d_1,d_2) \!\dmiddle|\! d_1\in\hat D_x^{(E,q',1)}, d_2\in\hat D_x^{(T,q',1)}}, \\
+ \hat D_x^{(T,q,i)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,2}(q,q',i)(d_1,d_2) \!\dmiddle|\! d_1\in\hat D_x^{(E,q',i+1)}, d_2\in\hat D_x^{(T,q',i+1)}}, \\
+ \hat D_x^{(T,q,n)} &= \mbig\brc{\rho_{x,3}(q)}, \\
+ \hat D_x^{(E,q,j)} &= \mbig\brc{\rho_{x,4}(q,j)}
 \end{align*}
 for any $q\in Q$, $i\in\brc{1,\ldots,n-1}$ and $j\in\brc{1,\ldots,n}$. Any
-other $\hat D^q$ for $q\in Q_x$ are empty because these states are not
+other $\hat D_x^q$ for $q\in Q_x$ are empty because these states are not
 reachable with the available rules. We can simplify this set of equations by
-inserting $\hat D^{(E,q,j)}$ into the first two sets of equations, yielding
+inserting $\hat D_x^{(E,q,j)}$ into the first two sets of equations, yielding
 \begin{align*}
- \hat D^{(T,\#,0)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,1}(q')\mbig\kla{\rho_{x,4}(q',1),d} \!\dmiddle|\! d\in\hat D^{(T,q',1)}}, \\
- \hat D^{(T,q,i)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,2}(q,q',i)\mbig\kla{\rho_{x,4}(q',i+1),d} \!\dmiddle|\! d\in\hat D^{(T,q',i+1)}}, \\
- \hat D^{(T,q,n)} &= \mbig\brc{\rho_{x,3}(q)}.
+ \hat D_x^{(T,\#,0)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,1}(q')\mbig\kla{\rho_{x,4}(q',1),d} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}}, \\
+ \hat D_x^{(T,q,i)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,2}(q,q',i)\mbig\kla{\rho_{x,4}(q',i+1),d} \!\dmiddle|\! d\in\hat D_x^{(T,q',i+1)}}, \\
+ \hat D_x^{(T,q,n)} &= \mbig\brc{\rho_{x,3}(q)}.
 \end{align*}
 
 We now apply $\pi_C$ to these abstract syntax trees. The mapping $\pi_C:T_R\to
@@ -63,33 +63,33 @@ T_C$ (introduced as $\pi_\Sigma$ on page~\pageref{def:02-pi-sigma}) replaces
 each label $\rho=\mbig\kla{q\to c(q_1,\ldots,q_k)}\in R_x$ with the symbol
 $c\in C$ that $\rho$ emits.
 \begin{align*}
- \pi_C\mbig\kla{\hat D^{(T,\#,0)}} &= \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(\#,T)}\mBig\kla{\mbig\kla{x_1,(q',E)},\pi_C(d)} \!\dmiddle|\! d\in\hat D^{(T,q',1)}}, \\
- \pi_C\mbig\kla{\hat D^{(T,q,i)}} &= \bigcup_{q'\in Q} \mbig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{x_{i+1},(q',E)},\pi_C(d)} \!\dmiddle|\! d\in\hat D^{(T,q',i+1)}}, \\
- \pi_C\mbig\kla{\hat D^{(T,q,n)}} &= \mBig\brc{\mbig\kla{\#,(q,T)}}.
+ \pi_C\mbig\kla{\hat D_x^{(T,\#,0)}} &= \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(\#,T)}\mBig\kla{\mbig\kla{x_1,(q',E)},\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}}, \\
+ \pi_C\mbig\kla{\hat D_x^{(T,q,i)}} &= \bigcup_{q'\in Q} \mbig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{x_{i+1},(q',E)},\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',i+1)}}, \\
+ \pi_C\mbig\kla{\hat D_x^{(T,q,n)}} &= \mBig\brc{\mbig\kla{\#,(q,T)}}.
 \end{align*}
 
 We can now apply $\pi_X:T_C\to V^*$ (defined on page~\pageref{def:03-def-pi-x})
 to extract the generated word from the trees from $T_C$ that we obtained in
 this manner.
 \begin{align*}
- \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D^{(T,\#,0)}}}
- &= \bigcup_{q'\in Q} \mbigg\brc{\pi_X\mbigg\kla{\mbig\kla{q',(\#,T)}\mBig\kla{\mbig\kla{x_1,(q',E)},\pi_C(d)}} \!\dmiddle|\! d\in\hat D^{(T,q',1)}} \\
- &= \bigcup_{q'\in Q} \mbig\brc{\pi_X\mbig\kla{x_1,(q',E)}\pi_X\mbig\kla{\pi_C(d)} \!\dmiddle|\! d\in\hat D^{(T,q',1)}} \\
- &= \bigcup_{q'\in Q} \mbig\brc{x_1\pi_X\mbig\kla{\pi_C(d)} \!\dmiddle|\! d\in\hat D^{(T,q',1)}} \\
- &= \brc{x_1} \cdot \bigcup_{q'\in Q} \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D^{(T,q',1)}}} \\
+ \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,\#,0)}}}
+ &= \bigcup_{q'\in Q} \mbigg\brc{\pi_X\mbigg\kla{\mbig\kla{q',(\#,T)}\mBig\kla{\mbig\kla{x_1,(q',E)},\pi_C(d)}} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}} \\
+ &= \bigcup_{q'\in Q} \mbig\brc{\pi_X\mbig\kla{x_1,(q',E)}\pi_X\mbig\kla{\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}} \\
+ &= \bigcup_{q'\in Q} \mbig\brc{x_1\pi_X\mbig\kla{\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}} \\
+ &= \brc{x_1} \cdot \bigcup_{q'\in Q} \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q',1)}}} \\
  \intertext{and, analogously,}
- \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D^{(T,q,i)}}}
- &= \brc{x_{i+1}} \cdot \bigcup_{q'\in Q} \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D^{(T,q',i+1)}}}, \\
- \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D^{(T,q,n)}}} &= \brc\eps.
+ \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q,i)}}}
+ &= \brc{x_{i+1}} \cdot \bigcup_{q'\in Q} \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q',i+1)}}}, \\
+ \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q,n)}}} &= \brc\eps.
 \end{align*}
 
 The recursion in these last two equations is solved by
 \[
- \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D^{(T,q,i)}}} = \brc{x_{i+1}\cdots x_n} \quad\text{where}\quad q\in Q\text{ and } i\in\brc{1,\ldots,n-1},
+ \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q,i)}}} = \brc{x_{i+1}\cdots x_n} \quad\text{where}\quad q\in Q\text{ and } i\in\brc{1,\ldots,n-1},
 \]
 which leads to
 \[
- \Pi_1(x) = \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D^{(T,\#,0)}}} = \brc{x_1} \cdot \bigcup_{q'\in Q} \brc{x_2\cdots x_n} = \brc{x_1\cdots x_n} = \brc{x}.
+ \Pi_1(x) = \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,\#,0)}}} = \brc{x_1} \cdot \bigcup_{q'\in Q} \brc{x_2\cdots x_n} = \brc{x_1\cdots x_n} = \brc{x}.
 \]
 
 \section{Proof for Lemma~\ref{lemma:03-language-partition}}\label{appendix:03-language-partition}
