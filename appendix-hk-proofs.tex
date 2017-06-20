@@ -62,11 +62,13 @@ We now apply $\pi_C$ to these abstract syntax trees. The mapping $\pi_C:T_R\to
 T_C$ (introduced as $\pi_\Sigma$ on page~\pageref{def:02-pi-sigma}) replaces
 each label $\rho=\mbig\kla{q\to c(q_1,\ldots,q_k)}\in R_x$ with the symbol
 $c\in C$ that $\rho$ emits.
-\begin{align*}
+\begin{align}\label{eq:a1}
  \pi_C\mbig\kla{\hat D_x^{(T,\#,0)}} &= \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(\#,T)}\mBig\kla{\mbig\kla{x_1,(q',E)},\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}}, \\
- \pi_C\mbig\kla{\hat D_x^{(T,q,i)}} &= \bigcup_{q'\in Q} \mbig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{x_{i+1},(q',E)},\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',i+1)}}, \\
+ \label{eq:a2}
+ \pi_C\mbig\kla{\hat D_x^{(T,q,i)}} &= \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{x_{i+1},(q',E)},\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',i+1)}}, \\
+ \label{eq:a3}
  \pi_C\mbig\kla{\hat D_x^{(T,q,n)}} &= \mBig\brc{\mbig\kla{\#,(q,T)}}.
-\end{align*}
+\end{align}
 
 We can now apply $\pi_X:T_C\to V^*$ (defined on page~\pageref{def:03-def-pi-x})
 to extract the generated word from the trees from $T_C$ that we obtained in
@@ -103,21 +105,79 @@ $y\notin\mbig\lang{H(x')}$, and vice versa. It remains to be shown that
 \[
  \mbig\lang K = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}.
 \]
-% or, in other words,
-% \begin{equation}
-%  \label{eq:b1}
-%  \forall y\in \mbig\lang K\colon \exists x\in X_{\not\bot}\colon\; y\in\mbig\lang{H(x)}
-% \end{equation}
-% and conversely,
-% \begin{equation}
-%  \label{eq:b2}
-%  \forall x\in X_{\not\bot}\colon \forall y\in\mbig\lang{H(x)}\colon\; y\in\mbig\lang K.
-% \end{equation}
 
-% To prove \eqref{eq:b1}, it suffices to show that
-% \begin{equation}
-%  \label{eq:b3}
-%  \forall y\in \mbig\lang K\colon y\in\mbig\lang{H\mbig\kla{\pi_1(y)}}.
-% \end{equation}
+Recall that we showed at the beginning of the previous proof that
+\[
+ \mbig\lang{H(x)} = \pi_C\mBig\kla{D^{(T,\#,0)}\mbig\kla{H(x)}\cap T_{R_x}}.
+\]
 
-{\color{red}TODO}
+Putting this in the previous equation, and expanding $\lang K$ in a similar way, we have to show that
+\begin{equation}
+ \label{eq:b1}
+ \pi_C\mbig\kla{\hat D^{(T,\#)}} = \bigcup_{x\in X_{\not\bot}} \pi_C\mbig\kla{\hat D_x^{(T,\#,0)}},
+\end{equation}
+where $\hat D^q$ and $\hat D_x^q$ are abbreviations for $D^q(K)\cap T_{R_K}$
+and $D^q\mbig\kla{H(x)}\cap T_{R_x}$, respectively.
+
+For the grammar $K$, the set of $\pi_C(\hat D^q)$ can be derived in the same
+manner as shown in the previous proof for $H(x)$. Since $R_K$ contains the rules
+\begin{align*}
+ \rho_1(q,q') &:= (T,q) \to \mbig\kla{q',(q,T)}\mbig\kla{(E,q'),(T,q')} &&\forall q\in Q_\# \text{ and } q'\in Q, \\
+ \rho_2(q) &:= (T,q) \to \mbig\kla{\#,(q,T)} &&\forall q\in Q_\#, \\
+ \rho_3(q,v) &:= (E,q) \to \mbig\kla{v,(q,E)} &&\forall q\in Q \text{ and } v\in V,
+\end{align*}
+we have
+\[
+ \hat D^{(T,q)} = \mbig\brc{\rho_2(q)} \cup \bigcup_{q'\in Q} \mbig\brc{\rho_1(q,q')(d_1,d_2) \!\dmiddle|\! d_1\in\hat D^{(E,q')}, d_2\in\hat D^{(T,q')}}
+\]
+for all $q\in Q_\#$ and
+\[
+ \hat D^{(E,q')} = \mbig\brc{\rho_3(q',v) \!\dmiddle|\! v\in V}.
+\]
+for all $q'\in Q$. Putting the last equation into the previous one yields
+\[
+ \hat D^{(T,q)} = \mbig\brc{\rho_2(q)} \cup \bigcup_{q'\in Q} \mBig\brc{\rho_1(q,q')\mbig\kla{\rho_3(q',v),d} \!\dmiddle|\! v\in V, d\in\hat D^{(T,q')}},
+\]
+from which follows that the left side of~\eqref{eq:b1} is given by
+\[
+ \pi_C\mbig\kla{\hat D^{(T,q)}} = \mBig\brc{\mbig\kla{\#,(q,T)}} \cup \bigcup_{q'\in Q} \mbigg\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{v,(q',E)},t} \!\dmiddle|\! v\in V, t\in\pi_C\mbig\kla{\hat D^{(T,q')}}}
+\]
+for $q\in Q_\#$. For the right side of~\eqref{eq:b1}, we need to calculate the union over all $\pi_C\mbig\kla{\hat D_x^{(T,\#,0)}}$. Since this definition is once more going to be recursive, we abbreviate
+\[
+ \ud(q,i) := \bigcup_{x\in V^*: \abs x\geq i} \pi_C\mbig\kla{\hat D_x^{(T,q,i)}}
+\]
+such that the right side of~\eqref{eq:b1} is given by $\ud(\#,0)$. The
+restriction to $x$ with $\abs x\geq i$ is required because $(T,q,i)\in Q_x$
+only for those observations. The term $\ud(\#,0)$ includes contributions
+according to~\eqref{eq:a1} for nonempty sentences $x\in V^+$, and also the only
+tree $y$ that corresponds to the empty sentence $x=\eps$,
+\[
+ \pi_C\mbig\kla{\hat D_\eps^{(T,\#,0)}} = \lang{H(\eps)} = \mbig\brc{\mbig\kla{\#,(\#,T)}}.
+\]
+
+We therefore have
+\[
+ \ud(\#,0) = \mbig\brc{\mbig\kla{\#,(\#,T)}} \cup
+  \bigcup_{x\in V^+} \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(\#,T)}\mBig\kla{\mbig\kla{x_1,(q',E)},t} \!\dmiddle|\! t\in \pi_C\mbig\kla{\hat D_x^{(T,q',1)}}}.
+\]
+
+For $q\in Q$ and $i>0$, we have contributions according to~\eqref{eq:a3} for
+sentences $x$ with $\abs x = i$, and according to~\eqref{eq:a2} for sentences
+$x$ with $\abs x > i$, leading to
+\[
+ \ud(q,i) = \mbig\brc{\mbig\kla{\#,(q,T)}} \cup
+  \bigcup_{x\in V^+\atop \abs x>i} \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{x_{i+1},(q',E)},t} \!\dmiddle|\! t\in \pi_C\mbig\kla{\hat D_x^{(T,q',i+1)}}}.
+\]
+
+The expression for $\ud(\#,0)$ is a special case of this expression, so we
+shall consider this equation to apply to $(q,i)=(\#,0)$ as well. We can rewrite
+\[
+ \bigcup_{x\in V^+\atop \abs x>i} = \bigcup_{x_1,\ldots,x_i\in V} \bigcup_{x'\in V^+}
+\]
+such that $x = x_1\cdots x_i x'$ and $x_{i+1} = x'_1$. In this case,
+\[
+ \pi_C\mbig\kla{\hat D_x^{(T,q',i+1)}}
+ = \pi_C\mbig\kla{\hat D_{x'}^{(T,q',1)}}.
+\]
+
+{\color{red}TODO: this step is too much magic}
