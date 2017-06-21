@@ -1,4 +1,4 @@
-H\chapter{The Hidden Markov model}
+\chapter{The Hidden Markov model}
 
 The definition of the Hidden Markov model, the forward algorithm, backward
 algorithm and Baum-Welch algorithm in this chapter are from
@@ -266,7 +266,7 @@ And analogously,
   &= \frac{T_v(i,q') \cdot t(q|q') \cdot e(v_{i+1}|q) \cdot S_v(i+1,q)}{P(v)}.
 \end{align*}
 
-\section{Deriving the Baum-Welch algorithm}
+\section{Deriving the Baum-Welch algorithm}\label{sect:03-deriving}
 
 \cite{jm09} describes Baum-Welch as an instance of the EM algorithm. And
 indeed, the basic structure of the algorithm looks similar to the types of EM
@@ -485,39 +485,57 @@ $T_C$ that are not in $Y_{\not\bot}$.}, i.~e.,
 Finally, the IO information requires a mapping $H: X_{\not\bot}\to\ur(C)$ such
 that $H(x)$ generates all $y$ with $\pi_1(y)=x$. We can define $H(x)$ by
 starting from $K$, then restricting the set of rules such that only the
-sentence $x$ can be generated. This requires to adjust the state so that they
-track the time index $i$ since $i$ determines which word $x_i$ can be emitted.
+sentence $x$ can be generated.
 
-For any $x=x_1\cdots x_n\in V^+$, we have
+\begin{definition}
+ Let $x\in V^*$ be a sentence. We denote by $\suff(x)$ its
+ \emph{set of suffixes}, including $x$ itself and the empty sentence, i.~e.,
+ \[
+  \suff(x) := \begin{cases}
+   \brc\eps & \text{if } x = \eps, \\
+   \brc x \cup \suff(x') & \text{if } x = vx' \text{ with } v\in V\text{ and }x'\in V^*.
+  \end{cases}\qedhere
+ \]
+\end{definition}
+
+\begin{definition}
+ The operators $\car:V^+\to V$ and $\cdr:V^+\to V^*$ decompose a nonempty sentence into its leading word and the rest of the sentence, i.~e., for any $x = v_1\cdots v_n\in V^+$,
+ \[
+  \car(x) := v_1
+  \quad\text{and}\quad
+  \cdr(x) := v_2\cdots v_n.
+  \qedhere
+ \]
+\end{definition}
+
+For example, for $V = \brc{a,b,c}$ and $v = bbcb$, we have
+\begin{align*}
+ \suff(bbcb) &= \brc{bbcb, bcb, cb, b, \eps}, &
+ \car(bbcb) &= b, &
+ \cdr(bbcb) &= bcb.
+\end{align*}
+Using this operator, we define, for any $x\in X_{\not\bot} = V^*$,
 \[
- H(x) := \mbig\brc{Q_x,(T,\#,0),R_x} \quad\text{where}\quad Q_x = \brc{E,T} \times Q_\# \times \brc{0,\ldots,n}
+ H(x) := \mbig\brc{Q_x,(T,\#,x),R_x} \quad\text{where}\quad Q_x = \brc{E,T} \times Q_\# \times \suff(x)
 \]
 and $R_x$ contains the following rules:
 \begin{align*}\label{03-h-rules}
- (T,\#,0) &\to \mbig\kla{q,(\#,T)}\mbig\kla{(E,q,1),(T,q,1)} &&\forall q\in Q, \\
- (T,q,i) &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q',i+1),(T,q',i+1)} &&\forall q,q'\in Q \text{ and } i\in\brc{1,\ldots,n-1}, \\
- (T,q,n) &\to \mbig\kla{\#,(q,T)} &&\forall q\in Q, \\
- (E,q,i) &\to \mbig\kla{x_i,(q,E)} &&\forall q\in Q\text{ and } i\in\brc{1,\ldots,n}.
+ (T,q,x') &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q',x'),(T,q',\cdr(x'))} && \forall q\in Q_\#,q'\in Q\text{ and }x'\in\suff(x), \\
+ (T,q,\eps) &\to \mbig\kla{\#,(q,T)} && \forall q\in Q_\#, \\
+ (E,q,x') &\to \mbig\kla{\car(x'),(q,E)} && \forall q\in Q\text{ and }x'\in\suff(x).
 \end{align*}
+%
+A grammar state $q\in Q_x$ tracks both the state from $Q_\#$ that the HMM is
+currently in, and the suffix of $x$ that has not yet been generated yet. Emission
+rules are restricted such that only the leading word from that suffix can be generated.
 
-Compared to $R_K$, the second type of rules (counting from the top) is
-restricted to $i < n$ and the third type of rules is restricted to $i = n$, so
-that the state sequence is limited to exactly $n$ states from $Q$ (without
-$\#$). Moreover, the fourth type of rules is restricted to emitting the word
-$x_i$ according to the desired observation $x$.
-
-We also need to define $H(\eps)$ for the empty sentence. As is shown in
-Appendix~\ref{appendix:03-language-partition}, there is only one tree $y\in\mbig\lang K$ with $\pi_1(y)=\eps$, namely
+For the empty sentence $x=\eps$, the initial grammar state $(T,\#,\eps)$ can
+only be expanded using a rule of the second kind without producing any subsequent states.
+We therefore have
 \[
- y = \mbig\kla{\#,(\#,T)}.
+ \mbig\lang{H(\eps)} = \mBig\brc{\mbig\kla{\#,(\#,T)}}.
 \]
-The RTG $H(\eps)$ therefore generates exactly this tree.
-\[
- H(\eps) := \mBig\brc{\mbig\brc{(\#,0,T)}, (\#,0,T), R_\eps}
- \quad\text{where}\quad
- R_\eps := \mBig\brc{(\#,0,T) \to \mbig\kla{\#,(\#,T)}}.
-\]
-
+%
 Using the same reasoning as above for $K$, we see that each $H(x)$ is
 deterministic and, therefore, unambiguous. It remains to be shown that
 \[
@@ -536,16 +554,13 @@ We decompose the proof for this equivalence into two lemmas.
 \end{lemma}
 
 \begin{lemma}\label{lemma:03-language-partition}
- With the definitions shown above, the set $\mbig\brc{\mnorm\lang{H(x)}
- \dmiddle| x\in X_{\not\bot}}$ is a partition of the language $\lang K$, i.~e.,
+ With the definitions shown above,
  \[
-  \mbig\lang K = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}
-  \quad\text{and}\quad
-  \forall x,x'\in X_{\not\bot}\colon\; x\neq x' \Rightarrow \mbig\lang{H(x)} \cap \mbig\lang{H(x')} = \emptyset.
+  \mbig\lang K = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}.
  \]
 \end{lemma}
 
-The proofs for these lemmas can be found in Appendices~\ref{appendix:03-consistent-yield} and~\ref{appendix:03-language-partition}. For each $x\in X_{\not\bot}$, we have
+The proofs for these lemmas can be found in Appendix~\ref{sec:appendix-hk-proofs}. For each $x\in X_{\not\bot}$, we have
 \[
  \pi_1^{-1}(x)
  = \mbig\brc{y\in \underbrace{Y_{\not\bot}}_{=\lang K} \dmiddle| \pi_1(y) = x}

@@ -1,183 +1,127 @@
-\section{Proof for Lemma~\ref{lemma:03-consistent-yield}}\label{appendix:03-consistent-yield}
+\section{Elided proofs from Chapter~3}\label{sec:appendix-hk-proofs}
 
-Let $x\in X_{\not\bot} = V^*$. We are going to show that
-\[
- \mbig\brc{\pi_1(y) \dmiddle| y\in\mbig\lang{H(x)}} = \brc{x}.
-\]
-We shall denote the set on the left side by $\Pi_1(x)$. For $x=\eps$, we have
-\[
- \mbig\lang{H(\eps)} = \mBig\brc{\mbig\kla{\#,(\#,T)}}
- \quad\text{with}\quad \Pi_1(\eps) = \mBig\brc{\pi_X\mbig\kla{\#,(\#,T)}} = \brc\eps.
-\]
+This appendix contains the proofs for Lemmas~\ref{lemma:03-consistent-yield}
+and~\ref{lemma:03-language-partition}. We imply that $\uh = (Q,V,\#,t,e)$ is an
+HMM. Moreover, we imply all the definitions introduced in
+Section~\ref{sect:03-deriving} to describe $\uh$ in terms of an IO information.
+As a prerequisite for both proofs, we shall begin by writing down the languages
+of all the grammar states of $H(x)$ and $K$.
 
-Otherwise, let $x = x_1\cdots x_n\in V^+$. By Definition~\ref{def:02-rtg-lang},
-each $y\in\mbig\lang{H(x)}$ corresponds to at least one abstract syntax tree
-$d\in D^{(T,\#,0)}\mbig\kla{H(x)}\cap T_{R_x}$, where $\pi_C(d) = y$. We can
-therefore write
-\[
- \Pi_1(x)
- = \mbig\brc{\pi_1\mbig\kla{\pi_C(d_0)} \!\dmiddle|\! d_0\in \hat D_x^{(T,\#,0)}}
- = \pi_1\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,\#,0)}}},
-\]
-where $\hat D_x^q$ is an abbreviation for $D^q\mbig\kla{H(x)}\cap T_{R_x}$. Let
-$q\in Q_x$. Each $d\in D^q\mbig\kla{H(x)}$ can have one of the following two
-forms according to Definition~\ref{def:02-past}:
-\begin{align*}
- d_0 &= q, &&\text{or} \\
- d_0 &= \rho(d_1,\ldots,d_k) &&\text{where~} \rho\in R_x \text{ with } \rk(\rho) = k \text{ and } d_1\in D^{q_1}\mbig\kla{H(x)}, \ldots, d_k\in D^{q_k}\mbig\kla{H(x)}.
-\end{align*}
-If $d\in \hat D_x^q$, the first form is not allowed because $ q\notin T_{R_x}$.
-Furthermore, in the second form, the subtrees $d_1$ through $d_k$ must also be
-from $T_{R_x}$. We therefore have
-\[
- \hat D_x^q = \bigcup_{\rho=(q\to c(q_1,\ldots,q_k))\in R_x}
- \mbig\brc{\rho(d_1,\ldots,d_k) \!\dmiddle|\! d_1\in\hat D_x^1,\ldots, d_k\in\hat D_x^k}.
-\]
-For each $q\in Q_x$, this expression can be expanded by selecting the admissible
-rules $\rho$. For this purpose, we assign the following names to the rules in $R_x$.
-\begin{align*}
- \rho_{x,1}(q) &:= (T,\#,0) \to \mbig\kla{q,(\#,T)}\mbig\kla{(E,q,1),(T,q,1)} &&\forall q\in Q, \\
- \rho_{x,2}(q,q',i) &:= (T,q,i) \to \mbig\kla{q',(q,T)}\mbig\kla{(E,q',i+1),(T,q',i+1)} &&\forall q,q'\in Q \text{ and } i\in\brc{1,\ldots,n-1}, \\
- \rho_{x,3}(q) &:= (T,q,n) \to \mbig\kla{\#,(q,T)} &&\forall q\in Q, \\
- \rho_{x,4}(q,i) &:= (E,q,i) \to \mbig\kla{x_i,(q,E)} &&\forall q\in Q\text{ and } i\in\brc{1,\ldots,n}.
-\end{align*}
-We then have
-\begin{align*}
- \hat D_x^{(T,\#,0)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,1}(q')(d_1,d_2) \!\dmiddle|\! d_1\in\hat D_x^{(E,q',1)}, d_2\in\hat D_x^{(T,q',1)}}, \\
- \hat D_x^{(T,q,i)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,2}(q,q',i)(d_1,d_2) \!\dmiddle|\! d_1\in\hat D_x^{(E,q',i+1)}, d_2\in\hat D_x^{(T,q',i+1)}}, \\
- \hat D_x^{(T,q,n)} &= \mbig\brc{\rho_{x,3}(q)}, \\
- \hat D_x^{(E,q,j)} &= \mbig\brc{\rho_{x,4}(q,j)}
-\end{align*}
-for any $q\in Q$, $i\in\brc{1,\ldots,n-1}$ and $j\in\brc{1,\ldots,n}$. Any
-other $\hat D_x^q$ for $q\in Q_x$ are empty because these states are not
-reachable with the available rules. We can simplify this set of equations by
-inserting $\hat D_x^{(E,q,j)}$ into the first two sets of equations, yielding
-\begin{align*}
- \hat D_x^{(T,\#,0)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,1}(q')\mbig\kla{\rho_{x,4}(q',1),d} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}}, \\
- \hat D_x^{(T,q,i)} &= \bigcup_{q'\in Q} \mbig\brc{\rho_{x,2}(q,q',i)\mbig\kla{\rho_{x,4}(q',i+1),d} \!\dmiddle|\! d\in\hat D_x^{(T,q',i+1)}}, \\
- \hat D_x^{(T,q,n)} &= \mbig\brc{\rho_{x,3}(q)}.
-\end{align*}
+\begin{definition}
+ Let $\ug = (Q_\ug,q_0,R_\ug)$ be an RTG over $C$. For any grammar state $q\in
+ Q_\ug$, the \emph{language of $q$ under $\ug$} is given by
+ \[
+  \lang\ug_q := \pi_C\mbig\kla{D^q(\ug)\cap T_{R_\ug}}.
+  \qedhere
+ \]
+\end{definition}
 
-We now apply $\pi_C$ to these abstract syntax trees. The mapping $\pi_C:T_R\to
-T_C$ (introduced as $\pi_\Sigma$ on page~\pageref{def:02-pi-sigma}) replaces
-each label $\rho=\mbig\kla{q\to c(q_1,\ldots,q_k)}\in R_x$ with the symbol
-$c\in C$ that $\rho$ emits.
-\begin{align}\label{eq:a1}
- \pi_C\mbig\kla{\hat D_x^{(T,\#,0)}} &= \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(\#,T)}\mBig\kla{\mbig\kla{x_1,(q',E)},\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}}, \\
- \label{eq:a2}
- \pi_C\mbig\kla{\hat D_x^{(T,q,i)}} &= \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{x_{i+1},(q',E)},\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',i+1)}}, \\
- \label{eq:a3}
- \pi_C\mbig\kla{\hat D_x^{(T,q,n)}} &= \mBig\brc{\mbig\kla{\#,(q,T)}}.
-\end{align}
-
-We can now apply $\pi_X:T_C\to V^*$ (defined on page~\pageref{def:03-def-pi-x})
-to extract the generated word from the trees from $T_C$ that we obtained in
-this manner.
-\begin{align*}
- \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,\#,0)}}}
- &= \bigcup_{q'\in Q} \mbigg\brc{\pi_X\mbigg\kla{\mbig\kla{q',(\#,T)}\mBig\kla{\mbig\kla{x_1,(q',E)},\pi_C(d)}} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}} \\
- &= \bigcup_{q'\in Q} \mbig\brc{\pi_X\mbig\kla{x_1,(q',E)}\pi_X\mbig\kla{\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}} \\
- &= \bigcup_{q'\in Q} \mbig\brc{x_1\pi_X\mbig\kla{\pi_C(d)} \!\dmiddle|\! d\in\hat D_x^{(T,q',1)}} \\
- &= \brc{x_1} \cdot \bigcup_{q'\in Q} \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q',1)}}} \\
- \intertext{and, analogously,}
- \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q,i)}}}
- &= \brc{x_{i+1}} \cdot \bigcup_{q'\in Q} \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q',i+1)}}}, \\
- \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q,n)}}} &= \brc\eps.
-\end{align*}
-
-The recursion in these last two equations is solved by
-\[
- \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,q,i)}}} = \brc{x_{i+1}\cdots x_n} \quad\text{where}\quad q\in Q\text{ and } i\in\brc{1,\ldots,n-1},
-\]
-which leads to
-\[
- \Pi_1(x) = \pi_X\mBig\kla{\pi_C\mbig\kla{\hat D_x^{(T,\#,0)}}} = \brc{x_1} \cdot \bigcup_{q'\in Q} \brc{x_2\cdots x_n} = \brc{x_1\cdots x_n} = \brc{x}.
-\]
-
-\section{Proof for Lemma~\ref{lemma:03-language-partition}}\label{appendix:03-language-partition}
-
-The second part of the lemma follows directly from Lemma~\ref{lemma:03-consistent-yield}.
-\[
- \forall x,x'\in X_{\not\bot}\colon\; x\neq x' \Rightarrow \mbig\lang{H(x)} \cap \mbig\lang{H(x')} = \emptyset
-\]
-because, for every $y\in\mbig\lang{H(x)}$, $\pi_1(y) = x\neq x'$ and therefore
-$y\notin\mbig\lang{H(x')}$, and vice versa. It remains to be shown that
-\[
- \mbig\lang K = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}.
-\]
-
-Recall that we showed at the beginning of the previous proof that
-\[
- \mbig\lang{H(x)} = \pi_C\mBig\kla{D^{(T,\#,0)}\mbig\kla{H(x)}\cap T_{R_x}}.
-\]
-
-Putting this in the previous equation, and expanding $\lang K$ in a similar way, we have to show that
-\begin{equation}
- \label{eq:b1}
- \pi_C\mbig\kla{\hat D^{(T,\#)}} = \bigcup_{x\in X_{\not\bot}} \pi_C\mbig\kla{\hat D_x^{(T,\#,0)}},
+The mapping $\pi_C:T_{R_\ug}(Q_\ug)\to U_C(Q_\ug)$ was introduced as $\pi_\Sigma$ on
+page~\pageref{def:02-pi-sigma}. The language $\lang\ug_q$ contains all trees
+from $U_C$ that can be generated by applying the grammar's rules, starting from
+the state $q$. It especially holds that
+\begin{equation}\label{eq:a1}
+ \lang\ug = \lang\ug_{q_0}.
 \end{equation}
-where $\hat D^q$ and $\hat D_x^q$ are abbreviations for $D^q(K)\cap T_{R_K}$
-and $D^q\mbig\kla{H(x)}\cap T_{R_x}$, respectively.
+To find $D^q(\ug)\cap T_{R_\ug}$, we first observe that, according to
+Definition~\ref{def:02-past}, each $d\in D^q(\ug)$ must have one of two forms,
+\[
+ d = q \quad\text{or}\quad d = \rho(d_1,\ldots,d_k),
+\]
+where $\rho=q\to c(q_1,\ldots,q_k)\in R_\ug$ such that $\rk(\rho) = k$, and
+each $d_i\in D^{q_i}(\ug)$. The first form, $d = q$, cannot contribute to
+$\lang\ug_q$ since $q\notin T_{R_\ug}$. The second form is admissible, but
+because $d\in T_{R_\ug}$, the subtrees $d_i$ may not contain any states $q\in
+Q_\ug$ either. We therefore have
+\[
+ D^q(\ug)\cap T_{R_\ug} = \bigcup_{\rho=(q\to c(q_1,\ldots,q_k))\in R_\ug}
+ \mbig\brc{\rho(d_1,\ldots,d_k) \!\dmiddle|\! d_1\in D^{q_1}(\ug)\cap T_{R_\ug},\ldots, d_k\in D^{q_k}(\ug)\cap T_{R_\ug}},
+\]
+from which follows
+\begin{equation}
+ \label{eq:a2}
+ \lang\ug_q = \bigcup_{\rho=(q\to c(q_1,\ldots,q_k))\in R_\ug}
+ \mbig\brc{c(t_1,\ldots,t_k) \!\dmiddle|\! t_1\in\lang\ug_{q_1},\ldots, t_k\in\lang\ug_{q_k}},
+\end{equation}
+when $\pi_C$ is applied on both sides. We can thus describe the languages
+$\mbig\lang K$ and $\mbig\lang{H(x)}$ recursively, in terms of the languages of
+their grammar states.
 
-For the grammar $K$, the set of $\pi_C(\hat D^q)$ can be derived in the same
-manner as shown in the previous proof for $H(x)$. Since $R_K$ contains the rules
+Let $x\in V^*$. Application of \eqref{eq:a2} to all reachable states in $H(x)$ yields
 \begin{align*}
- \rho_1(q,q') &:= (T,q) \to \mbig\kla{q',(q,T)}\mbig\kla{(E,q'),(T,q')} &&\forall q\in Q_\# \text{ and } q'\in Q, \\
- \rho_2(q) &:= (T,q) \to \mbig\kla{\#,(q,T)} &&\forall q\in Q_\#, \\
- \rho_3(q,v) &:= (E,q) \to \mbig\kla{v,(q,E)} &&\forall q\in Q \text{ and } v\in V,
+ \mbig\lang{H(x)}_{(T,q,x')} &= \bigcup_{q'\in Q}\mbig\brc{\mbig\kla{q',(q,T)}(t_1,t_2) \!\dmiddle| t_1\in\mbig\lang{H(x)}_{(E,q',x')}, t_2\in\mbig\lang{H(x)}_{(T,q',\cdr(x'))}}, \\
+ \mbig\lang{H(x)}_{(T,q,\eps)} &= \mbig\brc{\mbig\kla{\#,(q,T)}} \\
+ \intertext{for $q\in Q_\#$ and $x'\in\suff(v)$, and}
+ \mbig\lang{H(x)}_{(E,q,x')} &= \mbig\brc{\mbig\kla{\car(x'),(q,E)}}
 \end{align*}
-we have
+for $q\in Q$ and $x'\in\suff(x)$. Inserting the last equation into the one above it, we can describe $\mbig\lang{H(x)} = \mbig\lang{H(x)}_{(T,\#,\eps)}$ recursively by
+\begin{subequations}\label{eq:a3}\begin{align}
+ \mbig\lang{H(x)}_{(T,q,x')} &= \bigcup_{q'\in Q}\mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{\car(x'),(q',E)},t} \!\dmiddle| t\in\mbig\lang{H(x)}_{(T,q',\cdr(x'))}}, \\
+ \mbig\lang{H(x)}_{(T,q,\eps)} &= \mbig\brc{\mbig\kla{\#,(q,T)}}.
+\end{align}\end{subequations}
+
+Analogous application of~\eqref{eq:a2} to all states in $K$, followed by
+insertion of the expression for $\lang K_{(E,q)}$ into that of $\lang
+K_{(T,q)}$, results in
+\begin{equation}\label{eq:a4}
+ \lang K_{(T,q)} = \mbig\brc{\mbig\kla{\#,(q,T)}} \cup \bigcup_{q'\in Q}\bigcup_{v\in V}\mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{v,(q',E)},t} \!\dmiddle| t\in\lang K_{(T,q')}}.
+\end{equation}
+
+\subsection{Proof for Lemma~\ref{lemma:03-consistent-yield}}
+
+Let $x\in V^*$. Lemma~\ref{lemma:03-consistent-yield} is equivalent to
 \[
- \hat D^{(T,q)} = \mbig\brc{\rho_2(q)} \cup \bigcup_{q'\in Q} \mbig\brc{\rho_1(q,q')(d_1,d_2) \!\dmiddle|\! d_1\in\hat D^{(E,q')}, d_2\in\hat D^{(T,q')}}
+ \pi_X\mbig\kla{\mbig\lang{H(x)}} = \brc x,
 \]
-for all $q\in Q_\#$ and
+since $\pi_X$ only differs in domain from $\pi_1$. Applying $\pi_X$
+to the equations~\eqref{eq:a3} yields
+\begin{align*}
+ \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T,q,vx')}} &= \bigcup_{q'\in Q}\mBig\brc{\pi_X\mbig\kla{v,(q',E)}\pi_X(d) \!\dmiddle| d\in\mbig\lang{H(x)}_{(T,q',x')}} \\
+ &= \brc v \cdot \bigcup_{q'\in Q} \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T,q',x')}}, \\
+ \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T,q,\eps)}} &= \brc\eps.
+\end{align*}
+
+This recursive definition of $\pi_X\mbig\kla{\mbig\lang{H(x)}_{(T,q,x')}}$, for
+any $x'\in\operatorname{suff}(x)$, does not depend on $q$. We can therefore
+abbreviate $\pi_X\mbig\kla{\mbig\lang{H(x)}_{(T,q,x')}}$ as $\Pi_x(x')$ and
+obtain
 \[
- \hat D^{(E,q')} = \mbig\brc{\rho_3(q',v) \!\dmiddle|\! v\in V}.
+ \Pi_x(vx') = \brc v \cdot \Pi_x(x')
+ \quad\text{and}\quad
+ \Pi_x(\eps) = \brc\eps,
 \]
-for all $q'\in Q$. Putting the last equation into the previous one yields
+which is clearly satisfied by $\Pi_x(x') = \brc{x'}$. Therefore, we finally have
 \[
- \hat D^{(T,q)} = \mbig\brc{\rho_2(q)} \cup \bigcup_{q'\in Q} \mBig\brc{\rho_1(q,q')\mbig\kla{\rho_3(q',v),d} \!\dmiddle|\! v\in V, d\in\hat D^{(T,q')}},
-\]
-from which follows that the left side of~\eqref{eq:b1} is given by
-\[
- \pi_C\mbig\kla{\hat D^{(T,q)}} = \mBig\brc{\mbig\kla{\#,(q,T)}} \cup \bigcup_{q'\in Q} \mbigg\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{v,(q',E)},t} \!\dmiddle|\! v\in V, t\in\pi_C\mbig\kla{\hat D^{(T,q')}}}
-\]
-for $q\in Q_\#$. For the right side of~\eqref{eq:b1}, we need to calculate the union over all $\pi_C\mbig\kla{\hat D_x^{(T,\#,0)}}$. Since this definition is once more going to be recursive, we abbreviate
-\[
- \ud(q,i) := \bigcup_{x\in V^*: \abs x\geq i} \pi_C\mbig\kla{\hat D_x^{(T,q,i)}}
-\]
-such that the right side of~\eqref{eq:b1} is given by $\ud(\#,0)$. The
-restriction to $x$ with $\abs x\geq i$ is required because $(T,q,i)\in Q_x$
-only for those observations. The term $\ud(\#,0)$ includes contributions
-according to~\eqref{eq:a1} for nonempty sentences $x\in V^+$, and also the only
-tree $y$ that corresponds to the empty sentence $x=\eps$,
-\[
- \pi_C\mbig\kla{\hat D_\eps^{(T,\#,0)}} = \lang{H(\eps)} = \mbig\brc{\mbig\kla{\#,(\#,T)}}.
+ \pi_X\mbig\kla{\mbig\lang{H(x)}} = \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T,\#,x)}} = \Pi_x(x) = \brc x.
 \]
 
-We therefore have
-\[
- \ud(\#,0) = \mbig\brc{\mbig\kla{\#,(\#,T)}} \cup
-  \bigcup_{x\in V^+} \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(\#,T)}\mBig\kla{\mbig\kla{x_1,(q',E)},t} \!\dmiddle|\! t\in \pi_C\mbig\kla{\hat D_x^{(T,q',1)}}}.
-\]
+\subsection{Proof for Lemma~\ref{lemma:03-language-partition}}
 
-For $q\in Q$ and $i>0$, we have contributions according to~\eqref{eq:a3} for
-sentences $x$ with $\abs x = i$, and according to~\eqref{eq:a2} for sentences
-$x$ with $\abs x > i$, leading to
+We define
 \[
- \ud(q,i) = \mbig\brc{\mbig\kla{\#,(q,T)}} \cup
-  \bigcup_{x\in V^+\atop \abs x>i} \bigcup_{q'\in Q} \mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{x_{i+1},(q',E)},t} \!\dmiddle|\! t\in \pi_C\mbig\kla{\hat D_x^{(T,q',i+1)}}}.
+ L(q) := \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}_{(T,q,x)}
 \]
+for all $q\in Q_\#$. Inserting~\eqref{eq:a3} into the right side, we obtain
+\begin{align*}
+ L(q)
+ &= \mbig\lang{H(\eps)}_{(T,q,\eps)} \cup \bigcup_{x\in V^+} \mbig\lang{H(x)}_{(T,q,x)} \\
+ &= \mbig\brc{\mbig\kla{\#,(q,T)}} \cup \bigcup_{x\in V^+} \bigcup_{q'\in Q}\mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{\car(x),(q',E)},t} \!\dmiddle| t\in\mbig\lang{H(x)}_{(T,q',\cdr(x))}}.
+\end{align*}
 
-The expression for $\ud(\#,0)$ is a special case of this expression, so we
-shall consider this equation to apply to $(q,i)=(\#,0)$ as well. We can rewrite
-\[
- \bigcup_{x\in V^+\atop \abs x>i} = \bigcup_{x_1,\ldots,x_i\in V} \bigcup_{x'\in V^+}
-\]
-such that $x = x_1\cdots x_i x'$ and $x_{i+1} = x'_1$. In this case,
-\[
- \pi_C\mbig\kla{\hat D_x^{(T,q',i+1)}}
- = \pi_C\mbig\kla{\hat D_{x'}^{(T,q',1)}}.
-\]
+We can express $x\in V^+$ as $x = vx'$ with $v\in V$ and $x\in V^*$. Therefore,
+\begin{align*}
+ L(q)
+ &= \mbig\brc{\mbig\kla{\#,(q,T)}} \cup \bigcup_{q'\in Q} \bigcup_{v\in V} \bigcup_{x'\in V^*} \mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{v,(q',E)},t} \!\dmiddle| t\in\mbig\lang{H(x)}_{(T,q',x')}} \\
+ &= \mbig\brc{\mbig\kla{\#,(q,T)}} \cup \bigcup_{q'\in Q} \bigcup_{v\in V} \mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{v,(q',E)},t} \!\dmiddle| t\in\underbrace{\bigcup_{x'\in V^*} \mbig\lang{H(x)}_{(T,q',x')}}_{=L(q')}}.
+\end{align*}
 
-{\color{red}TODO: this step is too much magic}
+This recursive expression for $L(q)$ is the same as for $\lang K_{(T,q)}$ in~\eqref{eq:a4}. Therefore,
+\[
+ \lang K_{(T,q)} = L(q)
+\]
+for all $q\in Q_\#$ and, finally, Lemma~\ref{lemma:03-language-partition} emerges because
+\[
+ \lang K = \lang K_{(T,\#)} = L(\#)
+ = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}_{(T,\#,x)}
+ = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}.
+\]
