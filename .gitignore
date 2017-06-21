@@ -6,5 +6,6 @@
 *.log
 *.out
 *.toc
+display.pdf
 main.pdf
 pdfa.xmpi
