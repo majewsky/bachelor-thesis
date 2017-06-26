@@ -29,9 +29,9 @@ Definition~\ref{def:02-past}, each $d\in D^q(\ug)$ must have one of two forms,
  d = q \quad\text{or}\quad d = \rho(d_1,\ldots,d_k),
 \]
 where $\rho=q\to c(q_1,\ldots,q_k)\in R_\ug$ such that $\rk(\rho) = k$, and
-each $d_i\in D^{q_i}(\ug)$. The first form, $d = q$, cannot contribute to
+each $d_i\in D^{q_i}(\ug)$. The first form, $d = q$, is not allowed in
 $\lang\ug_q$ since $q\notin T_{R_\ug}$. The second form is admissible, but
-because $d\in T_{R_\ug}$, the subtrees $d_i$ may not have positions labeled by
+because $d\in T_{R_\ug}$, the subtrees $d_i$ may not have positions labeled with
 a state $q\in Q_\ug$ either. We therefore have
 \[
  D^q(\ug)\cap T_{R_\ug} = \bigcup_{\rho=(q\to c(q_1,\ldots,q_k))\in R_\ug}
@@ -59,10 +59,9 @@ for $q\in Q$ and $x'\in\suff(x)$. Inserting the last equation into the one above
  \mbig\lang{H(x)}_{(T\!,q,x')} &= \bigcup_{q'\in Q}\mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{\car(x'),(q',E)},t} \!\dmiddle| t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}, \label{eq:a3a} \\
  \mbig\lang{H(x)}_{(T\!,q,\eps)} &= \mbig\brc{\mbig\kla{\#,(q,T)}}. \label{eq:a3b}
 \end{align}\end{subequations}
-
-Analogous application of~\eqref{eq:a2} to all states in $K$, followed by
-insertion of the expression for $\lang K_{(E,q)}$ into that of $\lang
-K_{(T\!,q)}$, results in
+for all $q\in Q_\#$. Analogous application of~\eqref{eq:a2} to all states in
+$K$, followed by insertion of the expression for $\lang K_{(E,q)}$ into that of
+$\lang K_{(T\!,q)}$, results in
 \begin{equation}\label{eq:a4}
  \lang K_{(T\!,q)} = \mbig\brc{\mbig\kla{\#,(q,T)}} \cup \bigcup_{q'\in Q}\bigcup_{v\in V}\mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{v,(q',E)},t} \!\dmiddle| t\in\lang K_{(T\!,q')}}
 \end{equation}
@@ -118,7 +117,7 @@ to both sides of~\eqref{eq:a3a} yields
  \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q,x')}}
  &= \bigcup_{q'\in Q}\mBig\brc{\pi_X\mbig\kla{\car(x'),(q',E)}\pi_X(t) \!\dmiddle| t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
  &= \mbig\brc{\car(x')} \cdot \bigcup_{q'\in Q}\mBig\brc{\pi_X(t) \!\dmiddle| t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
- &= \mbig\brc{\car(x')} \cdot \hspace*{-0.8em}\underbrace{\pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}}_{=\brc{\cdr(x')}\text{ by induction hypothesis}} \\
+ &= \mbig\brc{\car(x')} \cdot \bigcup_{q'\in Q}\underbrace{\pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}}_{=\brc{\cdr(x')}\text{ by induction hypothesis}} \\
  &= \mbig\brc{\car(x')\cdr(x')} = \mbig\brc{x'}.
 \end{align*}
 
@@ -136,7 +135,8 @@ Let $\pi_Q: T_C\to Q_\#$ be the mapping defined by
  \pi_Q(y) := q \text{ such that } y(\eps) = \mbig\kla{a,(q,b)}.
 \]
 That is, $\pi_Q$ extracts the state $q$ from the label $\mbig\kla{a,(q,b)}$
-of the root position of any $y$. We are going to show that
+of the root position of any $y$. As a prerequisite for the actual proof, we are
+going to show that
 \begin{equation}\label{eq:p21}
  \forall y\in T_C\colon\;
  \mBig\kla{y\in\mbig\lang K_{(T\!,\pi_Q(y))}}
@@ -147,7 +147,7 @@ by structural induction on $y$. According to the definition of the ranked
 alphabet $C$, each $y\in T_C$ can have one of four forms,
 \begin{align*}
  y_1 &:= \mbig\kla{\#,(\#,E)}, \\
- y_2(v,q) &:= \mbig\kla{v,(q,E)} &&\text{ where } (v,q) \in (V\times Q) \cup \mbig\brc{(\#,\#)}, \\
+ y_2(v,q) &:= \mbig\kla{v,(q,E)} &&\text{ where } v\in V\text{ and } q\in Q, \\
  y_3(q) &:= \mbig\kla{\#,(q,T)} &&\text{ where } q\in Q_\#, \\
  y_4(q,q',y_e,y_t) &:= \mbig\kla{q',(q,T)}(y_e,y_t) &&\text{ where } q\in Q_\#, q'\in Q, \text{ and } y_e,y_t\in T_C.
 \end{align*}
@@ -156,7 +156,7 @@ and the last form represents the inductive step.
 
 \subsubsection*{Base cases}
 
-For $y=y_1$, we have $\pi_Q(y) = \#$, $\pi_X(y) = \eps$, and \eqref{eq:p21} holds
+For $y=y_1$, we have $\pi_Q(y) = \#$ and $\pi_X(y) = \eps$. We see that \eqref{eq:p21} holds
 because
 \[
  \mbig\kla{\#,(\#,E)} \notin \mbig\lang K_{(T\!,\#)}
@@ -164,20 +164,20 @@ because
  \mbig\kla{\#,(\#,E)} \notin \mbig\lang{H(\eps)}_{(T\!,\#,\eps)}
 \]
 according to~\eqref{eq:a3} and~\eqref{eq:a4}. For any $y=y_2(v,q)$, we have
-$\pi_Q(y)=q$, $\pi_X(y)=v$, and analogously,
+$\pi_Q(y)=q$ and $\pi_X(y)=v$, and analogously,
 \[
  \mbig\kla{v,(q,E)} \notin \mbig\lang K_{(T\!,q)}
  \quad\text{ and }\quad
  \mbig\kla{v,(q,E)} \notin \mbig\lang{H(v)}_{(T\!,q,v)}.
 \]
 For any $y=y_3(q)$, we have $\pi_Q(y) = q$ and $\pi_X(y)=\eps$, and \eqref{eq:p21} is
-satisfied because both
+satisfied because
 \[
  \mbig\kla{\#,(q,T)} \in \mbig\lang K_{(T\!,q)}
  \quad\text{ and }\quad
  \mbig\kla{\#,(q,T)} \in \mbig\lang{H(\eps)}_{(T\!,q,\eps)}
 \]
-hold if (and only if) $q=\#$.
+for all $q\in Q_\#$.
 
 \subsubsection*{Induction step: ``$\Rightarrow$'' direction}
 
@@ -185,14 +185,14 @@ Consider any
 \[
  y = y_4(q,q',y_e,y_t) = \mbig\kla{q',(q,T)}(y_e,y_t).
 \]
-and let $x:=\pi_X(y)$. Since $\pi_Q(y) = q$, we see from~\eqref{eq:a4} that
-$y\in\mbig\lang K_{(T\!,q)}$ precisely for
+such that $y\in\lang K_{(T,q)}$, and let $x:=\pi_X(y)$. Note that $\pi_Q(y) =
+q$.  We see from~\eqref{eq:a4} that
 \[
  y_t \in \mbig\lang K_{(T\!,q')}
  \quad\text{ and }\quad
  y_e = \mbig\kla{v,(q',E)}
  \quad\text{ where }\quad
- v\in V.
+ q'\in Q \text{ and } v\in V.
 \]
 From this follows $x = \pi_X(y) = v\pi_X(y_t)$ and, therefore, $\car(x) = v$
 and $\cdr(x)=\pi_X(y_t)$. Since $y_t$ is a substructure of $y$, it can be
@@ -209,7 +209,7 @@ Because of~\eqref{eq:a5}, this is equivalent to saying that $y_t \in \mbig\lang{
 \[
  y = \mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{\car(x),(q',E)},y_t}
 \]
-with $q\in Q$, $q'\in Q_\#$, and $y_t \in \mbig\lang{H(x)}_{(T\!,q',\cdr(x))}$,
+with $q\in Q_\#$, $q'\in Q$, and $y_t \in \mbig\lang{H(x)}_{(T\!,q',\cdr(x))}$,
 from which follows
 \[
  y \in \mbig\lang{H(x)}_{(T\!,q,x)}
@@ -218,9 +218,9 @@ because of~\eqref{eq:a3a}.
 
 \subsubsection*{Induction step: ``$\Leftarrow$'' direction}
 
-Consider any $y = y_4(q,q',y_e,y_t)$. Let $x := \pi_X(y)$. Since $\pi_Q(y) = q$,
-it follows from~\eqref{eq:a3} that
-$y\in\mbig\lang{H(x)}_{(T\!,\pi_Q(y),x)}$ if and only if
+Consider any $y = y_4(q,q',y_e,y_t)$ such that
+$y\in\mbig\lang{H(x)}_{(T\!,\pi_Q(y),x)}$, wherein $x := \pi_X(y)$. Since
+$\pi_Q(y) = q$, it follows from~\eqref{eq:a3} that
 \[
  y_e = \mbig\kla{\car(x),(q',E)}
  \quad\text{ and }\quad
@@ -233,14 +233,14 @@ Because of~\eqref{eq:a5}, the second statement is equivalent to
 \]
 From~\eqref{eq:a3}, we see that $\pi_Q(y_t)$ must be $q'$. Since $y_t$ is a
 substructure of $y$, it can be assumed to satisfy~\eqref{eq:p21}, from which
-follows that $y_t \in \mbig\lang K_{(T\!,q')}$. According to~\eqref{eq:a4}, we
-therefore have $y\in\mbig\lang K_{(T\!,q)}$ for any
+follows that $y_t \in \mbig\lang K_{(T\!,q')}$. According to~\eqref{eq:a4}, it
+therefore holds that $y\in\mbig\lang K_{(T\!,q)}$ for any
 $y\in\mbig\lang{H(x)}_{(T\!,\pi_Q(y),x)}$. The proof for~\eqref{eq:p21} is
 thereby complete.
 
 \subsubsection*{Conclusion of the proof}
 
-To finally derive the lemma, we first note that
+To finally derive Lemma~\ref{lemma:03-language-partition}, we first note that
 \begin{equation}\label{eq:p22}
  \pi_Q\mbig\kla{\mbig\lang K_{(T\!,\#)}} = \brc\#
  \quad\text{ and }\quad
@@ -250,8 +250,8 @@ for any $x\in X_{\not\bot}$, which follows from~\eqref{eq:a4} and~\eqref{eq:a3},
 We can thus expand $\lang K$ into
 \begin{align*}
  \mbig\lang K
- &= \mbig\lang K_{(T\!,\#)}
- = \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang K_{(T\!,\#)}} \\
+ = \mbig\lang K_{(T\!,\#)}
+ &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang K_{(T\!,\#)}} \\
  &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang K_{(T\!,\pi_Q(y))}}.
 \end{align*}
 By using~\eqref{eq:p21}, we obtain
