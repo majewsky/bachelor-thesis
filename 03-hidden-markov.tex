@@ -322,10 +322,9 @@ emission probability for~$\uh$. Moreover, we choose
  B &:= Q_\# \times \brc{E,T}, \\
  C &:= \mbig\brc{\mbig\kla{q',(q,T)}\mid q,q'\in Q_\#} \cup \mbig\brc{\mbig\kla{v,(q,E)}\mid v\in V, q\in Q} \cup \mbig\brc{\mbig\kla{\#,(\#,E)}}, \\
  q_{\omega=(t,e)}\mbig\kla{a\!\dmiddle|\!(q,b)} &:= \begin{cases}
-  t(a|q) & \text{if } b = T \text{ and } a\in Q_\#, \\
-  e(a|q) & \text{if } b = E \text{ and } a\in V \text{ and } q \neq\#, \\
-  1 & \text{if } b = E \text{ and } a = q = \#, \\
-  0 & \text{otherwise.}
+  t(a|q) & \text{if } b = T \text{ and } a,q\in Q_\#, \\
+  e(a|q) & \text{if } b = E, a\in V\!, \text{ and } q \in Q, \\
+  1 & \text{if } b = E \text{ and } a = q = \#. \\
  \end{cases}
 \end{align*}
 
@@ -489,10 +488,10 @@ sentence $x$ can be generated.
 
 \begin{definition}
  Let $x\in V^*$ be a sentence. We denote by $\suff(x)$ its
- \emph{set of suffixes}, including $x$ itself and the empty sentence, i.~e.,
+ \emph{set of suffixes}, including $x$ itself, but excluding the empty sentence, i.~e.,
  \[
   \suff(x) := \begin{cases}
-   \brc\eps & \text{if } x = \eps, \\
+   \brc\eps & \text{if } x = \emptyset, \\
    \brc x \cup \suff(x') & \text{if } x = vx' \text{ with } v\in V\text{ and }x'\in V^*.
   \end{cases}\qedhere
  \]
@@ -510,17 +509,17 @@ sentence $x$ can be generated.
 
 For example, for $V = \brc{a,b,c}$ and $v = bbcb$, we have
 \begin{align*}
- \suff(bbcb) &= \brc{bbcb, bcb, cb, b, \eps}, &
+ \suff(bbcb) &= \brc{bbcb, bcb, cb, b}, &
  \car(bbcb) &= b, &
  \cdr(bbcb) &= bcb.
 \end{align*}
-Using this operator, we define, for any $x\in X_{\not\bot} = V^*$,
+Using these operators, we define, for any $x\in X_{\not\bot} = V^*$,
 \[
- H(x) := \mbig\brc{Q_x,(T,\#,x),R_x} \quad\text{where}\quad Q_x = \brc{E,T} \times Q_\# \times \suff(x)
+ H(x) := \mbig\brc{Q_x,(T,\#,x),R_x} \quad\text{where}\quad Q_x = \brc{E,T} \times Q_\# \times \mbig\kla{\suff(x)\cup\brc\eps}
 \]
 and $R_x$ contains the following rules:
 \begin{align*}\label{03-h-rules}
- (T,q,x') &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q',x'),(T,q',\cdr(x'))} && \forall q\in Q_\#,q'\in Q\text{ and }x'\in\suff(x), \\
+ (T,q,x') &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q',x'),(T,q',\cdr(x'))} && \forall q\in Q_\#,q'\in Q,\text{ and }x'\in\suff(x), \\
  (T,q,\eps) &\to \mbig\kla{\#,(q,T)} && \forall q\in Q_\#, \\
  (E,q,x') &\to \mbig\kla{\car(x'),(q,E)} && \forall q\in Q\text{ and }x'\in\suff(x).
 \end{align*}

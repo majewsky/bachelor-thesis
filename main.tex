@@ -63,6 +63,10 @@
  {\begin{definition*}\pushQED{\qed}}%
  {\popQED\end{definition*}}%
 
+\newenvironment{repeatlemma}[1]%
+ {\expandafter\renewcommand\expandafter\thetheorem{#1}\lemma}%
+ {\endlemma}%
+
 \numberwithin{theorem}{chapter}
 \numberwithin{equation}{chapter}
 \numberwithin{figure}{chapter}
@@ -107,8 +111,8 @@
 \newcommand\rk{\operatorname{rk}}
 \newcommand\cnt{\operatorname{count}}
 \newcommand\suff{\operatorname{suff}}
-\newcommand\car{\operatorname{car}}
-\newcommand\cdr{\operatorname{cdr}}
+\newcommand\car{\operatorname{head}}
+\newcommand\cdr{\operatorname{tail}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
