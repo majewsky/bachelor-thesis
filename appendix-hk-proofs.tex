@@ -82,32 +82,45 @@ from which follows~\eqref{eq:a5}.
 
 \subsection{Proof of Lemma~\ref{lemma:03-consistent-yield}}
 
-Let $x\in V^*$. Lemma~\ref{lemma:03-consistent-yield} is equivalent to
-\[
- \pi_X\mbig\kla{\mbig\lang{H(x)}} = \brc x,
-\]
-since $\pi_X$ only differs in domain from $\pi_1$. Applying $\pi_X$
-to the equations~\eqref{eq:a3} yields
-\begin{align*}
- \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q,x')}} &= \bigcup_{q'\in Q}\mBig\brc{\pi_X\mbig\kla{\car(x'),(q',E)}\pi_X(d) \!\dmiddle| d\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
- &= \mbig\brc{\car(x')} \cdot \bigcup_{q'\in Q} \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}, \\
- \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q,\eps)}} &= \brc\eps.
-\end{align*}
+\begin{repeatlemma}{\ref{lemma:03-consistent-yield}}
+ With the definitions from Section~\ref{sect:03-deriving},
+ \[
+  \forall x\in X_{\not\bot}\colon\;
+  \forall y\in \mbig\lang{H(x)}\colon\;
+  \pi_1(y) = x.
+ \]
+\end{repeatlemma}
 
-This recursive definition of $\pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q,x')}}$, for
-any $x'\in\operatorname{suff}(x)\cup\brc\eps$, does not depend on $q$. We can therefore
-abbreviate $\pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q,x')}}$ as $\Pi_x(x')$ and
-obtain
+Let $x\in X_{\not\bot} = V^*$. We are going to show that
+\begin{equation}\label{eq:p11}
+ \forall x'\in\suff(x)\cup\brc\eps\colon\;
+ \forall q\in Q_\#\colon\;
+ \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T,q,x')}} = \brc{x'}.
+\end{equation}
+by induction over the length of $x'$. The lemma follows from this statement because
 \[
- \Pi_x(x') = \begin{cases}
-  \mbig\brc{\car(x')} \cdot \Pi_x\mbig\kla{\cdr(x')} & \text{if } x'\neq\eps, \\
-  \brc\eps & \text{if } x' = \eps,
- \end{cases}
+ \pi_1\mbig\kla{\mbig\lang{H(x)}}
+ = \pi_X\mbig\kla{\mbig\lang{H(x)}}
+ = \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T,\#,x)}} \overset{\eqref{eq:p11}}= \brc x.
 \]
-which is clearly satisfied by $\Pi_x(x') = \brc{x'}$. Therefore, we finally have
+
+For the base case, let $x' = \eps$. Then~\eqref{eq:p11} holds because of
 \[
- \pi_X\mbig\kla{\mbig\lang{H(x)}} = \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,\#,x)}} = \Pi_x(x) = \brc x.
+ \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T,q,\eps)}}
+ \overset{\eqref{eq:a3b}}=
+ \mbig\brc{\pi_X\mbig\kla{\#,(q,T)}} = \brc\eps
 \]
+for any $q\in Q_\#$. For the induction step, let $x'\in\suff(x)$. Since
+$\abs{\cdr(x')} < \abs{x'}$, it can be assumed that $\cdr(x')$
+satisfies~\eqref{eq:p11} (\emph{induction hypothesis}). Application of $\pi_X$
+to both sides of~\eqref{eq:a3a} yields
+\begin{align*}
+ \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q,x')}}
+ &= \bigcup_{q'\in Q}\mBig\brc{\pi_X\mbig\kla{\car(x'),(q',E)}\pi_X(t) \!\dmiddle| t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
+ &= \mbig\brc{\car(x')} \cdot \bigcup_{q'\in Q}\mBig\brc{\pi_X(t) \!\dmiddle| t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
+ &= \mbig\brc{\car(x')} \cdot \hspace*{-0.8em}\underbrace{\pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}}_{=\brc{\cdr(x')}\text{ by induction hypothesis}} \\
+ &= \mbig\brc{\car(x')\cdr(x')} = \mbig\brc{x'}.
+\end{align*}
 
 \subsection{Proof of Lemma~\ref{lemma:03-language-partition}}
 
@@ -172,7 +185,8 @@ Consider any
 \[
  y = y_4(q,q',y_e,y_t) = \mbig\kla{q',(q,T)}(y_e,y_t).
 \]
-Since $\pi_Q(y) = q$, we see from~\eqref{eq:a4} that $y\in\mbig\lang K_{(T\!,q)}$ precisely for
+and let $x:=\pi_X(y)$. Since $\pi_Q(y) = q$, we see from~\eqref{eq:a4} that
+$y\in\mbig\lang K_{(T\!,q)}$ precisely for
 \[
  y_t \in \mbig\lang K_{(T\!,q')}
  \quad\text{ and }\quad
@@ -180,36 +194,27 @@ Since $\pi_Q(y) = q$, we see from~\eqref{eq:a4} that $y\in\mbig\lang K_{(T\!,q)}
  \quad\text{ where }\quad
  v\in V.
 \]
-From this follows $\pi_X(y) = v\pi_X(y_t)$ and, therefore,
+From this follows $x = \pi_X(y) = v\pi_X(y_t)$ and, therefore, $\car(x) = v$
+and $\cdr(x)=\pi_X(y_t)$. Since $y_t$ is a substructure of $y$, it can be
+assumed to satisfy~\eqref{eq:p21} (\emph{induction hypothesis}). Since
+$y_t\in\mbig\lang K_{(T\!,q')}$, we can see from~\eqref{eq:a4} that only
+$\pi_Q(y_t) = q'$ is possible. Therefore, by the induction hypothesis,
 \[
- \car\mbig\kla{\pi_X(y)} = v
- \quad\text{ and }\quad
- \cdr\mbig\kla{\pi_X(y)} = \pi_X(y_t).
+ y_t
+ \in \mbig\lang{H\mbig\kla{\pi_X(y_t)}}_{(T\!,q',\pi_X(y_t))}
+ = \mbig\lang{H\mbig\kla{\cdr(x)}}_{(T\!,q',\cdr(x))}.
 \]
-Since $y_t$ is a substructure of $y$, it can be assumed to
-satisfy~\eqref{eq:p21} (\emph{induction hypothesis}). Since $y_t\in\mbig\lang
-K_{(T\!,q')}$, we can see from~\eqref{eq:a4} that only $\pi_Q(y_t) = q'$ is
-possible. Therefore, by the induction hypothesis,
+
+Because of~\eqref{eq:a5}, this is equivalent to saying that $y_t \in \mbig\lang{H(x)}_{(T\!,q',\cdr(x))}$. We therefore have
 \[
- y_t \in \mbig\lang{H\mbig\kla{\pi_X(y_t)}}_{(T\!,q',\pi_X(y_t))}.
+ y = \mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{\car(x),(q',E)},y_t}
 \]
-Because of~\eqref{eq:a5}, we can replace $\pi_X(y_t) = \cdr\mbig\kla{\pi_X(y)}$ by $\pi_X(y)$ to obtain
+with $q\in Q$, $q'\in Q_\#$, and $y_t \in \mbig\lang{H(x)}_{(T\!,q',\cdr(x))}$,
+from which follows
 \[
- y_t \in \mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,q',\pi_X(y_t))}.
+ y \in \mbig\lang{H(x)}_{(T\!,q,x)}
 \]
-We therefore have
-\[
- y = \mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{\car\mbig\kla{\pi_X(y)},(q',E)},y_t}
- \quad\text{ with }\quad
- \begin{cases}
-  &\hspace*{-1em} q \in Q, q' \in Q_\#, \text{ and}\\
-  &\hspace*{-1em} y_t \in \mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,q',\cdr(\pi_X(y)))}.
- \end{cases}
-\]
-from which follows, according to~\eqref{eq:a3a}, that
-\[
- y \in \mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,q,\pi_X(y))}.
-\]
+because of~\eqref{eq:a3a}.
 
 \subsubsection*{Induction step: ``$\Leftarrow$'' direction}
 
@@ -221,6 +226,7 @@ $y\in\mbig\lang{H(x)}_{(T\!,\pi_Q(y),x)}$ if and only if
  \quad\text{ and }\quad
  y_t \in \mbig\lang{H(x)}_{(T\!,q',\cdr(x))}.
 \]
+
 Because of~\eqref{eq:a5}, the second statement is equivalent to
 \[
  y_t \in \mbig\lang{H\mbig\kla{\cdr(x)}}_{(T\!,q',\cdr(x))}.
@@ -234,24 +240,42 @@ thereby complete.
 
 \subsubsection*{Conclusion of the proof}
 
-From~\eqref{eq:p21} follows Lemma~\ref{lemma:03-language-partition} because
-\begin{align*}
- \mbig\lang K
- &= \mbig\lang K_{(T\!,\#)} \\
- &\overset{(*)}= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang K_{(T\!,\#)}} \\
- &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang K_{(T\!,\pi_Q(y))}} \\
- &\hspace*{-0.4em}\overset{\eqref{eq:p21}}= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\pi_Q(y),\pi_X(y))}} \\
- &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\#,\pi_X(y))}} \\
- &= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\#,\pi_X(y))}, x = \pi_X(y)} \\
- &= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H(x)}_{(T\!,\#,x)}, x = \pi_X(y)} \\
- &\overset{(*)}= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)}_{(T\!,\#,x)} \!\dmiddle|\! x = \pi_X(y)} \\
- &= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)} \!\dmiddle|\! x = \pi_X(y)} \\
- &= \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)}
-\end{align*}
-because of Lemma~\ref{lemma:03-consistent-yield}. At the two places marked $(*)$, we used that
-\[
+To finally derive the lemma, we first note that
+\begin{equation}\label{eq:p22}
  \pi_Q\mbig\kla{\mbig\lang K_{(T\!,\#)}} = \brc\#
  \quad\text{ and }\quad
  \pi_Q\mbig\kla{\mbig\lang{H(x)}_{(T\!,\#,x)}} = \brc\#
-\]
+\end{equation}
 for any $x\in X_{\not\bot}$, which follows from~\eqref{eq:a4} and~\eqref{eq:a3}, respectively.
+We can thus expand $\lang K$ into
+\begin{align*}
+ \mbig\lang K
+ &= \mbig\lang K_{(T\!,\#)}
+ = \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang K_{(T\!,\#)}} \\
+ &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang K_{(T\!,\pi_Q(y))}}.
+\end{align*}
+By using~\eqref{eq:p21}, we obtain
+\begin{align*}
+ \mbig\lang K
+ &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\pi_Q(y),\pi_X(y))}} \\
+ &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\#,\pi_X(y))}}.
+\end{align*}
+
+To obtain the desired structure, we split this set into one set per yield $x = \pi_X(y)$.
+\begin{align*}
+ \mbig\lang K
+ &= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\#,\pi_X(y))}, x = \pi_X(y)} \\
+ &= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H(x)}_{(T\!,\#,x)}, x = \pi_X(y)}.
+\end{align*}
+
+Because of~\eqref{eq:p22}, each $H(x)_{(T,\#,x)}$ is a subset of $\pi_Q^{-1}(\#)$. We can therefore simplify this to
+\[
+ \mbig\lang K
+ = \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)}_{(T\!,\#,x)} \!\dmiddle|\! x = \pi_X(y)}
+ = \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)} \!\dmiddle|\! x = \pi_X(y)},
+\]
+which is equivalent to the desired statement,
+\[
+ \mbig\lang K = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)},
+\]
+because of Lemma~\ref{lemma:03-consistent-yield}.
