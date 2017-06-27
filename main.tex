@@ -34,7 +34,7 @@
 % math mode formatting etc.
 \usepackage{amsmath,amsfonts,amssymb,amsthm,sistyle,xcolor,delim}
 \SIstyle{German}
-\usepackage{graphicx,tikz,calc,tabularx}
+\usepackage{graphicx,tikz,calc,tabularx,hhline}
 \usetikzlibrary{backgrounds,calc}
 % presentation of floats
 \usepackage{flafter,afterpage}
@@ -67,6 +67,10 @@
  {\expandafter\renewcommand\expandafter\thetheorem{#1}\lemma}%
  {\endlemma}%
 
+\newenvironment{repeatequation}[1]%
+ {\expandafter\renewcommand\expandafter\theequation{\ref{#1}~on~p.~\pageref{#1}}\equation}%
+ {\endequation}%
+
 \numberwithin{theorem}{chapter}
 \numberwithin{equation}{chapter}
 \numberwithin{figure}{chapter}
@@ -86,6 +90,9 @@
 \delimdef\dangle#1{\dleft\langle#1\dright\rangle}
 \delimdef\skal#1#2{\dleft\langle#1,#2\dright\rangle}
 \delimdef\norm#1{\dleft\|#1\dright\|}
+
+\newcommand\pipe{\dmiddle|}
+\newcommand\npipe{\!\dmiddle|\!}
 
 \usepackage{stmaryrd}
 \delimdef\lang#1{\dleft\llbracket#1\dright\rrbracket}

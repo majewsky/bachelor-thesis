@@ -116,7 +116,7 @@ are two well-known schemes for dividing $P(v)$ into subterms, which lead to the
  correspond to the inside and outside weight.} $T_v(i,q)$ is the probability
  of the HMM being in state $q$ after having emitted the first $i$ words of
  $v$. The \emph{backward weight} $S_v(i,q)$ is the probability of the HMM
- generated $v$ when the first $i$ words of $v$ have already been generated and
+ generating $v$ when the first $i$ words of $v$ have already been emitted and
  the HMM is in state $q$ after that many words.
 \end{definition}
 
@@ -135,16 +135,16 @@ $q'\in Q$, because
 \]
 by the law of total probability, and then, by the chain rule and the Markov
 properties of the HMM,
-\begin{align*}
+\begin{align}
  T_v(i,q)
-  &= \sum_{q'\in Q} P(v_1,\ldots,v_{i-1},q_{i-1}=q') \cdot P(q_i=q|q_{i-1}=q') \cdot P(v_i|q_i=q) \\
-  &= \sum_{q'\in Q} T_v(i-1,q') \cdot t(q|q') \cdot e(v_i|q) \\
-  &= e(v_i|q) \cdot \sum_{q'\in Q} T_v(i-1,q') \cdot t(q|q').
-\end{align*}
+  &= \sum_{q'\in Q} P(v_1,\ldots,v_{i-1},q_{i-1}=q') \cdot P(q_i=q|q_{i-1}=q') \cdot P(v_i|q_i=q) \nonumber\\
+  &= \sum_{q'\in Q} T_v(i-1,q') \cdot t(q|q') \cdot e(v_i|q) \nonumber\\
+  &= e(v_i|q) \cdot \sum_{q'\in Q} T_v(i-1,q') \cdot t(q|q'). \label{eq:03-T_v}
+\end{align}
 The probability $P(v)$ can then be computed in a similar way as
-\[
+\begin{equation}\label{eq:03-p-by-t}
  P(v) = P(v_1,\ldots,v_n,n) = \sum_{q\in Q} P(v_1,\ldots,v_n,q_n=q) \cdot P(n|q_n=q) = \sum_{q\in Q} T_v(n,q) \cdot t(\#|q).
-\]
+\end{equation}
 The forward weights $T_v(i,q)$ exhibit a topological ordering: To compute
 $T_v(i,q)$ with $i>1$, all $T_v(i-1,q')$ need to be computed first. Computing
 the full matrix $\mbig\kla{T_v(i,q)}_{i,q}$ in that order, in order to finally
@@ -159,13 +159,13 @@ formula for $P(v)$.
 The same time complexity arises when $P(v)$ is being restated in terms of
 backward weights. Backward weights can be computed in a similar manner to
 forward weights, with the difference of iterating in opposite temporal order.
-\begin{align*}
- P(v) &= \sum_{q\in Q} t(q|\#) \cdot e(v_1|q) \cdot S_v(1,q) \\
+\begin{align}
+ P(v) &= \sum_{q\in Q} t(q|\#) \cdot e(v_1|q) \cdot S_v(1,q) \label{eq:03-p-by-s} \\
  \text{where } S_v(i,q) &= \begin{cases}
   t(\#|q) & \text{if }i=n, \\
   \sum_{q'\in Q} t(q'|q) \cdot e(v_{i+1}|q') \cdot S_v(i+1,q') & \text{otherwise}.
- \end{cases}
-\end{align*}
+ \end{cases} \label{eq:03-S_v}
+\end{align}
 The \emph{backward algorithm} works analogously to the forward algorithm: It
 computes the matrix $\mbig\kla{S_v(i,q)}_{i,q}$ in \emph{decreasing} order of
 $i$ to obtain $P(v)$.
@@ -321,7 +321,7 @@ emission probability for~$\uh$. Moreover, we choose
  A &:= Q_\#\cup V, \\
  B &:= Q_\# \times \brc{E,T}, \\
  C &:= \mbig\brc{\mbig\kla{q',(q,T)}\mid q,q'\in Q_\#} \cup \mbig\brc{\mbig\kla{v,(q,E)}\mid v\in V, q\in Q} \cup \mbig\brc{\mbig\kla{\#,(\#,E)}}, \\
- q_{\omega=(t,e)}\mbig\kla{a\!\dmiddle|\!(q,b)} &:= \begin{cases}
+ q_{\omega=(t,e)}\mbig\kla{a\npipe(q,b)} &:= \begin{cases}
   t(a|q) & \text{if } b = T \text{ and } a,q\in Q_\#, \\
   e(a|q) & \text{if } b = E, a\in V\!, \text{ and } q \in Q, \\
   1 & \text{if } b = E \text{ and } a = q = \#. \\
@@ -339,7 +339,7 @@ or an emission event
 \]
 
 Although the countable event $\mbig\kla{\#,(\#,E)}$ is not used in any $y\in
-Y$, the choice of $q_\omega\mbig\kla{\#\!\dmiddle|\!(\#,E)}=1$ as above is
+Y$, the choice of $q_\omega\mbig\kla{\#\npipe(\#,E)}=1$ as above is
 necessary to ensure that $q_\omega\in\um_C(A|B)$.
 
 \begin{lemma}
@@ -354,22 +354,22 @@ necessary to ensure that $q_\omega\in\um_C(A|B)$.
  shown is that $q_\omega\mbig\kla{(q,b)}\in\um(A)$ for every $(q,b)\in B$. For
  $q\in Q_\#$ and $b = T$,
  \[
-  \sum_{a\in A} q_{(t,e)}\mbig\kla{a\!\dmiddle|\!(q,T)}
-  = \sum_{q'\in Q_\#} \underbrace{q_{(t,e)}\mbig\kla{q'\!\dmiddle|\!(q,T)}}_{=t(q'|q)}
-  + \sum_{a\in A\setminus Q_\#} \underbrace{q_{(t,e)}\mbig\kla{a\!\dmiddle|\!(q,T)}}_{=0}
+  \sum_{a\in A} q_{(t,e)}\mbig\kla{a\npipe(q,T)}
+  = \sum_{q'\in Q_\#} \underbrace{q_{(t,e)}\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)}
+  + \sum_{a\in A\setminus Q_\#} \underbrace{q_{(t,e)}\mbig\kla{a\npipe(q,T)}}_{=0}
   = \sum_{q'\in Q_\#} t(q'|q) = 1
  \]
  because $t\in\um(Q_\#|Q_\#)$. Analogously, for $q\in Q$ and $b = E$, we have
  \[
-  \sum_{a\in A} q_{(t,e)}\mbig\kla{a\!\dmiddle|\!(q,E)}
-  = \sum_{v\in V} \underbrace{q_{(t,e)}\mbig\kla{v\!\dmiddle|\!(q,E)}}_{=e(v|q)}
-  + \sum_{a\in A\setminus V} \underbrace{q_{(t,e)}\mbig\kla{a\!\dmiddle|\!(q,E)}}_{=0}
+  \sum_{a\in A} q_{(t,e)}\mbig\kla{a\npipe(q,E)}
+  = \sum_{v\in V} \underbrace{q_{(t,e)}\mbig\kla{v\npipe(q,E)}}_{=e(v|q)}
+  + \sum_{a\in A\setminus V} \underbrace{q_{(t,e)}\mbig\kla{a\npipe(q,E)}}_{=0}
   = \sum_{v\in V} e(v|q) = 1
  \]
  because $e\in\um(V|Q)$. Finally, for $(q,b) = (\#,E)$,
  \[
-  \sum_{a\in A} q_\omega\mbig\kla{a\!\dmiddle|\!(\#,E)}
-  = q_\omega\mbig\kla{\#\!\dmiddle|\!(\#,E)} = 1
+  \sum_{a\in A} q_\omega\mbig\kla{a\npipe(\#,E)}
+  = q_\omega\mbig\kla{\#\npipe(\#,E)} = 1
  \]
  because all other summands are zero.
 \end{proof}
@@ -491,7 +491,7 @@ sentence $x$ can be generated.
  \emph{set of suffixes}, including $x$ itself, but excluding the empty sentence, i.~e.,
  \[
   \suff(x) := \begin{cases}
-   \brc\eps & \text{if } x = \emptyset, \\
+   \emptyset & \text{if } x = \eps, \\
    \brc x \cup \suff(x') & \text{if } x = vx' \text{ with } v\in V\text{ and }x'\in V^*.
   \end{cases}\qedhere
  \]
@@ -562,19 +562,182 @@ We decompose the proof for this equivalence into two lemmas.
 The proofs for these lemmas can be found in Appendix~\ref{sec:appendix-hk-proofs}. For each $x\in X_{\not\bot}$, we have
 \[
  \pi_1^{-1}(x)
- = \mbig\brc{y\in \underbrace{Y_{\not\bot}}_{=\lang K} \dmiddle| \pi_1(y) = x}
- = \bigcup_{x'\in X_{\not\bot}} \mbig\brc{y\in\mbig\lang{H(x')} \dmiddle| \pi_1(y) = x}
+ = \mbig\brc{y\in \underbrace{Y_{\not\bot}}_{=\lang K} \pipe \pi_1(y) = x}
+ = \bigcup_{x'\in X_{\not\bot}} \mbig\brc{y\in\mbig\lang{H(x')} \pipe \pi_1(y) = x}
 \]
 by Lemma~\ref{lemma:03-language-partition}. Then, because of
 Lemma~\ref{lemma:03-consistent-yield}, we can see that only $x'=x$ contributes
 a nonempty set to this union, yielding
 \[
- \pi_1^{-1}(x) = \mbig\brc{y\in\mbig\lang{H(x)} \dmiddle| \pi_1(y) = x} = \mbig\lang{H(x)}
+ \pi_1^{-1}(x) = \mbig\brc{y\in\mbig\lang{H(x)} \pipe \pi_1(y) = x} = \mbig\lang{H(x)}
 \]
 as required by the definition of the IO information. By all the considerations
 in this subsection, the tuple $\mu_\uh := (q,\pi_1,K,H)$ therefore fulfils
 Definition~\ref{02:def-io-info} and is, in fact, an IO information.
 
-\subsection{Inside and outside weights}
+%TODO: need to show that (K,p_\omega') is proper
 
-{\color{red}TODO: $\alpha$, $\beta$, $\chi$, $c\dangle{\omega,\mu}$, $\stepmap\mu_\mathrm{io}$}
+\subsection{Inside weights}
+
+Let $\omega = (t,e)\in\Omega$. Since the definition of the complete-data corpus
+$c\!\dangle{\omega,\mu}$ is based on on the family
+$(\chi_{\omega,x}|\omega\in\Omega,x\in X_{\not\bot})$ of $C$-corpora, which in
+turn is defined in terms of the inside weights $\beta$ and outside weights
+$\alpha$ of the PRTG $\mbig\kla{H(x),p_\omega'}$ for all $x\in
+X_{\not\bot}=V^*$. We therefore have to derive expressions for all these
+components.
+
+Let $x\in X_{\not\bot}=V^*$. The $H(x)$ form an entire family of PRTG. We are
+therefore going to disambiguate their inside weights $\beta$ as $\beta_x$, and
+their outside weights $\alpha$ as $\alpha_x$. Recall that inside weights can,
+in general, be calculated by
+\begin{repeatequation}{eq:02-beta}
+ \beta(q) = \sum_{q_1,\ldots,q_k,\sigma} p\mbig\kla{q\to\sigma(q_1,\ldots,q_k)} \cdot \beta(q_1) \cdots \beta(q_k),
+\end{repeatequation}
+where $q,q_1,\ldots,q_k$ are grammar states of the PRTG in question, and
+$\sigma$ is drawn from the grammar's alphabet, and $p$ is the probability distribution of the PRTG. Instantiating this equation for $\mbig\kla{H(x),p_\omega'}$ leads to
+\[
+ \beta_x(q) = \sum_{q\to(a,b)(q_1,\ldots,q_k)\in R_x} q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k)
+\]
+for all $q\in Q_x$, which can be expanded to
+\begin{align*}
+ \beta_x(E,q,x') &= q_\omega\mbig\kla{\car(x')\npipe(q,E)} = e\mbig\kla{\car(x')\npipe q}
+ && \forall q\in Q \text{ and } x'\in\suff(x), \\
+ \beta_x(T,q,\eps) &= q_\omega\mbig\kla{\#\npipe(q,T)} = t(\#|q)
+ && \forall q\in Q_\#, \\
+ \beta_x(T,q,x') &= \sum_{q'\in Q} \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \underbrace{\beta_x(E,q',x')}_{=e(\car(x')|q')} \cdot \beta_x\mbig\kla{T,q',\cdr(x')}
+ && \forall q\in Q_\# \text{ and } x'\in\suff(x).
+\end{align*}
+States $(T,q,x')$ with $x'\neq\eps$ only exist for $x\neq\eps$. In this
+case, let $x=x_1\cdots x_n\in V^+$. Then, each suffix $x'\in\suff(x)$ has the
+form $x' = x_i\cdots x_n$ for some $i\in\brc{1,\ldots,n}$, and we have
+\[
+ \car(x') = x_i
+ \quad\text{and}\quad
+ \cdr(x') = x_{i+1} \cdots x_n,
+\]
+if we admit $x_{n+1}\cdots x_n := \eps$ as a corner case. Putting all this into
+the previous equation, we have
+\[
+ \beta_x(T,q,x_i\cdots x_n) = \sum_{q'\in Q} t(q'|q) \cdot e(x_i|q') \cdot \beta_x(T,q',x_{i+1}\cdots x_n).
+\]
+By comparing with~\eqref{eq:03-S_v}, we see that the inside weights recover the backward weights $S_x$ for $q\neq\eps$, i.~e.,
+\[
+ \beta_x(T,q,x_i\cdots x_n) = S_x(i-1,q).
+\]
+Furthermore, for the initial grammar state $(T,\#,x)$, we have
+\[
+ \beta_x(T,\#,x) = \beta_x(T,\#,x_n) = \sum_{q'\in Q} t(q'|q) \cdot e(x_1|q') \cdot \underbrace{\beta_x(T,q',x_2\cdots x_n)}_{=S_x(1,q)} = P(x)
+\]
+by~\eqref{eq:03-p-by-s}. The statement $\beta_x(T,\#,x) = P(x)$ also holds for $x=\eps$ because
+\[
+ \beta_\eps(T,\#,\eps) = t(\#|\#) = P(\eps).
+\]
+
+For quick referencing, the final equations for all $\beta_x(q)$, as derived in
+this section, can be found in Table~\ref{table:alpha-beta} on
+page~\pageref{table:alpha-beta}.
+
+\subsection{Outside weights}
+
+As shown before, the outside weights form a linear equation system according to
+\begin{repeatequation}{eq:02-alpha}
+ \alpha(q) = \delta_{q_0}^q + \sum_{q',q_1,\ldots,q_k,\sigma,m:\,q_m=q} \alpha(q') \cdot p\mbig\kla{q'\to\sigma(q_1,\ldots,q_k)} \cdot \prod_{l\neq m} \beta(q_l).
+\end{repeatequation}
+Instantiation of this equation for the PRTG $\mbig\kla{H(x),p_\omega'}$ yields
+\[
+ \alpha_x(q) = \delta_{(T,\#,x)}^q + \sum_{q'\to(a,b)(q_1,\ldots,q_k)\in R_x, m:\,q_m=q} \alpha_x(q') \cdot q_\omega(a|b) \cdot \prod_{l\neq m} \beta_x(q_l)
+\]
+for all $q\in Q_x$. For all $x\in V^*$, we have
+\[
+ \alpha_x(T,\#,x) = 1
+\]
+for the initial state, since it is not produced by any rule. For $x=\eps$, all
+other outside weights vanish because no other grammar states are produced.
+Otherwise, let $x=x_1\cdots x_n\in V^+$ so that, as before, every
+$x'\in\suff(x)$ has the form $x'=x_i\cdots x_n$ for some
+$i\in\brc{1,\ldots,n}$. Other than $\alpha_x(T,\#,x)$, we have nonzero
+outside weights
+\begin{align*}
+ \alpha_x(T,q,x_{i+1}\cdots x_n) &= \sum_{q'\in Q_\#} \alpha_x(T,q',x_i\cdots x_n) \cdot \underbrace{q_\omega\mbig\kla{q\npipe(q',T)}}_{=t(q|q')} \cdot \underbrace{\beta_x(E,q,x_i\cdots x_n)}_{=e(x_i|q)}, \text{ and} \\
+ \alpha_x(E,q,x_i\cdots x_n)     &= \sum_{q'\in Q_\#} \alpha_x(T,q',x_i\cdots x_n) \cdot \underbrace{q_\omega\mbig\kla{q\npipe(q',T)}}_{=t(q|q')} \cdot \underbrace{\beta_x(T,q,x_{i+1}\cdots x_n)}_{=S_x(i,q)},
+\end{align*}
+both for $i\in\brc{1,\ldots,n}$ and $q\in Q$. The grammar states $(T,q,x)$ with $q\neq\#$ are unreachable. For $i=1$, we therefore have
+\[
+ \alpha_x(T,q,x_2\cdots x_n) = \sum_{q'\in Q_\#} \underbrace{\alpha_x(T,q',x_1\cdots x_n)}_{\text{$1$ for $q'=\#$, $0$ otherwise}} \cdot\, t(q|q') \cdot e(x_1|q)
+ = t(q|\#) \cdot e(x_1|q) = T_x(1,q).
+\]
+For $x'\neq x$, we can likewise observe that the grammar states $(T,\#,x')$ are
+unreachable, hence the sum in $\alpha_x(T,q,x_{i+1}\cdots x_n)$ for $i>1$ goes
+over $q'\in Q$, only. Comparison with~\eqref{eq:03-T_v} shows that
+\[
+ \alpha_x(T,q,x_i\cdots x_n) = T_x(i-1,q)
+\]
+for all $i\in\brc{1,\ldots,n}$ and $q\in Q$. Inserting these findings into the
+outside weights of the states $(E,q,x_i\cdots x_n)$, we get
+\[
+ \alpha_x(E,q,x_1\cdots x_n)
+ = \sum_{q'\in Q_\#} \underbrace{\alpha_x(T,q',x_1\cdots x_n)}_{\text{$1$ for $q'=\#$, $0$ otherwise}} \cdot\, t(q|q') \cdot S_x(1,q)
+ = t(q|\#) \cdot S_x(1,q)
+\]
+for $i=1$, and
+\begin{align*}
+ \alpha_x(E,q,x_i\cdots x_n)
+ &= \sum_{q'\in Q_\#} \underbrace{\alpha_x(T,q',x_i\cdots x_n)}_{0\text{ for }q'\,=\,\#} \cdot t(q|q') \cdot S_x(i,q) \\
+ &= \sum_{q'\in Q} T_x(i-1,q') \cdot t(q|q') \cdot S_x(i,q)
+\end{align*}
+for $i>1$. By comparing these expressions with~\eqref{eq:03-T_v} once more, we see that both cases can be summarized as
+\[
+ \alpha_x(E,q,x_i\cdots x_n) = \frac{T_x(i,q) \cdot S_x(i,q)}{e(x_i|q)}.
+\]
+
+For quick referencing, the final equations for all $\alpha_x(q)$, as derived in
+this section, can be found in Table~\ref{table:alpha-beta} on
+page~\pageref{table:alpha-beta}.
+
+\subsection{Complete-data corpus}
+\subsection{Step mapping}
+
+{\color{red}TODO: $\alpha$, $\beta$, $\chi$, $c\!\dangle{\omega,\mu}$, $\stepmap\mu_\mathrm{io}$}
+
+
+\newcommand\mystrut{\rule[-0.6em]{0pt}{1.8em}}%
+\begin{table}[p!]
+ \centering
+ \begin{tabular}{|c|c||c|c|}%
+  \hline\mystrut
+  Grammar state $q_g$ & Reachable? & Inside weight $\beta_x(q_g)$ & Outside weight $\alpha_x(q_g)$
+  \\\hhline{|=|=#=|=|}\mystrut
+  $(T,\#,\eps)$ & for $x=\eps$ (initial) & $t(\#|\#)$ & $1$ for $x=\eps$
+  \\\hline\mystrut
+  $(T,\#,x)$ & yes (initial) & $P(x)$ & $1$
+  \\\hline\mystrut
+  $(T,\#,x_i\cdots x_n)$ & no & 0 & 0
+  \\\hline\mystrut
+  $(T,q,\eps)$ & for $x\neq\eps$ & $t(\#|q)$ & $T_x(n,q)$
+  \\\hline\mystrut
+  $(T,q,x)$ & no & 0 & 0
+  \\\hline\mystrut
+  $(T,q,x_i\cdots x_n)$ & for $i>1$ & $S_x(i-1,q)$ & $T_x(i-1,q)$
+  \\\hhline{|=|=#=|=|}\mystrut
+  $(E,\#,\eps)$ & no & 0 & 0
+  \\\hline\mystrut
+  $(E,\#,x)$ & no & 0 & 0
+  \\\hline\mystrut
+  $(E,\#,x_i\cdots x_n)$ & no & 0 & 0
+  \\\hline\mystrut
+  $(E,q,\eps)$ & no & 0 & 0
+  \\\hline\mystrut
+  $(E,q,x)$ & yes & $e(x_1|q)$ & $T_x(1,q) \cdot S_x(1,q) \cdot e(x_1|q)^{-1}$
+  \\\hline\mystrut
+  $(E,q,x_i\cdots x_n)$ & yes & $e(x_i|q)$ & $T_x(i,q) \cdot S_x(i,q) \cdot e(x_i|q)^{-1}$
+  \\\hline
+ \end{tabular}
+ \caption{
+  %TODO: corpora
+  \label{table:alpha-beta}
+  Overview of all inside weights and outside weights for the IO information $\mu_\uh$ as introduced in this chapter, for any fixed $\omega = (t,e)\in \Omega$.
+  \\[1ex]
+  Throughout the table, statements apply for all $q\in Q$ and $x\in V^*$. Exception: In rows that reference $x$ in the leftmost column, $x=\eps$ is forbidden, and statements apply for all $x=x_1\cdots x_n\in V^+$ and $i\in\{1,\ldots,n\}$.
+ }
+\end{table}

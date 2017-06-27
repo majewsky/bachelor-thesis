@@ -35,13 +35,13 @@ because $d\in T_{R_\ug}$, the subtrees $d_i$ may not have positions labeled with
 a state $q\in Q_\ug$ either. We therefore have
 \[
  D^q(\ug)\cap T_{R_\ug} = \bigcup_{\rho=(q\to c(q_1,\ldots,q_k))\in R_\ug}
- \mbig\brc{\rho(d_1,\ldots,d_k) \!\dmiddle|\! d_1\in D^{q_1}(\ug)\cap T_{R_\ug},\ldots, d_k\in D^{q_k}(\ug)\cap T_{R_\ug}},
+ \mbig\brc{\rho(d_1,\ldots,d_k) \npipe d_1\in D^{q_1}(\ug)\cap T_{R_\ug},\ldots, d_k\in D^{q_k}(\ug)\cap T_{R_\ug}},
 \]
 from which follows
 \begin{equation}
  \label{eq:a2}
  \lang\ug_q = \bigcup_{\rho=(q\to c(q_1,\ldots,q_k))\in R_\ug}
- \mbig\brc{c(t_1,\ldots,t_k) \!\dmiddle|\! t_1\in\lang\ug_{q_1},\ldots, t_k\in\lang\ug_{q_k}},
+ \mbig\brc{c(t_1,\ldots,t_k) \npipe t_1\in\lang\ug_{q_1},\ldots, t_k\in\lang\ug_{q_k}},
 \end{equation}
 when $\pi_C$ is applied on both sides. We can thus describe the languages
 $\mbig\lang K$ and $\mbig\lang{H(x)}$ recursively, in terms of the languages
@@ -49,21 +49,21 @@ generated from their states.
 
 Let $x\in V^*$. Application of \eqref{eq:a2} to all reachable states in $H(x)$ yields
 \begin{align*}
- \mbig\lang{H(x)}_{(T\!,q,x')} &= \bigcup_{q'\in Q}\mbig\brc{\mbig\kla{q',(q,T)}(t_1,t_2) \!\dmiddle| t_1\in\mbig\lang{H(x)}_{(E,q',x')}, t_2\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}, \\
+ \mbig\lang{H(x)}_{(T\!,q,x')} &= \bigcup_{q'\in Q}\mbig\brc{\mbig\kla{q',(q,T)}(t_1,t_2) \!\pipe t_1\in\mbig\lang{H(x)}_{(E,q',x')}, t_2\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}, \\
  \mbig\lang{H(x)}_{(T\!,q,\eps)} &= \mbig\brc{\mbig\kla{\#,(q,T)}} \\
  \intertext{for $q\in Q_\#$ and $x'\in\suff(x)$, and}
  \mbig\lang{H(x)}_{(E,q,x')} &= \mbig\brc{\mbig\kla{\car(x'),(q,E)}}
 \end{align*}
 for $q\in Q$ and $x'\in\suff(x)$. Inserting the last equation into the one above it, we can describe $\mbig\lang{H(x)} = \mbig\lang{H(x)}_{(T\!,\#,\eps)}$ recursively by
 \begin{subequations}\label{eq:a3}\begin{align}
- \mbig\lang{H(x)}_{(T\!,q,x')} &= \bigcup_{q'\in Q}\mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{\car(x'),(q',E)},t} \!\dmiddle| t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}, \label{eq:a3a} \\
+ \mbig\lang{H(x)}_{(T\!,q,x')} &= \bigcup_{q'\in Q}\mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{\car(x'),(q',E)},t} \!\pipe t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}, \label{eq:a3a} \\
  \mbig\lang{H(x)}_{(T\!,q,\eps)} &= \mbig\brc{\mbig\kla{\#,(q,T)}}. \label{eq:a3b}
 \end{align}\end{subequations}
 for all $q\in Q_\#$. Analogous application of~\eqref{eq:a2} to all states in
 $K$, followed by insertion of the expression for $\lang K_{(E,q)}$ into that of
 $\lang K_{(T\!,q)}$, results in
 \begin{equation}\label{eq:a4}
- \lang K_{(T\!,q)} = \mbig\brc{\mbig\kla{\#,(q,T)}} \cup \bigcup_{q'\in Q}\bigcup_{v\in V}\mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{v,(q',E)},t} \!\dmiddle| t\in\lang K_{(T\!,q')}}
+ \lang K_{(T\!,q)} = \mbig\brc{\mbig\kla{\#,(q,T)}} \cup \bigcup_{q'\in Q}\bigcup_{v\in V}\mBig\brc{\mbig\kla{q',(q,T)}\mBig\kla{\mbig\kla{v,(q',E)},t} \!\pipe t\in\lang K_{(T\!,q')}}
 \end{equation}
 for any $q\in Q_\#$. An important observation can be made from the structure of~\eqref{eq:a3}.
 \begin{equation}\label{eq:a5}
@@ -115,8 +115,8 @@ satisfies~\eqref{eq:p11} (\emph{induction hypothesis}). Application of $\pi_X$
 to both sides of~\eqref{eq:a3a} yields
 \begin{align*}
  \pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q,x')}}
- &= \bigcup_{q'\in Q}\mBig\brc{\pi_X\mbig\kla{\car(x'),(q',E)}\pi_X(t) \!\dmiddle| t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
- &= \mbig\brc{\car(x')} \cdot \bigcup_{q'\in Q}\mBig\brc{\pi_X(t) \!\dmiddle| t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
+ &= \bigcup_{q'\in Q}\mBig\brc{\pi_X\mbig\kla{\car(x'),(q',E)}\pi_X(t) \!\pipe t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
+ &= \mbig\brc{\car(x')} \cdot \bigcup_{q'\in Q}\mBig\brc{\pi_X(t) \!\pipe t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
  &= \mbig\brc{\car(x')} \cdot \bigcup_{q'\in Q}\underbrace{\pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}}_{=\brc{\cdr(x')}\text{ by induction hypothesis}} \\
  &= \mbig\brc{\car(x')\cdr(x')} = \mbig\brc{x'}.
 \end{align*}
@@ -251,28 +251,28 @@ We can thus expand $\lang K$ into
 \begin{align*}
  \mbig\lang K
  = \mbig\lang K_{(T\!,\#)}
- &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang K_{(T\!,\#)}} \\
- &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang K_{(T\!,\pi_Q(y))}}.
+ &= \mbig\brc{y\in \pi_Q^{-1}(\#) \npipe y\in\mbig\lang K_{(T\!,\#)}} \\
+ &= \mbig\brc{y\in \pi_Q^{-1}(\#) \npipe y\in\mbig\lang K_{(T\!,\pi_Q(y))}}.
 \end{align*}
 By using~\eqref{eq:p21}, we obtain
 \begin{align*}
  \mbig\lang K
- &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\pi_Q(y),\pi_X(y))}} \\
- &= \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\#,\pi_X(y))}}.
+ &= \mbig\brc{y\in \pi_Q^{-1}(\#) \npipe y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\pi_Q(y),\pi_X(y))}} \\
+ &= \mbig\brc{y\in \pi_Q^{-1}(\#) \npipe y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\#,\pi_X(y))}}.
 \end{align*}
 
 To obtain the desired structure, we split this set into one set per yield $x = \pi_X(y)$.
 \begin{align*}
  \mbig\lang K
- &= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\#,\pi_X(y))}, x = \pi_X(y)} \\
- &= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \pi_Q^{-1}(\#) \!\dmiddle|\! y\in\mbig\lang{H(x)}_{(T\!,\#,x)}, x = \pi_X(y)}.
+ &= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \pi_Q^{-1}(\#) \npipe y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\#,\pi_X(y))}, x = \pi_X(y)} \\
+ &= \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \pi_Q^{-1}(\#) \npipe y\in\mbig\lang{H(x)}_{(T\!,\#,x)}, x = \pi_X(y)}.
 \end{align*}
 
 Because of~\eqref{eq:p22}, each $H(x)_{(T,\#,x)}$ is a subset of $\pi_Q^{-1}(\#)$. We can therefore simplify this to
 \[
  \mbig\lang K
- = \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)}_{(T\!,\#,x)} \!\dmiddle|\! x = \pi_X(y)}
- = \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)} \!\dmiddle|\! x = \pi_X(y)},
+ = \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)}_{(T\!,\#,x)} \npipe x = \pi_X(y)}
+ = \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)} \npipe x = \pi_X(y)},
 \]
 which is equivalent to the desired statement,
 \[

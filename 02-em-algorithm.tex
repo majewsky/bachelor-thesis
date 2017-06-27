@@ -779,9 +779,9 @@ weights are usually calculated by noting that each $d\in D^q(\ug)\cap T_R$ must
 have a rule of the form $q\to\ldots$ at its root. The remaining probabilities
 can then be expressed as the inside weights of the states that emerge from this
 rule application, giving
-\[
+\begin{equation}\label{eq:02-beta}
  \beta(q) = \sum_{q_1,\ldots,q_k,\sigma} p\mbig\kla{q\to\sigma(q_1,\ldots,q_k)} \cdot \beta(q_1) \cdots \beta(q_k).
-\]
+\end{equation}
 
 The set of all such equations is a non-linear equation system in the variables $\beta(q)$
 for $q\in Q$. In some cases, this system can be solved intuitively by starting
@@ -826,9 +826,9 @@ only one unexpanded state is left, and that state is $q$. The outside weight
 describes the collective probability of all derivations that use $q$, but
 without considering derivations at or below $q$. Similar to what we did with
 inside weights, we can expand this definition into
-\[
+\begin{equation}\label{eq:02-alpha}
  \alpha(q) = \delta_{q_0}^q + \sum_{q',q_1,\ldots,q_k,\sigma,m:q_m=q} \alpha(q') \cdot p\mbig\kla{q'\to\sigma(q_1,\ldots,q_k)} \cdot \prod_{l\neq m} \beta(q_l).
-\]
+\end{equation}
 
 In this formulation, the sum goes over all rules that derive $q$, that is, $q$
 is among the states $q_1,\ldots,q_k$ on the right hand side of the rule, at
@@ -881,7 +881,7 @@ throughout this section.
  \end{itemize}
  Furthermore, we require that, for every $\omega\in\Omega$, the PRTG $(K,p'_\omega)$ is proper, where
  \[
-  p'_\omega\mbig\kla{q\to(a,b)(q_1,\ldots,q_k)} = q_\omega(a|b).
+  p'_\omega\mbig\kla{q\to(a,b)(q_1,\ldots,q_k)} := q_\omega(a|b).
   \qedhere
  \]
 \end{definition}
@@ -923,9 +923,9 @@ Unlike $c\!\dangle{\omega,\varkappa}$, this definition uses the original corpus
 $c$ instead of relying on the complete-data corpus of the previous step
 mapping. In this expression, $(\chi_{\omega,x}|\omega\in\Omega,x\in
 X_{\not\bot})$ is a family of $C$-corpora, defined by
-\[
+\begin{equation}\label{eq:02-chi}
  \chi_{\omega,x}(a,b) := \beta(q_0)^{-1} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\in R} \alpha(q) \cdot p_\omega'(\rho) \cdot \beta(q_1) \cdots \beta(q_k),
-\]
+\end{equation}
 where $(Q,q_0,R)$ is the PRTG $H(x)$ with rule probabilities $p_\omega'$ as defined above.
 
 To understand the formula for $\chi_{\omega,x}(a,b)$, recall that $H(x)$ is an
