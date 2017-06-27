@@ -579,23 +579,18 @@ Definition~\ref{02:def-io-info} and is, in fact, an IO information.
 
 \subsection{Inside weights}
 
-Let $\omega = (t,e)\in\Omega$. Since the definition of the complete-data corpus
-$c\!\dangle{\omega,\mu}$ is based on on the family
-$(\chi_{\omega,x}|\omega\in\Omega,x\in X_{\not\bot})$ of $C$-corpora, which in
-turn is defined in terms of the inside weights $\beta$ and outside weights
-$\alpha$ of the PRTG $\mbig\kla{H(x),p_\omega'}$ for all $x\in
-X_{\not\bot}=V^*$. We therefore have to derive expressions for all these
-components.
+Let $\omega = (t,e)\in\Omega$. The definition of the complete-data corpus
+$c\!\dangle{\omega,\mu}$ is based on the family $\chi_{\omega,x}$ of
+$C$-corpora, which in turn is defined in terms of the inside weights $\beta$
+and outside weights $\alpha$ of the PRTG $\mbig\kla{H(x),p_\omega'}$ for all
+$x\in X_{\not\bot}=V^*$. We therefore have to derive expressions for all these
+components. Since the $H(x)$ form an entire family of PRTG, we are going to
+refer to the inside weights $\beta$ of each $H(x)$ as $\beta_x$, and to its
+outside weights as $\alpha_x$.
 
-Let $x\in X_{\not\bot}=V^*$. The $H(x)$ form an entire family of PRTG. We are
-therefore going to disambiguate their inside weights $\beta$ as $\beta_x$, and
-their outside weights $\alpha$ as $\alpha_x$. Recall that inside weights can,
-in general, be calculated by
-\begin{repeatequation}{eq:02-beta}
- \beta(q) = \sum_{q_1,\ldots,q_k,\sigma} p\mbig\kla{q\to\sigma(q_1,\ldots,q_k)} \cdot \beta(q_1) \cdots \beta(q_k),
-\end{repeatequation}
-where $q,q_1,\ldots,q_k$ are grammar states of the PRTG in question, and
-$\sigma$ is drawn from the grammar's alphabet, and $p$ is the probability distribution of the PRTG. Instantiating this equation for $\mbig\kla{H(x),p_\omega'}$ leads to
+Let $x\in X_{\not\bot}=V^*$. Recall that inside weights can, in general, be
+calculated by~\eqref{eq:02-beta} (see page~\pageref{eq:02-beta}).
+Instantiation of this equation for $\mbig\kla{H(x),p_\omega'}$ yields
 \[
  \beta_x(q) = \sum_{q\to(a,b)(q_1,\ldots,q_k)\in R_x} q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k)
 \]
@@ -603,7 +598,7 @@ for all $q\in Q_x$, which can be expanded to
 \begin{align*}
  \beta_x(E,q,x') &= q_\omega\mbig\kla{\car(x')\npipe(q,E)} = e\mbig\kla{\car(x')\npipe q}
  && \forall q\in Q \text{ and } x'\in\suff(x), \\
- \beta_x(T,q,\eps) &= q_\omega\mbig\kla{\#\npipe(q,T)} = t(\#|q)
+ \beta_x(T,q,\eps) &= q_\omega\mbig\kla{\#\npipe(q,T)} = t(\#|q) = S_x(n,q)
  && \forall q\in Q_\#, \\
  \beta_x(T,q,x') &= \sum_{q'\in Q} \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \underbrace{\beta_x(E,q',x')}_{=e(\car(x')|q')} \cdot \beta_x\mbig\kla{T,q',\cdr(x')}
  && \forall q\in Q_\# \text{ and } x'\in\suff(x).
@@ -616,18 +611,18 @@ form $x' = x_i\cdots x_n$ for some $i\in\brc{1,\ldots,n}$, and we have
  \quad\text{and}\quad
  \cdr(x') = x_{i+1} \cdots x_n,
 \]
-if we admit $x_{n+1}\cdots x_n := \eps$ as a corner case. Putting all this into
+if we define $x_{n+1}\cdots x_n := \eps$ as a corner case. Putting all this into
 the previous equation, we have
 \[
  \beta_x(T,q,x_i\cdots x_n) = \sum_{q'\in Q} t(q'|q) \cdot e(x_i|q') \cdot \beta_x(T,q',x_{i+1}\cdots x_n).
 \]
-By comparing with~\eqref{eq:03-S_v}, we see that the inside weights recover the backward weights $S_x$ for $q\neq\eps$, i.~e.,
+By comparing with~\eqref{eq:03-S_v}, we see that, for $q\neq\#$ and $i>1$, the inside weights recover the backward weights, i.~e.,
 \[
  \beta_x(T,q,x_i\cdots x_n) = S_x(i-1,q).
 \]
 Furthermore, for the initial grammar state $(T,\#,x)$, we have
 \[
- \beta_x(T,\#,x) = \beta_x(T,\#,x_n) = \sum_{q'\in Q} t(q'|q) \cdot e(x_1|q') \cdot \underbrace{\beta_x(T,q',x_2\cdots x_n)}_{=S_x(1,q)} = P(x)
+ \beta_x(T,\#,x) = \beta_x(T,\#,x_1\cdots x_n) = \sum_{q'\in Q} t(q'|q) \cdot e(x_1|q') \cdot \underbrace{\beta_x(T,q',x_2\cdots x_n)}_{=S_x(1,q)} = P(x)
 \]
 by~\eqref{eq:03-p-by-s}. The statement $\beta_x(T,\#,x) = P(x)$ also holds for $x=\eps$ because
 \[
@@ -640,11 +635,9 @@ page~\pageref{table:alpha-beta}.
 
 \subsection{Outside weights}
 
-As shown before, the outside weights form a linear equation system according to
-\begin{repeatequation}{eq:02-alpha}
- \alpha(q) = \delta_{q_0}^q + \sum_{q',q_1,\ldots,q_k,\sigma,m:\,q_m=q} \alpha(q') \cdot p\mbig\kla{q'\to\sigma(q_1,\ldots,q_k)} \cdot \prod_{l\neq m} \beta(q_l).
-\end{repeatequation}
-Instantiation of this equation for the PRTG $\mbig\kla{H(x),p_\omega'}$ yields
+As shown before, the outside weights form a linear equation system according
+to~\eqref{eq:02-alpha} (see page~\pageref{eq:02-alpha}). Instantiation of this
+equation for the PRTG $\mbig\kla{H(x),p_\omega'}$ yields
 \[
  \alpha_x(q) = \delta_{(T,\#,x)}^q + \sum_{q'\to(a,b)(q_1,\ldots,q_k)\in R_x, m:\,q_m=q} \alpha_x(q') \cdot q_\omega(a|b) \cdot \prod_{l\neq m} \beta_x(q_l)
 \]
@@ -659,7 +652,8 @@ $x'\in\suff(x)$ has the form $x'=x_i\cdots x_n$ for some
 $i\in\brc{1,\ldots,n}$. Other than $\alpha_x(T,\#,x)$, we have nonzero
 outside weights
 \begin{align*}
- \alpha_x(T,q,x_{i+1}\cdots x_n) &= \sum_{q'\in Q_\#} \alpha_x(T,q',x_i\cdots x_n) \cdot \underbrace{q_\omega\mbig\kla{q\npipe(q',T)}}_{=t(q|q')} \cdot \underbrace{\beta_x(E,q,x_i\cdots x_n)}_{=e(x_i|q)}, \text{ and} \\
+ \alpha_x(T,q,x_{i+1}\cdots x_n) &= \sum_{q'\in Q_\#} \alpha_x(T,q',x_i\cdots x_n) \cdot \underbrace{q_\omega\mbig\kla{q\npipe(q',T)}}_{=t(q|q')} \cdot \underbrace{\beta_x(E,q,x_i\cdots x_n)}_{=e(x_i|q)} \\
+ \text{and }
  \alpha_x(E,q,x_i\cdots x_n)     &= \sum_{q'\in Q_\#} \alpha_x(T,q',x_i\cdots x_n) \cdot \underbrace{q_\omega\mbig\kla{q\npipe(q',T)}}_{=t(q|q')} \cdot \underbrace{\beta_x(T,q,x_{i+1}\cdots x_n)}_{=S_x(i,q)},
 \end{align*}
 both for $i\in\brc{1,\ldots,n}$ and $q\in Q$. The grammar states $(T,q,x)$ with $q\neq\#$ are unreachable. For $i=1$, we therefore have
@@ -669,27 +663,25 @@ both for $i\in\brc{1,\ldots,n}$ and $q\in Q$. The grammar states $(T,q,x)$ with 
 \]
 For $x'\neq x$, we can likewise observe that the grammar states $(T,\#,x')$ are
 unreachable, hence the sum in $\alpha_x(T,q,x_{i+1}\cdots x_n)$ for $i>1$ goes
-over $q'\in Q$, only. Comparison with~\eqref{eq:03-T_v} shows that
+over $q'\in Q$ only. Comparison with~\eqref{eq:03-T_v} shows that
 \[
- \alpha_x(T,q,x_i\cdots x_n) = T_x(i-1,q)
+ \alpha_x(T,q,x_{i+1}\cdots x_n) = T_x(i,q)
 \]
 for all $i\in\brc{1,\ldots,n}$ and $q\in Q$. Inserting these findings into the
-outside weights of the states $(E,q,x_i\cdots x_n)$, we get
-\[
+outside weights of the states $(E,q,x_i\cdots x_n)$, we obtain, for $i=1$,
+\begin{align*}
  \alpha_x(E,q,x_1\cdots x_n)
- = \sum_{q'\in Q_\#} \underbrace{\alpha_x(T,q',x_1\cdots x_n)}_{\text{$1$ for $q'=\#$, $0$ otherwise}} \cdot\, t(q|q') \cdot S_x(1,q)
- = t(q|\#) \cdot S_x(1,q)
-\]
-for $i=1$, and
+ &= \sum_{q'\in Q_\#} \underbrace{\alpha_x(T,q',x_1\cdots x_n)}_{\text{$1$ for $q'=\#$, $0$ otherwise}} \cdot\, t(q|q') \cdot S_x(1,q) \\
+ &= t(q|\#) \cdot S_x(1,q)
+ = \frac{T_x(1,q) \cdot S_x(1,q)}{e(x_1|q)},
+\end{align*}
+and for $i>1$, we likewise have
 \begin{align*}
  \alpha_x(E,q,x_i\cdots x_n)
  &= \sum_{q'\in Q_\#} \underbrace{\alpha_x(T,q',x_i\cdots x_n)}_{0\text{ for }q'\,=\,\#} \cdot t(q|q') \cdot S_x(i,q) \\
  &= \sum_{q'\in Q} T_x(i-1,q') \cdot t(q|q') \cdot S_x(i,q)
+ = \frac{T_x(i,q) \cdot S_x(i,q)}{e(x_i|q)}.
 \end{align*}
-for $i>1$. By comparing these expressions with~\eqref{eq:03-T_v} once more, we see that both cases can be summarized as
-\[
- \alpha_x(E,q,x_i\cdots x_n) = \frac{T_x(i,q) \cdot S_x(i,q)}{e(x_i|q)}.
-\]
 
 For quick referencing, the final equations for all $\alpha_x(q)$, as derived in
 this section, can be found in Table~\ref{table:alpha-beta} on
@@ -704,29 +696,30 @@ page~\pageref{table:alpha-beta}.
 \newcommand\mystrut{\rule[-0.6em]{0pt}{1.8em}}%
 \begin{table}[p!]
  \centering
+ \newcommand\mute{\color{black!20}}
  \begin{tabular}{|c|c||c|c|}%
   \hline\mystrut
   Grammar state $q_g$ & Reachable? & Inside weight $\beta_x(q_g)$ & Outside weight $\alpha_x(q_g)$
   \\\hhline{|=|=#=|=|}\mystrut
-  $(T,\#,\eps)$ & for $x=\eps$ (initial) & $t(\#|\#)$ & $1$ for $x=\eps$
+  $(T,\#,\eps)$ & for $x=\eps$ (initial) & $t(\#|\#) = P_\uh(\eps)$ & 1 for $x=\eps$, 0 otherwise
   \\\hline\mystrut
-  $(T,\#,x)$ & yes (initial) & $P(x)$ & $1$
+  $(T,\#,x)$ & yes (initial) & $P_\uh(x)$ & $1$
   \\\hline\mystrut
-  $(T,\#,x_i\cdots x_n)$ & no & 0 & 0
+  \mute$(T,\#,x_i\cdots x_n)$ & \mute no & \mute0 & \mute0
   \\\hline\mystrut
   $(T,q,\eps)$ & for $x\neq\eps$ & $t(\#|q)$ & $T_x(n,q)$
   \\\hline\mystrut
-  $(T,q,x)$ & no & 0 & 0
+  \mute$(T,q,x)$ & \mute no & \mute0 & \mute0
   \\\hline\mystrut
   $(T,q,x_i\cdots x_n)$ & for $i>1$ & $S_x(i-1,q)$ & $T_x(i-1,q)$
   \\\hhline{|=|=#=|=|}\mystrut
-  $(E,\#,\eps)$ & no & 0 & 0
+  \mute$(E,\#,\eps)$ & \mute no & \mute0 & \mute0
   \\\hline\mystrut
-  $(E,\#,x)$ & no & 0 & 0
+  \mute$(E,\#,x)$ & \mute no & \mute0 & \mute0
   \\\hline\mystrut
-  $(E,\#,x_i\cdots x_n)$ & no & 0 & 0
+  \mute$(E,\#,x_i\cdots x_n)$ & \mute no & \mute0 & \mute0
   \\\hline\mystrut
-  $(E,q,\eps)$ & no & 0 & 0
+  \mute$(E,q,\eps)$ & \mute no & \mute0 & \mute0
   \\\hline\mystrut
   $(E,q,x)$ & yes & $e(x_1|q)$ & $T_x(1,q) \cdot S_x(1,q) \cdot e(x_1|q)^{-1}$
   \\\hline\mystrut
@@ -736,7 +729,7 @@ page~\pageref{table:alpha-beta}.
  \caption{
   %TODO: corpora
   \label{table:alpha-beta}
-  Overview of all inside weights and outside weights for the IO information $\mu_\uh$ as introduced in this chapter, for any fixed $\omega = (t,e)\in \Omega$.
+  Overview of all inside weights and outside weights for the IO information $\mu_\uh$ as introduced in this chapter, for any fixed $\omega = (t,e)\in \Omega$. Unreachable grammar states are shown grayed out.
   \\[1ex]
   Throughout the table, statements apply for all $q\in Q$ and $x\in V^*$. Exception: In rows that reference $x$ in the leftmost column, $x=\eps$ is forbidden, and statements apply for all $x=x_1\cdots x_n\in V^+$ and $i\in\{1,\ldots,n\}$.
  }
