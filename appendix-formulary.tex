@@ -1,0 +1,115 @@
+\clearpage
+\section{Formulary for Chapter~3}\label{sec:appendix-formulary}
+\newcommand\was[1]{\tag{p.~\pageref{#1}}}
+
+This appendix assembles most of the formulas derived in Chapter~3. It serves as
+a quick reference for the observant reader who wants to follow the derivations
+without having to flip pages excessively. For most equations, the tag near the
+right margin refers to the page where the equation was originally derived.
+
+We imply that $\uh = (Q,V,\#,t,e)$ is an HMM. Let $v\in V^*$ be an observation.
+\begin{align*}
+ \was{eq:03-p-v}
+ P(v=v_1\cdots v_n) &= \sum_{q_1,\ldots,q_n} t(q_1|\#) \cdot e(v_1|q_1) \cdot \prod_{i=2}^n \mbig\brk{t(q_i|q_{i-1}) \cdot e(v_i|q_i)} \cdot t(\#|q_n), \\
+ \was{eq:03-p-v-eps}
+ P(v=\eps) &= t(\#|\#).
+ \intertext{In terms of the forward weight $T_v(i,q)$ for $i\in\brc{1,\ldots,n}$ and $q\in Q$:}
+ \was{eq:03-p-by-t}
+ P(v_1\cdots v_n) &= \sum_{q\in Q} T_v(n,q) \cdot t(\#|q), \\
+ \was{eq:03-T_v}
+ T_v(i,q) &= \begin{cases}
+  e(v_1|q) \cdot t(q|\#) & \text{if } i = 1, \\
+  e(v_i|q) \cdot \sum_{q'\in Q} T_v(i-1,q') \cdot t(q|q') & \text{if } i \in\brc{2,\ldots,n}.
+ \end{cases}
+ \intertext{In terms of the backward weight $S_v(i,q)$ for $i\in\brc{1,\ldots,n}$ and $q\in Q$:}
+ \was{eq:03-p-by-s}
+ P(v_1\cdots v_n) &= \sum_{q\in Q} t(q|\#) \cdot e(v_1|q) \cdot S_v(1,q), \\
+ \was{eq:03-S_v}
+ \underbrace{S_v(i,q)}_{q\in Q} &= \begin{cases}
+  t(\#|q) & \text{if }i=n, \\
+  \sum_{q'\in Q} t(q'|q) \cdot e(v_{i+1}|q') \cdot S_v(i+1,q') & \text{if } i\in\brc{1,\ldots,n-1}.
+ \end{cases}
+ \intertext{Expressions from the Baum-Welch algorithm, for $i\in\brc{1,\ldots,n}$ and $q,q'\in Q$:}
+ \was{eq:03-R_v}
+ R_v(i,q) &= \frac{T_v(i,q) \cdot S_v(i,q)}{P(v)}, \\
+ \was{eq:03-U_v}
+ U_v(i,q,q') &= \frac{T_v(i,q) \cdot t(q'|q) \cdot e(v_{i+1}|q') \cdot S_v(i+1,q')}{P(v)}.
+\end{align*}
+
+The IO information $\mu_\uh$ has $X_{\not\bot} = V^*$ and $\Omega =
+\um(Q_\#|Q_\#) \times\um(V|Q)$. For any $\omega=(t,e)\in\Omega$, hidden
+information is structured according to
+\newcommand\twosub[2]{{\scriptstyle#1}\atop{\scriptstyle\text{\strut}#2}}
+\begin{align*}
+ \was{eq:03-ABC}
+ A &= Q_\# \cup V, B = Q_\# \cup \brc{E,T}, \\
+ \was{eq:03-ABC}
+ C &= \underbrace{\mbig\brc{\mbig\kla{q',(q,T)}\mid q,q'\in Q_\#}}_{\twosub{q_\omega(q'|(q,T)) \,=\, t(q',q)}{\text{rank 0 for $q'=\#$, 2 otherwise}}} \cup \underbrace{\mbig\brc{\mbig\kla{v,(q,E)}\mid v\in V, q\in Q}}_{\twosub{q_\omega(v|(q,E)) \,=\, e(v|q)}{\text{rank 0}}} \cup \underbrace{\mbig\brc{\mbig\kla{\#,(\#,E)}}}_{\twosub{q_\omega(\#|(\#,E))\,=\,1}{\text{rank }0}}.
+\end{align*}
+
+The grammar $K$ has states $Q_K=\brc{E,T}\times Q_\#$, the initial state $(T,\#)$ and the rules
+\begin{align*}
+ (T,q) &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q'),(T,q')} &&\forall q\in Q_\# \text{ and } q'\in Q, \\
+ (T,q) &\to \mbig\kla{\#,(q,T)} &&\forall q\in Q_\#, \\
+ \was{eq:03-R_K}
+ (E,q) &\to \mbig\kla{v,(q,E)} &&\forall q\in Q \text{ and } v\in V.
+\end{align*}
+
+Each $H(x)$ has states $Q_x=\brc{E,T}\times Q_\#\times\mbig\kla{\suff(x)\cup\brc\eps}$, the initial state $(T,\#,x)$ and the rules
+\begin{align*}
+ (T,q,x') &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q',x'),(T,q',\cdr(x'))} && \forall q\in Q_\#,q'\in Q,\text{ and }x'\in\suff(x), \\
+ (T,q,\eps) &\to \mbig\kla{\#,(q,T)} && \forall q\in Q_\#, \\
+ \was{eq:03-R_x}
+ (E,q,x') &\to \mbig\kla{\car(x'),(q,E)} && \forall q\in Q\text{ and }x'\in\suff(x).
+\end{align*}
+
+The following table shows inside and outside weights for $H(x)$ with rule
+probabilities according to $q_\omega(a|b)$ of the produced symbol $(a,b)\in C$.
+Unreachable grammar states are shown greyed out. Throughout the table,
+statements apply for all $q\in Q$ and $x\in V^*$. As an exception, in rows that
+reference $x$ in the leftmost column, $x=\eps$ is forbidden, and statements
+apply for all $x=x_1\cdots x_n\in V^+$ and $i\in\brc{1,\ldots,n}$.
+
+\newcommand\mystrut{\rule[-0.6em]{0pt}{1.8em}}%
+\newcommand\mute{\color{black!30}}
+\begin{center}\begin{tabular}{|c|c||c|c|}%
+ \hline\mystrut
+ Grammar state $q_g$ & Reachable? & Inside weight $\beta_x(q_g)$ & Outside weight $\alpha_x(q_g)$
+ \\\hhline{|=|=#=|=|}\mystrut
+ $(T,\#,\eps)$ & for $x=\eps$ (initial) & $t(\#|\#) = P_\uh(\eps)$ & 1 for $x=\eps$, 0 otherwise
+ \\\hline\mystrut
+ $(T,\#,x)$ & yes (initial) & $P(x)$ & $1$
+ \\\hline\mystrut
+ \mute$(T,\#,x_i\cdots x_n)$ & \mute no & \mute not relevant & \mute0
+ \\\hline\mystrut
+ $(T,q,\eps)$ & for $x\neq\eps$ & $t(\#|q)=S_x(n,q)$ & $T_x(n,q)$
+ \\\hline\mystrut
+ \mute$(T,q,x)$ & \mute no & \mute not relevant & \mute0
+ \\\hline\mystrut
+ $(T,q,x_i\cdots x_n)$ & for $i>1$ & $S_x(i-1,q)$ & $T_x(i-1,q)$
+ \\\hhline{|=|=#=|=|}\mystrut
+ \mute$(E,\#,\eps)$ & \mute no & \mute0 & \mute0
+ \\\hline\mystrut
+ \mute$(E,\#,x)$ & \mute no & \mute0 & \mute0
+ \\\hline\mystrut
+ \mute$(E,\#,x_i\cdots x_n)$ & \mute no & \mute0 & \mute0
+ \\\hline\mystrut
+ \mute$(E,q,\eps)$ & \mute no & \mute0 & \mute0
+ \\\hline\mystrut
+ $(E,q,x)$ & yes & $e(x_1|q)$ & $T_x(1,q) \cdot S_x(1,q) \cdot e(x_1|q)^{-1}$
+ \\\hline\mystrut
+ $(E,q,x_i\cdots x_n)$ & yes & $e(x_i|q)$ & $T_x(i,q) \cdot S_x(i,q) \cdot e(x_i|q)^{-1}$
+ \\\hline
+\end{tabular}\end{center}
+
+\endinput
+\clearpage
+Let $c$ be an $V^*$-corpus. For all $q,q'\in Q$ and $v\in V$, the complete-data
+corpus is defined by
+\begin{align*}
+ c\!\dangle{\omega,\mu_\uh}\mbig\kla{\#,(\#,T)} &= c(\eps), \\
+ c\!\dangle{\omega,\mu_\uh}\mbig\kla{q,(\#,T)} &= \sum_{x\in\operatorname{supp}(h)\setminus\brc\eps} c(x) \cdot R_x(1,q), \\
+ c\!\dangle{\omega,\mu_\uh}\mbig\kla{\#,(q,T)} &= \sum_{x\in\operatorname{supp}(h)\setminus\brc\eps} c(x) \cdot R_x\mbig\kla{\abs x,q}, \\
+ c\!\dangle{\omega,\mu_\uh}\mbig\kla{q',(q,T)} &= \sum_{x\in\operatorname{supp}(h)\setminus\brc\eps} c(x) \cdot \sum_{i\in\brc{1,\ldots,\abs x-1}} U_x(i,q,q'), \\
+ c\!\dangle{\omega,\mu_\uh}\mbig\kla{v,(q,E)} &= \sum_{x\in\operatorname{supp}(h)\setminus\brc\eps} c(x) \cdot \sum_{i\in\brc{1,\ldots,\abs x}: x_i=v} R_x(i,q), \\
+\end{align*}
