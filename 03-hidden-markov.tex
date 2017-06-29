@@ -199,7 +199,7 @@ $i$ to obtain $P(v)$.
    \STATE consider the HMM $(Q,V,\#,t,e)$
    \STATE $\cnt_\mathrm{tr}(q,q') \leftarrow 0$ \SUFFIXFOR{$q,q'\in Q_\#$}
    \STATE $\cnt_\mathrm{em}(w,q) \leftarrow 0$ \SUFFIXFOR{$q\in Q$ and $w\in V$}
-   \STATE $\cnt_\mathrm{tr}(\#,\#) \leftarrow h(\eps) \cdot $
+   \STATE $\cnt_\mathrm{tr}(\#,\#) \leftarrow h(\eps)$
    \FOR{$v=v_1\cdots v_n\in\operatorname{supp}(h)$}
     \STATE calculate all forward weights $T_v(i,q)$ and backward weights $S_v(i,q)$
     \FOR{$i=1,2,\ldots,n-1$}
@@ -629,7 +629,7 @@ Furthermore, for the initial grammar state $(T,\#,x)$, we have
  \beta_x(T,\#,x) = \beta_x(T,\#,x_1\cdots x_n) = \sum_{q'\in Q} t(q'|q) \cdot e(x_1|q') \cdot \underbrace{\beta_x(T,q',x_2\cdots x_n)}_{=S_x(1,q)} = P(x)
 \]
 by~\eqref{eq:03-p-by-s}. The statement $\beta_x(T,\#,x) = P(x)$ also holds for $x=\eps$ because
-\[
+\label{eq:03-beta-eps}\[
  \beta_\eps(T,\#,\eps) = t(\#|\#) = P(\eps).
 \]
 
@@ -647,7 +647,7 @@ equation for the PRTG $\mbig\kla{H(x),p_\omega'}$ yields
  \alpha_x(q) = \delta_{(T,\#,x)}^q + \sum_{q'\to(a,b)(q_1,\ldots,q_k)\in R_x, m:\,q_m=q} \alpha_x(q') \cdot q_\omega(a|b) \cdot \prod_{l\neq m} \beta_x(q_l)
 \]
 for all $q\in Q_x$. For all $x\in V^*$, we have
-\[
+\label{eq:03-alpha-eps}\[
  \alpha_x(T,\#,x) = 1
 \]
 for the initial state, since it is not produced by any rule. For $x=\eps$, all
@@ -689,6 +689,89 @@ and for $i>1$, we likewise have
 \end{align*}
 
 \subsection{Complete-data corpus}
+
+Let $c$ be a $V^*$-corpus. The E-step of the IO step mapping involves the
+computation of the complete-data corpus $c\!\dangle{\omega,\mu_\uh}$ according to
+\[
+ c\!\dangle{\omega,\mu_\uh}\!(a,b) = \sum_x c(x) \cdot \chi_{\omega,x}(a,b).
+\]
+We therefore need to derive expressions for all $\chi_{\omega,x}(a,b)$ first.
+Following the definition of $\chi_{\omega,x}(a,b)$ in
+Equation~\eqref{eq:02-chi} on page~\pageref{eq:02-chi}, we have, in general,
+\begin{equation}\label{eq:03-chi}
+ \chi_{\omega,x}(a,b) = \underbrace{\beta_x(T,\#,x)^{-1}}_{=P(x)^{-1}} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\in R_x} \alpha_x(q) \cdot q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k).
+\end{equation}
+
+For $x=\eps$, we only have one nonzero outside weight, $\alpha_\eps(T,\#,\eps)
+= 1$, and only one rule that applies to this state, $(T,\#,\eps) \to
+\mbig\kla{\#,(\#,T)}$, from which follows that
+\[
+ \chi_{\omega,\eps}\mbig\kla{\#,(\#,T)} = \underbrace{P(x)^{-1}}_{=t(\#|\#)^{-1}} \cdot \underbrace{\alpha_x(T,\#,\eps)}_{=1} \cdot \underbrace{q_\omega\mbig\kla{\#\npipe(\#,T)}}_{=t(\#|\#)} = 1
+\]
+and all other $\chi_{\omega,\eps}(a,b)$ vanish. Since $(T,\#,\eps)$ is
+unreachable in all $H(x)$ with $x\neq\eps$, we have $\alpha_x(T,\#,\eps) = 0$
+and therefore $\chi_{\omega,x}\mbig\kla{\#,(\#,T)}=0$ for all $x\neq\eps$, and finally,
+\[
+ c\!\dangle{\omega,\mu_\uh}\!\mbig\kla{\#,(\#,T)} = c(\eps) \cdot \underbrace{\chi_{\omega,\eps}\mbig\kla{\#,(\#,T)}}_{=1} + \sum_{x\neq\eps} c(x) \cdot \underbrace{\chi_{\omega,x}\mbig\kla{\#,(\#,T)}}_{=0} = c(\eps).
+\]
+
+This concludes the consideration of $x=\eps$. Let $x=x_1\cdots x_n\in V^+$. For emission events
+$\mbig\kla{v,(q,E)}$ with $v\in V$ and $q\in Q$, Equation~\eqref{eq:03-chi} leads to
+\begin{align*}
+ \chi_{\omega,x}\mbig\kla{v,(q,E)}
+ &= P(x)^{-1} \cdot \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} \underbrace{\alpha_x(E,q,x_1\cdots x_n)}_{=T_x(i,q)\cdot S_x(i,q)\cdot e(x_i|q)^{-1}} \cdot \underbrace{q_\omega\mbig\kla{v\npipe(q,E)}}_{=e(v|q)} \\
+ &= \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} \frac{T_x(i,q)\cdot S_x(i,q)}{P(x)}
+  = \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} R_x(i,q).
+\end{align*}
+For transition events into and out of the $\#$ state, we obtain, for any $q\in Q$,
+\begin{align*}
+ \chi_{\omega,x}\mbig\kla{\#,(q,T)}
+ &= P(x)^{-1} \cdot \underbrace{\alpha_x(T,q,\eps)}_{=T_x(n,q)} \cdot \underbrace{q_\omega\mbig\kla{\#\npipe(q,T)}}_{=t(\#|q)=S_x(n,q)} = R_x(n,q), \\
+ \text{and } \chi_{\omega,x}\mbig\kla{q,(\#,T)}
+ &= P(x)^{-1} \cdot \sum_{x'\in\suff(x)} \underbrace{\alpha_x(T,\#,x')}_{=0\text{ for }x'\neq x} \cdot \underbrace{q_\omega\mbig\kla{q\npipe(\#,T)}}_{=t(q|\#)} \cdot \beta_x(E,q,x') \cdot \beta_x\mbig\kla{T,q,\cdr(x')} \\
+ &= P(x)^{-1} \cdot \underbrace{\alpha_x(T,\#,x)}_{=1} \cdot t(q|\#) \cdot \underbrace{\beta_x(E,q,x)}_{=e(x_1|q)} \cdot \underbrace{\beta_x\mbig\kla{T,q,\cdr(x)}}_{=S_x(1,q)} \\
+ &= P(x)^{-1} \cdot \underbrace{t(q|\#) \cdot e(x_1|q)}_{=T_x(1,q)} \cdot S_x(1,q)
+  = R_x(1,q).
+\end{align*}
+
+For transition events from some $q\in Q$ to some $q'\in Q$, we initially get
+\begin{align*}
+ \chi_{\omega,x}\mbig\kla{q',(q,T)}
+ &= P(x)^{-1} \cdot \sum_{x'\in\suff(x)} \alpha_x(T,q,x') \cdot \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \beta_x(E,q',x') \cdot \beta_x\mbig\kla{T,q,\cdr(x')}. \\
+ \intertext{To simplify this expression, we once more rewrite $\sum_{x'\in\suff(x)}$ into $\sum_{i=1}^n$ such that $x' = x_i\cdots x_n$.}
+ \chi_{\omega,x}\mbig\kla{q',(q,T)}
+ &= P(x)^{-1} \cdot \sum_{i=1}^n \,\underbrace{\alpha_x(T,q,x_i\cdots x_n)}_{=\,0\text{ for }i\,=\,1} \cdot t(q'|q) \cdot \underbrace{\beta_x(E,q',x_i\cdots x_n)}_{=e(x_i|q)} \cdot \underbrace{\beta_x\mbig\kla{T,q,x_{i+1}\cdots x_n}}_{=S_x(i,q)} \\
+ &= P(x)^{-1} \cdot \sum_{i=2}^n \,\underbrace{\alpha_x(T,q,x_i\cdots x_n)}_{=T_x(i-1,q)} \cdot t(q'|q) \cdot e(x_i|q) \cdot S_x(i,q) \\
+ &= \sum_{i=2}^n U_x(i-1,q,q') = \sum_{i=1}^{n-1} U_x(i,q,q').
+\end{align*}
+
+When we put these expressions into the definition of
+$c\!\dangle{\omega,\mu_\uh}$, the sum over $x$ initially goes over all $x\in
+V^+ = X_{\not\bot}\setminus\brc\eps$. However, we can restrict the sum to
+$\operatorname{supp}(c)$ since the factor $c(x)$ makes every contribution from
+outside $\operatorname{supp}(c)$ vanish. The sum therefore goes over
+$\operatorname{supp}(c)\setminus\brc\eps$ only, which we shall denote by $X_c$.
+For any $q,q'\in Q$ and $v\in V$, we finally have
+\begin{align*}
+ c\!\dangle{\omega,\mu_\uh}\!\mbig\kla{\#,(\#,T)} &= c(\eps), \\
+ c\!\dangle{\omega,\mu_\uh}\!\mbig\kla{\#,(q,T)} &= \sum_{x\in X_c} c(x) \cdot R_x\mbig\kla{\abs x\!,q}, &
+ c\!\dangle{\omega,\mu_\uh}\!\mbig\kla{q',(q,T)} &= \sum_{x\in X_c} c(x) \cdot \sum_{i=1}^{\abs x-1} U_x(i,q,q'), \\
+ c\!\dangle{\omega,\mu_\uh}\!\mbig\kla{q,(\#,T)} &= \sum_{x\in X_c} c(x) \cdot R_x(1,q), &
+ c\!\dangle{\omega,\mu_\uh}\!\mbig\kla{v,(q,E)} &= \sum_{x\in X_c} c(x) \cdot \sum_{{\scriptstyle i=1}\atop{\scriptstyle x_i=v}}^{\abs x} R_x(i,q).
+\end{align*}
+
+Compare to lines 4--23 of the Baum-Welch algorithm
+(Algorithm~\ref{alg:bw-vogler} on page~\pageref{alg:bw-vogler}). This part of
+the algorithm performs the same computation. It only looks superficially
+different because it is an algorithm, not an equation system. Nonetheless,
+it is easily seen that, after line 23, we have
+\[
+ \cnt_\mathrm{tr}(q',q) = h\!\dangle{\omega,\mu_\uh}\!\mbig\kla{q',(q,T)}
+ \quad\text{and}\quad
+ \cnt_\mathrm{em}(v,q) = h\!\dangle{\omega,\mu_\uh}\!\mbig\kla{v,(q,E)}
+\]
+for all $(q',q)\in Q_\#\times Q_\#$ and $(v,q)\in V\times Q$.
+
 \subsection{Step mapping}
 
-{\color{red}TODO: $\chi$, $c\!\dangle{\omega,\mu}$, $\stepmap\mu_\mathrm{io}$}
+{\color{red}TODO}

@@ -63,12 +63,19 @@ Each $H(x)$ has states $Q_x=\brc{E,T}\times Q_\#\times\mbig\kla{\suff(x)\cup\brc
  (E,q,x') &\to \mbig\kla{\car(x'),(q,E)} && \forall q\in Q\text{ and }x'\in\suff(x).
 \end{align*}
 
-The following table shows inside and outside weights for $H(x)$ with rule
-probabilities according to $q_\omega(a|b)$ of the produced symbol $(a,b)\in C$.
-Unreachable grammar states are shown greyed out. Throughout the table,
-statements apply for all $q\in Q$ and $x\in V^*$. As an exception, in rows that
-reference $x$ in the leftmost column, $x=\eps$ is forbidden, and statements
-apply for all $x=x_1\cdots x_n\in V^+$ and $i\in\brc{1,\ldots,n}$.
+For $x=\eps$, only the initial state $(T,\#,\eps)$ is reachable and we have
+\begin{align*}
+ \was{eq:03-beta-eps}
+ \beta_\eps(T,\#,\eps) &= t(\#|\#) = P(\eps), \\
+ \was{eq:03-alpha-eps}
+ \alpha_\eps(T,\#,\eps) &= 1.
+\end{align*}
+
+The following table shows inside and outside weights for $H(x)$ with
+$x=x_1\cdots x_n\in V^+$ and rule probabilities according to $q_\omega(a|b)$ of
+the produced symbol $(a,b)\in C$.  Unreachable grammar states are shown greyed
+out. All statements apply for all $q\in Q$ and $i\in\brc{1,\ldots,n}$ unless
+otherwise noted.
 
 \newcommand\mystrut{\rule[-0.6em]{0pt}{1.8em}}%
 \newcommand\mute{\color{black!30}}
@@ -76,17 +83,17 @@ apply for all $x=x_1\cdots x_n\in V^+$ and $i\in\brc{1,\ldots,n}$.
  \hline\mystrut
  Grammar state $q_g$ & Reachable? & Inside weight $\beta_x(q_g)$ & Outside weight $\alpha_x(q_g)$
  \\\hhline{|=|=#=|=|}\mystrut
- $(T,\#,\eps)$ & for $x=\eps$ (initial) & $t(\#|\#) = P_\uh(\eps)$ & 1 for $x=\eps$, 0 otherwise
+ \mute$(T,\#,\eps)$ & \mute no & \mute not relevant & \mute0
  \\\hline\mystrut
  $(T,\#,x)$ & yes (initial) & $P(x)$ & $1$
  \\\hline\mystrut
  \mute$(T,\#,x_i\cdots x_n)$ & \mute no & \mute not relevant & \mute0
  \\\hline\mystrut
- $(T,q,\eps)$ & for $x\neq\eps$ & $t(\#|q)=S_x(n,q)$ & $T_x(n,q)$
+ $(T,q,\eps)$ & yes & $t(\#|q)=S_x(n,q)$ & $T_x(n,q)$
  \\\hline\mystrut
  \mute$(T,q,x)$ & \mute no & \mute not relevant & \mute0
  \\\hline\mystrut
- $(T,q,x_i\cdots x_n)$ & for $i>1$ & $S_x(i-1,q)$ & $T_x(i-1,q)$
+ $(T,q,x_i\cdots x_n)$ & for $i>1$ & $S_x(i-1,q)$ for $i>1$ & $T_x(i-1,q)$ for $i>1$
  \\\hhline{|=|=#=|=|}\mystrut
  \mute$(E,\#,\eps)$ & \mute no & \mute0 & \mute0
  \\\hline\mystrut
