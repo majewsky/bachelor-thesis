@@ -90,7 +90,7 @@ from which follows~\eqref{eq:a5}.
  \]
 \end{repeatlemma}
 
-Let $x\in X_{\not\bot} = V^*$. We are going to show that
+\emph{Proof.} Let $x\in X_{\not\bot} = V^*$. We are going to show that
 \begin{equation}\label{eq:p11}
  \forall x'\in\suff(x)\cup\brc\eps\colon\;
  \forall q\in Q_\#\colon\;
@@ -118,7 +118,7 @@ to both sides of~\eqref{eq:a3a} yields
  &= \bigcup_{q'\in Q}\mBig\brc{\pi_X\mbig\kla{\car(x'),(q',E)}\pi_X(t) \!\pipe t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
  &= \mbig\brc{\car(x')} \cdot \bigcup_{q'\in Q}\mBig\brc{\pi_X(t) \!\pipe t\in\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}} \\
  &= \mbig\brc{\car(x')} \cdot \bigcup_{q'\in Q}\underbrace{\pi_X\mbig\kla{\mbig\lang{H(x)}_{(T\!,q',\cdr(x'))}}}_{=\brc{\cdr(x')}\text{ by induction hypothesis}} \\
- &= \mbig\brc{\car(x')\cdr(x')} = \mbig\brc{x'}.
+ &= \mbig\brc{\car(x')\cdr(x')} = \mbig\brc{x'}. \tag*{\qed}
 \end{align*}
 
 \subsection{Proof of Lemma~\ref{lemma:03-language-partition}}
@@ -130,7 +130,7 @@ to both sides of~\eqref{eq:a3a} yields
  \]
 \end{repeatlemma}
 
-Let $\pi_Q: T_C\to Q_\#$ be the mapping defined by
+\emph{Proof.} Let $\pi_Q: T_C\to Q_\#$ be the mapping defined by
 \[
  \pi_Q(y) := q \text{ such that } y(\eps) = \mbig\kla{a,(q,b)}.
 \]
@@ -278,4 +278,4 @@ which is equivalent to the desired statement,
 \[
  \mbig\lang K = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)},
 \]
-because of Lemma~\ref{lemma:03-consistent-yield}.
+because of Lemma~\ref{lemma:03-consistent-yield}.\qed
