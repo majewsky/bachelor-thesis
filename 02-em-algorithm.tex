@@ -884,8 +884,10 @@ throughout this section.
  \end{itemize}
  Furthermore, we require that, for every $\omega\in\Omega$, the PRTG $(K,p'_\omega)$ is proper, where
  \[
-  p'_\omega\mbig\kla{q\to(a,b)(q_1,\ldots,q_k)} := q_\omega(a|b).
-  \qedhere
+  p'_\omega(\rho) := \begin{cases}
+   q_\omega(a|b) & \text{if } \rho=q\to(a,b)(q_1,\ldots,q_k)\in R(K),
+   \\ 0 & \text{otherwise}.
+  \end{cases}\qedhere
  \]
 \end{definition}
 

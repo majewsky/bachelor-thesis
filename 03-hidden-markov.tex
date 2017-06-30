@@ -428,10 +428,39 @@ and $R_K$ contains the following rules:
  (E,q) &\to \mbig\kla{v,(q,E)} &&\forall q\in Q \text{ and } v\in V.
 \end{align*}
 
-The IO information requires that $K$ is unambiguous. It is easy to see that
-this is the case: $K$ is deterministic because each $c\in C$ is produced by at
-most one rule from $R_K$, and all deterministic RTG are also unambiguous
-(see~page~\pageref{lemma:02-deterministic-is-unambiguous}).
+The IO information requires two properties of $K$: First, $K$ must be
+unambiguous. This is easily seen: $K$ is deterministic because each $c\in C$ is
+produced by at most one rule from $R_K$, and all deterministic RTG are also
+unambiguous (see~page~\pageref{lemma:02-deterministic-is-unambiguous}). Furthermore, we need to show the following lemma.
+
+\begin{lemma}
+ For every $\omega\in\Omega$, the PRTG $(K,p_\omega')$ is proper, where
+ \[
+  p'_\omega(\rho) := \begin{cases}
+   q_\omega(a|b) & \text{if } \rho=q\to(a,b)(q_1,\ldots,q_k)\in R_K,
+   \\ 0 & \text{otherwise}.
+  \end{cases}
+ \]
+\end{lemma}
+
+\begin{proof}
+ The restriction of $p_\omega'$ to $R_K$ follows directly from its definition.
+ It remains to be seen that $p_\omega'\in\um(Q^*\times C|Q)$. For any $q\in Q_\#$, we have
+ \begin{align*}
+  &\hspace{1.5em} \sum_{q_1\cdots q_k,(a,b)} p_\omega'\underbrace{\mBig\kla{(q_1\cdots q_k,(a,b)\npipe(T,q)}}_{=\,(T,q)\to(a,b)(q_1,\ldots,q_k)} \\
+  &= p_\omega'\mBig\kla{(T,q) \to \mbig\kla{\#,(q,T)}} + \sum_{q'\in Q} p_\omega'\mBig\kla{(T,q) \to \mbig\kla{q',(q,T)}\mbig\kla{(E,q'),(T,q')}} \\
+  &= q_\omega\mbig\kla{\#,(q,T)} + \sum_{q'\in Q} \mbig\kla{q',(q,T)} = t(\#|q) + \sum_{q'\in Q} t(q'|q) = \sum_{q'\in Q_\#} t(q'|q) = 1
+ \end{align*}
+ because $t\in\um(Q_\#|Q_\#)$. Analogously, for any $q\in Q$, it follows from $e\in\um(V|Q)$ that
+ \begin{align*}
+  \sum_{q_1\cdots q_k,(a,b)} p_\omega'\mbig\kla{(E,q)\to(a,b)(q_1,\ldots,q_k)}
+  &= \sum_{v\in V} p_\omega'\mBig\kla{(E,q) \to \mbig\kla{v,(q,E)}} \\
+  &= \sum_{v\in V} q_\omega\mbig\kla{v,(q,E)} = \sum_{v\in V} e(v|q) = 1.
+  \qedhere
+ \end{align*}
+ {\color{red} TODO: It remains $q=(E,\#)$, for which the assertion does not hold. Need to restrict the state space.}
+\end{proof}
+
 Using $K$, we can define the set $Y$ of hidden information as
 \[
  Y := \lang K \cup \brc\bot.
