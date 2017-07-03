@@ -146,31 +146,23 @@ going to show that
 by structural induction on $y$. According to the definition of the ranked
 alphabet $C$, each $y\in T_C$ can have one of four forms,
 \begin{align*}
- y_1 &:= \mbig\kla{\#,(\#,E)}, \\
- y_2(v,q) &:= \mbig\kla{v,(q,E)} &&\text{ where } v\in V\text{ and } q\in Q, \\
- y_3(q) &:= \mbig\kla{\#,(q,T)} &&\text{ where } q\in Q_\#, \\
- y_4(q,q',y_e,y_t) &:= \mbig\kla{q',(q,T)}(y_e,y_t) &&\text{ where } q\in Q_\#, q'\in Q, \text{ and } y_e,y_t\in T_C.
+ y_1(v,q) &:= \mbig\kla{v,(q,E)} &&\text{ where } v\in V\text{ and } q\in Q, \\
+ y_2(q) &:= \mbig\kla{\#,(q,T)} &&\text{ where } q\in Q_\#, \\
+ y_3(q,q',y_e,y_t) &:= \mbig\kla{q',(q,T)}(y_e,y_t) &&\text{ where } q\in Q_\#, q'\in Q, \text{ and } y_e,y_t\in T_C.
 \end{align*}
 The first three forms are the base cases for the structural induction on $y$,
 and the last form represents the inductive step.
 
 \subsubsection*{Base cases}
 
-For $y=y_1$, we have $\pi_Q(y) = \#$ and $\pi_X(y) = \eps$. We see that \eqref{eq:p21} holds
-because
-\[
- \mbig\kla{\#,(\#,E)} \notin \mbig\lang K_{(T\!,\#)}
- \quad\text{ and }\quad
- \mbig\kla{\#,(\#,E)} \notin \mbig\lang{H(\eps)}_{(T\!,\#,\eps)}
-\]
-according to~\eqref{eq:a3} and~\eqref{eq:a4}. For any $y=y_2(v,q)$, we have
-$\pi_Q(y)=q$ and $\pi_X(y)=v$, and analogously,
+For any $y=y_1(v,q)$, we have
+$\pi_Q(y)=q$ and $\pi_X(y)=v$. We see that~\eqref{eq:p21} holds because
 \[
  \mbig\kla{v,(q,E)} \notin \mbig\lang K_{(T\!,q)}
  \quad\text{ and }\quad
  \mbig\kla{v,(q,E)} \notin \mbig\lang{H(v)}_{(T\!,q,v)}.
 \]
-For any $y=y_3(q)$, we have $\pi_Q(y) = q$ and $\pi_X(y)=\eps$, and \eqref{eq:p21} is
+For any $y=y_2(q)$, we have $\pi_Q(y) = q$ and $\pi_X(y)=\eps$, and \eqref{eq:p21} is
 satisfied because
 \[
  \mbig\kla{\#,(q,T)} \in \mbig\lang K_{(T\!,q)}
@@ -183,7 +175,7 @@ for all $q\in Q_\#$.
 
 Consider any
 \[
- y = y_4(q,q',y_e,y_t) = \mbig\kla{q',(q,T)}(y_e,y_t).
+ y = y_3(q,q',y_e,y_t) = \mbig\kla{q',(q,T)}(y_e,y_t).
 \]
 such that $y\in\lang K_{(T,q)}$, and let $x:=\pi_X(y)$. Note that $\pi_Q(y) =
 q$.  We see from~\eqref{eq:a4} that
@@ -218,7 +210,7 @@ because of~\eqref{eq:a3a}.
 
 \subsubsection*{Induction step: ``$\Leftarrow$'' direction}
 
-Consider any $y = y_4(q,q',y_e,y_t)$ such that
+Consider any $y = y_3(q,q',y_e,y_t)$ such that
 $y\in\mbig\lang{H(x)}_{(T\!,\pi_Q(y),x)}$, wherein $x := \pi_X(y)$. Since
 $\pi_Q(y) = q$, it follows from~\eqref{eq:a3} that
 \[

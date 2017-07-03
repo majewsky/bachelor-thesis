@@ -42,12 +42,12 @@ information is structured according to
 \newcommand\twosub[2]{{\scriptstyle#1}\atop{\scriptstyle\text{\strut}#2}}
 \begin{align*}
  \was{eq:03-ABC}
- A &= Q_\# \cup V, B = Q_\# \cup \brc{E,T}, \\
+ A &= Q_\# \cup V, \quad B = Q_\# \times \brc T \cup Q \times \brc E, \\
  \was{eq:03-ABC}
- C &= \underbrace{\mbig\brc{\mbig\kla{q',(q,T)}\mid q,q'\in Q_\#}}_{\twosub{q_\omega(q'|(q,T)) \,=\, t(q',q)}{\text{rank 0 for $q'=\#$, 2 otherwise}}} \cup \underbrace{\mbig\brc{\mbig\kla{v,(q,E)}\mid v\in V, q\in Q}}_{\twosub{q_\omega(v|(q,E)) \,=\, e(v|q)}{\text{rank 0}}} \cup \underbrace{\mbig\brc{\mbig\kla{\#,(\#,E)}}}_{\twosub{q_\omega(\#|(\#,E))\,=\,1}{\text{rank }0}}.
+ C &= \underbrace{\mbig\brc{\mbig\kla{q',(q,T)}\mid q,q'\in Q_\#}}_{\twosub{q_\omega(q'|(q,T)) \,=\, t(q',q)}{\text{rank 0 for $q'=\#$, 2 otherwise}}} \cup \underbrace{\mbig\brc{\mbig\kla{v,(q,E)}\mid v\in V, q\in Q}}_{\twosub{q_\omega(v|(q,E)) \,=\, e(v|q)}{\text{rank 0}}}.
 \end{align*}
 
-The grammar $K$ has states $Q_K=\brc{E,T}\times Q_\#$, the initial state $(T,\#)$ and the rules
+The grammar $K$ has states $Q_K = \brc T \times Q_\# \cup \brc E \times Q$, the initial state $(T,\#)$ and the rules
 \begin{align*}
  (T,q) &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q'),(T,q')} &&\forall q\in Q_\# \text{ and } q'\in Q, \\
  (T,q) &\to \mbig\kla{\#,(q,T)} &&\forall q\in Q_\#, \\
@@ -55,7 +55,7 @@ The grammar $K$ has states $Q_K=\brc{E,T}\times Q_\#$, the initial state $(T,\#)
  (E,q) &\to \mbig\kla{v,(q,E)} &&\forall q\in Q \text{ and } v\in V.
 \end{align*}
 
-Each $H(x)$ has states $Q_x=\brc{E,T}\times Q_\#\times\mbig\kla{\suff(x)\cup\brc\eps}$, the initial state $(T,\#,x)$ and the rules
+Each $H(x)$ has states $Q_x=\brc T \times Q_\# \times \mbig\kla{\suff(x)\cup\brc\eps} \cup \brc E \times Q \times \suff(x)$, the initial state $(T,\#,x)$ and the rules
 \begin{align*}
  (T,q,x') &\to \mbig\kla{q',(q,T)}\mbig\kla{(E,q',x'),(T,q',\cdr(x'))} && \forall q\in Q_\#,q'\in Q,\text{ and }x'\in\suff(x), \\
  (T,q,\eps) &\to \mbig\kla{\#,(q,T)} && \forall q\in Q_\#, \\
@@ -63,7 +63,8 @@ Each $H(x)$ has states $Q_x=\brc{E,T}\times Q_\#\times\mbig\kla{\suff(x)\cup\brc
  (E,q,x') &\to \mbig\kla{\car(x'),(q,E)} && \forall q\in Q\text{ and }x'\in\suff(x).
 \end{align*}
 
-For $x=\eps$, only the initial state $(T,\#,\eps)$ is reachable and we have
+For $x=\eps$, only the initial state $(T,\#,\eps)$ is reachable and the only
+nonzero inside and outside weights are
 \begin{align*}
  \was{eq:03-beta-eps}
  \beta_\eps(T,\#,\eps) &= t(\#|\#) = P(\eps), \\
@@ -95,14 +96,6 @@ otherwise noted.
  \\\hline\mystrut
  $(T,q,x_i\cdots x_n)$ & for $i>1$ & $S_x(i-1,q)$ for $i>1$ & $T_x(i-1,q)$ for $i>1$
  \\\hhline{|=|=#=|=|}\mystrut
- \mute$(E,\#,\eps)$ & \mute no & \mute0 & \mute0
- \\\hline\mystrut
- \mute$(E,\#,x)$ & \mute no & \mute0 & \mute0
- \\\hline\mystrut
- \mute$(E,\#,x_i\cdots x_n)$ & \mute no & \mute0 & \mute0
- \\\hline\mystrut
- \mute$(E,q,\eps)$ & \mute no & \mute0 & \mute0
- \\\hline\mystrut
  $(E,q,x)$ & yes & $e(x_1|q)$ & $T_x(1,q) \cdot S_x(1,q) \cdot e(x_1|q)^{-1}$
  \\\hline\mystrut
  $(E,q,x_i\cdots x_n)$ & yes & $e(x_i|q)$ & $T_x(i,q) \cdot S_x(i,q) \cdot e(x_i|q)^{-1}$
