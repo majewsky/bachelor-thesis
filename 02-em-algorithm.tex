@@ -43,7 +43,7 @@ Probability distributions can be derived from corpora as follows.
  Given a non-empty and finite $X$-corpus $c$, the \emph{empirical probability
  distribution} $\tilde c$ is defined as
  \[
-  \tilde c(x) = \frac{c(x)}{\abs c}.\qedhere
+  \tilde c(x) := \frac{c(x)}{\abs c}.\qedhere
  \]
 \end{definition}
 
@@ -285,6 +285,15 @@ is the \emph{set of all conditional probability distributions of $A$ given $B$
 \end{definition}
 
 \begin{definition}
+ Let $c$ be a $A\times B$-corpus $c$. For any $a\in A$ and $b\in B$, we define
+ the $A$-corpus $c_b$ by $c_b(a) := c(a,b)$, and the \emph{empirical
+ conditional probability distribution} $\tilde c\in \um(A|B)$ by
+ \[
+  \tilde c(a|b) := \frac{c(a,b)}{\sum_{a'\in A} c(a',b)} = \frac{c_b(a)}{\abs{c_b}} = \widetilde{c_b}(a). \qedhere
+ \]
+\end{definition}
+
+\begin{definition}
  Given a set $\Omega$, a \emph{conditional $\Omega$-probability model for $A$
  and $B$ (constrained to $C$)} is a mapping $q\colon\Omega\to\um(A|B)$ (or
  $q\colon\Omega\to\um_C(A|B)$).
@@ -373,11 +382,32 @@ equivalent to $\mnorm\stepmap{\varkappa^\flat}_\mathrm{cb}$, and thus also
 nondecreasing.
 The simple counting step mapping has two advantages over
 $\stepmap\cdot_\mathrm{cb}$: First, many language models can be described in
-terms of the countable events only, such that $\Omega = C$. In this case,
-Lemma~\ref{lemma:empirical2} can be used to solve the $\argmax$ by computing
+terms of countable events only, such that $\Omega = C$. In this case,
+Lemma~\ref{lemma:empirical2} can be extended to solve the $\argmax$ by computing
 the empirical probability distribution of $c\!\dangle{\omega,\varkappa}$.
 
-Second, even if this is not possible, the set of countable events $C$ is
+\begin{lemma}\label{lemma:empirical3}
+ Let $c$ be a non-empty and finite $A\times B$-corpus, and $q$ a
+ $\Omega$-probability model for $A$ given $B$. If there exists
+ $\hat\omega\in\Omega$ such that $q_{\hat\omega} = \tilde c$, then
+ $\hat\omega\in\cmle_p(c)$.
+\end{lemma}
+
+\begin{proof}
+ Let $b\in B$. Then $q^{(b)}$, defined by $q_\omega^{(b)} := q_\omega(b)$, is
+ an $\Omega$-probability model for $A$. Since $q_{\hat\omega}=\tilde c$, we
+ have $q_{\hat\omega}^{(b)}(a) = q_{\hat\omega}(a|b) = \widetilde{c_b}(a)$.
+ From this follows $\hat\omega\in\mle_{q^{(b)}}(c_b)$ because of
+ Lemma~\ref{lemma:empirical2}. This means that $q_{\hat\omega}^{(b)}(c_b) \geq
+ q_\omega^{(b)}(c_b)$ for any $\omega\in\Omega$. Hence, we have, for any
+ $\omega\in\Omega$,
+ \[
+  q_{\hat\omega}(c) = \prod_{b\in B} q_{\hat\omega}(b)(c_b) \geq \prod_{b\in B} q_\omega(b)(c_b) = q_\omega(c).
+  \qedhere
+ \]
+\end{proof}
+
+Second, even if lemma is not applicable, the set of countable events $C$ is
 usually much smaller than the set of all observations $X$ or hidden information
 $Y$, making the evaluation of the $\argmax$ more tractable than for the
 corpus-based step mapping. For example, when considering probabilistic
@@ -450,14 +480,6 @@ We also use $\Sigma^+ := \Sigma^* \setminus\brc{\eps}$ to refer to the set of
  \]
 \end{definition}
 
-The notation $\sigma(t_1,\ldots,t_k)$ refers to the tree which has the label
-$\sigma$ at its root and the subtrees $t_1,\ldots,t_k$ in that order. For
-$k=0$, we write $\sigma$ instead of $\sigma()$. For $V=\emptyset$, we write
-$U_\Sigma$ instead of $U_\Sigma(\emptyset)$. Trees from $U_\Sigma(V)$ have
-labels from $\Sigma\cup V$ at each node, but labels from $V$ are only permitted
-at leaves (see Figure~\ref{fig:02-trees1}). We refer to positions in the tree
-using \emph{Gorn notation}.
-
 \begin{figure}[t!]
  \[\begin{matrix}
   \begin{tikzpicture}[every node/.style={rectangle,draw,minimum size=2em},baseline=(current bounding box.center)]
@@ -489,6 +511,14 @@ using \emph{Gorn notation}.
   \label{fig:02-trees1}
  }
 \end{figure}
+
+The notation $\sigma(t_1,\ldots,t_k)$ refers to the tree which has the label
+$\sigma$ at its root and the subtrees $t_1,\ldots,t_k$ in that order. For
+$k=0$, we write $\sigma$ instead of $\sigma()$. For $V=\emptyset$, we write
+$U_\Sigma$ instead of $U_\Sigma(\emptyset)$. Trees from $U_\Sigma(V)$ have
+labels from $\Sigma\cup V$ at each node, but labels from $V$ are only permitted
+at leaves (see Figure~\ref{fig:02-trees1}). We refer to positions in the tree
+using \emph{Gorn notation}.
 
 \begin{definition}
  Given $t\in U_\Sigma(V)$, the set of \emph{positions} in $t$ is defined recursively by
@@ -583,8 +613,6 @@ below.
  that $\square$ appears at exactly one position in $t$. The set of all such
  1-contexts is denoted by $C_\Sigma$.
 \end{definition}
-
-\pagebreak
 
 1-contexts are used to describe trees that are not fully known yet: The
 symbol $\square$ is a placeholder for a missing subtree. Given a 1-context
@@ -714,8 +742,6 @@ projection $\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.\label{def:02-pi-sigma}
  $\ug$ over $\Sigma$ such that $\lang\ug = L$.
 \end{definition}
 
-\pagebreak
-
 A useful property of RTGs is \emph{determinism}: An RTG $\ug$ over $\Sigma$ is
 called \emph{deterministic} if, for any $(q_1,\ldots,q_k)\in Q^*$ and
 $\sigma\in\Sigma$, there is at most one $q\in Q$ such that $\mbig\kla{q \to
@@ -810,11 +836,8 @@ $\beta$ are the least fixpoint of the mapping $F: (\zr_{\geq0}\cup\brc\infty)^Q
 \[
  \mbig\kla{F(u)}(q) := \sum_{q_1,\ldots,q_k,\sigma} p\mbig\kla{q\to\sigma(q_1,\ldots,q_k)} \cdot u(q_1) \cdots u(q_k).
 \]
-Therefore,
-\[
- \beta = \lim_{n\to\infty} F^n(u_0) \quad\text{where}\quad u_0(q) := 0 \;\forall q\in Q
-\]
-can be approximated by performing as many iterations of $F$ as desired.
+Therefore, $\beta = \lim_{n\to\infty} F^n(u_0)$ where $u_0(q) := 0 \;\forall
+q\in Q$ can be approximated by performing as many iterations of $F$ as desired.
 
 \begin{definition}
  Let $\ug = (Q,q_0,R)$ be a PRTG. The \emph{outside weight} of a state $q\in Q$ is given by
@@ -838,8 +861,10 @@ is among the states $q_1,\ldots,q_k$ on the right hand side of the rule, at
 index $m$. The outside weight $\alpha(q)$ considers the outside weight
 $\alpha(q')$ of the previous state and the inside weight of all states adjacent
 to $q$, but not the inside weight of $q$ itself.
-
-Finally, we need to account for $q=q_0$, in which case the trivial tree $d$ containing only a $q_0$-labeled root node must be considered. Since $p(d)=1$ for this tree, it is accounted for in the above formula through the Kronecker symbol
+Finally, we need to account for $q=q_0$, in which case the trivial tree $d$
+containing only a $q_0$-labeled root node must be considered. Since $p(d)=1$
+for this tree, it is accounted for in the above formula through the Kronecker
+symbol
 \[
  \delta_{q_0}^q := \begin{cases}
   1 & \text{if } q_0 = q, \\
@@ -947,6 +972,8 @@ produces $(a,b)$ with probability $p(\rho)$, and the derivations that occur
 below this rule application (described by the inside weights $\beta(q_i)$ of
 the produced states).
 
+\clearpage
+
 Given the complete-data corpus, we can once more apply a maximum-likelihood
 estimator for $q$ to arrive at the \emph{inside-outside step mapping}:
 \[
@@ -959,7 +986,7 @@ which it follows that $\stepmap\cdot_\mathrm{io}$ is nondecreasing.
 
 \section{Review}
 
-This chapter introduced the three different formalizations of language models
+This chapter introduced the three formalizations of language models
 proposed by \cite{bucstuvog15}:
 \begin{enumerate}\setlength\itemsep{-0.3em}
  \item models $p\colon\Omega\to\um(Y\times X)$
@@ -990,7 +1017,7 @@ the only part that depends on $\omega$ is the probability model $q$. All other
 parts are fixed as soon as the language model is instantiated, and are
 therefore not subject to training. For many language models, it is sufficient
 to choose $\Omega := \um_C(A|B)$ and $q = \operatorname{id}$ (i.~e.,~$q_\omega =
-\omega$ for all $\omega$).  Applying Lemma~\ref{lemma:empirical2}, we see that
+\omega$ for all $\omega$).  Applying Lemma~\ref{lemma:empirical3}, we see that
 the empirical probability distribution for the complete-data corpus is an
 element of $\stepmap\mu_\mathrm{io}(\omega)$ (and similar for the simple
 counting step mapping). Since the EM algorithm only needs one element from
