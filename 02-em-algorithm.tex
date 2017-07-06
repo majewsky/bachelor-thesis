@@ -1,7 +1,6 @@
 \chapter{Expectation-maximization algorithms}
 
 % TODO: X-corpus "c" -> "h" everywhere (to avoid collision with c\in C)
-% TODO: in def. of \chi_{\omega,x}, "α" -> "α_x" and "β" -> "β_x" for clarity (adjust backref in Ch. 3 accordingly!)
 
 The generic framework for expectation-maximization (EM) algorithms introduced
 by \cite{bucstuvog15} applies to several kinds of probability models, e.~g.,
@@ -53,9 +52,6 @@ hence the requirement for $c$ to be non-empty and finite.
 \begin{definition}
  Given an $X$-corpus $c$ and $p\in\um(X)$, the \emph{likelihood of $c$ under
  $p$} is
- % TODO: Darren says it's confusing to have two definitions for what p(...) means.
- % Maybe use a notation like p[c] for the likelihood? (As a counterpoint,
- % consistency with bucstuvog15 is a huge bonus.)
  \[
   p(c) := \prod_{x\in X} p(x)^{c(x)}. \qedhere
  \]
@@ -596,7 +592,6 @@ below.
    \sigma(t_1,\ldots,t_{i-1},t_i[t']_{w'},t_{i+1},t_k) & t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw'.
   \end{cases}
  \]
- %TODO: Gibt es hierfür eine Standard-Notation? Wird nur noch einmal unten verwendet bei der Einführung von T_R.
  Finally, $\osucc(t)$ denotes the set of \emph{successors} of $t$, i.~e.,
  \[
   \osucc(t) := \begin{cases}
@@ -954,22 +949,23 @@ $c$ instead of relying on the complete-data corpus of the previous step
 mapping. In this expression, $(\chi_{\omega,x}|\omega\in\Omega,x\in
 X_{\not\bot})$ is a family of $C$-corpora, defined by
 \begin{equation}\label{eq:02-chi}
- \chi_{\omega,x}(a,b) := \beta(q_0)^{-1} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\in R} \alpha(q) \cdot p_\omega'(\rho) \cdot \beta(q_1) \cdots \beta(q_k),
+ \chi_{\omega,x}(a,b) := \beta_x(q_0)^{-1} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\in R} \alpha_x(q) \cdot p_\omega'(\rho) \cdot \beta_x(q_1) \cdots \beta_x(q_k),
 \end{equation}
-where $(Q,q_0,R)$ is the PRTG $H(x)$ with rule probabilities $p_\omega'$ as defined above.
+where $(Q,q_0,R)$ is the PRTG $H(x)$ with rule probabilities $p_\omega'$ as defined above,
+and $\alpha_x$ and $\beta_x$ are the outside and inside weights of $H(x)$, respectively.
 
 To understand the formula for $\chi_{\omega,x}(a,b)$, recall that $H(x)$ is an
 RTG such that its derivations, that is: the set of its complete abstract syntax
 trees, is $\pi_1^{-1}(x)$, the set of all hidden informations that lead to the
 observation $x$. Each of these derivations $d$ has a probability $p(d)$, and
-the sum of all these probabilities is the inside weight $\beta(q_0)$.
+the sum of all these probabilities is the inside weight $\beta_x(q_0)$.
 $\chi_{\omega,x}(a,b)$ describes, in simple terms, the contribution of rules
 containing the countable event $(a,b)$ to this total weight (such that
 multiple occurrences of $(a,b)$ in a single derivation are counted multiple
 times). For every such derivation, we have the part that leads up to the state
-$q$ (described by the outside weight $\alpha(q)$), the rule $\rho$ that
+$q$ (described by the outside weight $\alpha_x(q)$), the rule $\rho$ that
 produces $(a,b)$ with probability $p(\rho)$, and the derivations that occur
-below this rule application (described by the inside weights $\beta(q_i)$ of
+below this rule application (described by the inside weights $\beta_x(q_i)$ of
 the produced states).
 
 \clearpage
