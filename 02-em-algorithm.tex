@@ -215,12 +215,12 @@ The step mappings that we will consider will typically consist of two steps:
   to the complete-data corpus to choose $\omega_{i+1}$.
 \end{enumerate}
 
-%TODO: this section may use some citations because it makes claims
 This back and forth of using the current $\omega$ to enrich the training data
 and using the enriched data to find a better $\omega$ will converge towards a
-local maximum or saddle point of likelihood. The iteration is usually
-aborted after the desired running time has been exceeded, or after the changes
-of $p_{\omega_i}(c)$ per iteration have become smaller than some threshold.
+local maximum or saddle point of likelihood. \cite[Thm.~2]{Wu1983} The
+iteration is usually aborted after the desired running time has been exceeded,
+or after the changes of $p_{\omega_i}(c)$ per iteration have become smaller
+than some threshold.
 
 \cite{bucstuvog15} identify three types of step mappings that build on each
 other, each one more specific than the one before it. Since the training of
