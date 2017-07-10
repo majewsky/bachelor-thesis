@@ -163,12 +163,13 @@ such as the physicist Stephen Hawking. \cite{newelletal1998}
 
 A further generalization of N-gram models leads to the \emph{Hidden Markov
 model}. In this model, the emission probability of a word depends not on the
-previous words, but on the progression of a state machine that is not visible
-from the outside. Every time a word needs to be emitted, the state machine
-progresses to a new state according to a transition probability distribution
-$t$ dependent on the previous state, and the next word is predicted by an
-emission probability distribution $e$ dependent on the new state. The symbol
-$\#$ is used as the initial and final state of the state machine.
+previous words, but on the progression of a state machine that cannot be
+directly deduced from the emitted words. Every time a word needs to be
+emitted, the state machine progresses to a new state according to a transition
+probability distribution $t$ dependent on the previous state, and the next word
+is predicted by an emission probability distribution $e$ dependent on the new
+state. The symbol $\#$ is used as the initial and final state of the state
+machine.
 
 For example, if the state sequence that generated the sentence ``He ate soup''
 was ``\#-noun-verb-noun-\#'', then the probability of that sentence would be
@@ -179,9 +180,9 @@ was ``\#-noun-verb-noun-\#'', then the probability of that sentence would be
 \end{align*}
 
 Since the state sequence is typically not known, a sum over all possible state
-sequences must be computed to obtain $p(v)$ for a sentence $v\in V^*$.
+sequences $q$ must be computed to obtain $p(v)$ for a sentence $v\in V^*$.
 
-N-gram models can be interpreted a special case of the Hidden Markov model, by
+N-gram models can be interpreted a special case of the Hidden Markov model by
 encoding the current N-gram in the state ($Q = V^n$) and defining the
 transmission and emission probability in terms of the N-gram probability. For
 example, for bigrams,
@@ -204,4 +205,5 @@ algorithm for Hidden Markov models is the \emph{Baum-Welch algorithm}.
 
 Chapter~3 will define Hidden Markov models more formally, and discuss
 algorithms that act on them. Finally, we will show that the Baum-Welch
-algorithm is an instance of the general EM algorithms laid out in chapter~2.
+algorithm is an instance of the general EM algorithm laid out in Chapter~2 and
+thus exhibits the same beneficial convergence properties.

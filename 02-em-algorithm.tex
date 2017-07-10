@@ -4,8 +4,8 @@ The generic framework for expectation-maximization (EM) algorithms introduced
 by \cite{bucstuvog15} applies to several kinds of probability models, e.~g.,
 language models, translation models, and parsing models.
 This chapter will introduce terminology and notation from \cite{bucstuvog15} as
-far as is necessary to apply this framework to the Hidden Markov model in the
-subsequent chapters.
+far as is necessary to apply this framework to language models and,
+specifically, to the Hidden Markov model in Chapter~3.
 
 \section{Preliminaries}
 
@@ -19,7 +19,7 @@ We assume that
 \end{align*}
 
 \begin{definition}
- Given a countable set $X$, a mapping $c\colon X \to \zr_{\geq0}$ is called a
+ Given a countable set $X$, a mapping $c\colon X \to \zr_{\geq0}$ is called an
  \emph{$X$-corpus}. Its \emph{size} and \emph{support} are defined as
  \begin{align*}
   \abs c &:= \sum_{x\in X} c(x) &
@@ -114,20 +114,17 @@ $\omega\in\Omega$ such that $p_\omega(c)$ is maximized.
 
 $\mle_p(c)$ is the set of all $\omega$ with maximal likelihood, but training
 only needs to find a single $\hat\omega \in \mle_p(c)$. Computing $\mle_p(c)$
-by brute force is typically not tractable because the set $\Omega$ is infinite
-(usually countably infinite). However, there is one easily solvable special
-case.
+by brute force is typically not tractable because the set $\Omega$ is usually
+countably infinite. However, there is one easily solvable special case.
 
 \begin{lemma}\label{lemma:empirical2}
- Let $c$ be a finite $X$-corpus, and $p$ a $\Omega$-probability model for $X$.
- If there exists $\hat\omega\in\Omega$ such that $p_{\hat\omega} = \tilde c$,
- then $\hat\omega\in\mle_p(c)$.
+ Let $c$ be a nonempty and finite $X$-corpus, and $p$ a $\Omega$-probability
+ model for $X$. If there exists $\hat\omega\in\Omega$ such that $p_{\hat\omega}
+ = \tilde c$, then $\hat\omega\in\mle_p(c)$.
 \end{lemma}
 
 \begin{proof}
- If $c$ is empty, then $p_\omega(c) = 1$ for every $\omega\in\Omega$, and thus
- $\mle_p(c) = \Omega \ni \hat\omega$. Otherwise, by
- Lemma~\ref{lemma:empirical1}, $p_{\hat\omega}(c) = \tilde c(c) \geq
+ By Lemma~\ref{lemma:empirical1}, $p_{\hat\omega}(c) = \tilde c(c) \geq
  p_\omega(c)$ for every $\omega\in\Omega$, and thus $\hat\omega \in \mle_p(c)$.
 \end{proof}
 
@@ -140,7 +137,7 @@ case.
   \algorithmheader[Input:] $X$-corpus $c$
   \algorithmheader         $\Omega$-probability model $p$ for $Y\times X$
   \algorithmheader         some initial parameter $\omega_0 \in \Omega_0$ where $\Omega_0 := \brc{\omega\in\Omega: p_\omega(c) \neq 0}$
-  \algorithmheader[Implicit:] step mapping $\psi:\Omega_0\to\up(\Omega)$
+  \algorithmheader[Implicit:] step mapping $\psi\colon\Omega_0\to\up(\Omega)$
   \algorithmheader            \hspace{1em} such that $\omega'\in\psi(\omega)$ implies $p_\omega(c) \leq p_{\omega'}(c)$ (\emph{nondecreasing})
   \algorithmheader[Output:] sequence $\omega_1,\omega_2,\ldots\in\Omega_0$
   \algorithmheader            \hspace{1em} such that $p_{\omega_0}(c), p_{\omega_1}(c), p_{\omega_2}(c),\ldots$ nondecreasing
@@ -154,22 +151,23 @@ case.
  \end{algorithmic}
 \end{algorithm}
 
-The major complication that occurs when trying to train a language
-model is that not all required data is present in the corpus. For example, a
-probabilistic context-free grammar is described by the probability distribution
-over derivation rules. \cite{laryou90} When the training data consists of full
-parse trees (\emph{supervised training}), the optimal probability distribution
-can be found by simply counting how many times each rule is used across all
-these parse trees, and then computing the empirical probability distribution
-for this corpus. Most of the times, however, the training data will consist
-only of sentences (\emph{unsupervised training}). The information about how to
-parse the sentences is hidden.
+When training a language model, most of the time, not all required data is
+present in the corpus. For example, a probabilistic context-free grammar
+assigns a probability distribution to its derivation rules. \cite{laryou90}
+When the training data consists of full parse trees (\emph{supervised
+training}), the optimal probability distribution can be found by simply
+counting how many times each rule is used across all these parse trees, and
+then computing the empirical probability distribution for this corpus. Most of
+the times, however, the training data will consist only of sentences
+(\emph{unsupervised training}). The information about how to parse the
+sentences is hidden.
 
-The same problem arises with the Hidden Markov model: When training data is not
-already annotated with state information, the information about which states
-correspond to which words from the training data remains hidden. Expectation
-maximization algorithms can be used when parts of the training data are hidden
-in such a way. For the remainder, let\label{02-basic-requirements}
+A similar problem arises with the Hidden Markov model: When training data is
+not already annotated with state information, the information about which
+states correspond to which words from the training data remains hidden.
+\emph{Expectation-maximization algorithms} can be used when parts of the
+training data are hidden in such a way. For the remainder,
+let\label{02-basic-requirements}
 \begin{itemize}\setlength\itemsep{-0.3em}
  \item $X$ and $Y$ be countable sets,
  \item $\Omega$ be a set,
@@ -205,7 +203,7 @@ the one that came before.
  \]
 \end{definition}
 
-The step mappings that we will consider will typically consist of two steps:
+The step mappings that we will consider consist of two steps:
 \begin{enumerate}
  \item \emph{Expectation:} The training data $c$ is converted into a
   \emph{complete-data corpus}. Using $\omega_i$ from the previous
@@ -222,11 +220,11 @@ iteration is usually aborted after the desired running time has been exceeded,
 or after the changes of $p_{\omega_i}(c)$ per iteration have become smaller
 than some threshold.
 
-\cite{bucstuvog15} identify three types of step mappings that build on each
+\cite{bucstuvog15} introduce three types of step mappings that build on each
 other, each one more specific than the one before it. Since the training of
 Hidden Markov models will be identified as an instance of the most specific
 step mapping, the inside-outside step mapping, the remainder of this chapter
-will introduce all three in order.
+will introduce all these step mappings in order.
 
 \section{Corpus-based step mapping}
 
@@ -234,24 +232,23 @@ The most general type of complete-data corpus can be obtained by distributing
 $c(x)$ among the hidden information $y$ according to the probability
 distribution $p_\omega$:
 \[
- c\!\dangle{\omega,p}(y,x) := \begin{cases}
+ c\!\dangle{\omega,p}\!(y,x) := \begin{cases}
   c(x) \cdot \frac{p_\omega(y,x)}{p_\omega(x)} & \text{if } p_\omega(x) \neq 0, \\
   0 & \text{if } p_\omega(x) = 0.
  \end{cases}
 \]
-Recall that $p_\omega(x) = \sum_y p_\omega(y,x)$. Therefore,
-$\abs{c\!\dangle{\omega,p}} = \abs c$. This corpus now has the correct
-structure for plugging it into $\mle_p$, yielding the \emph{corpus-based step
-mapping}\footnote{The proof that this step mapping is nondecreasing can be
-found in \cite[pp.~10]{bucstuvog15}.}
+Recall that $p_\omega(x) = \sum_y p_\omega(y,x)$. The corpus
+$c\!\dangle{\omega,p}$ has the correct structure for applying $\mle_p$,
+yielding the \emph{corpus-based step mapping}\footnote{The proof that this step
+mapping is nondecreasing can be found in \cite[pp.~10]{bucstuvog15}.}
 \[
  \stepmap p_\mathrm{cb}\colon \Omega_0\to\up(\Omega),
  \quad
  \omega \mapsto \mle_p\mbig\kla{c\!\dangle{\omega,p}} = \argmax_{\omega'} p_{\omega'}\mbig\kla{c\!\dangle{\omega,p}}.
 \]
 
-For very simple language models, the $\argmax$ can be solved at this point
-already. To apply Lemma~\ref{lemma:empirical2}, $\hat\omega$ needs to be found
+It is usually intractable to evaluate this $\argmax$ due to the large size of
+$\Omega$. To apply Lemma~\ref{lemma:empirical2}, $\hat\omega$ needs to be found
 such that $p_{\hat\omega} = \widetilde{c\!\dangle{\omega,p}}$. This operation
 is typically hard, which is why a more specific step mapping is helpful.
 
@@ -279,11 +276,11 @@ is the \emph{set of all conditional probability distributions of $A$ given $B$
 \end{definition}
 
 \begin{definition}
- Let $c$ be a $A\times B$-corpus $c$. For any $a\in A$ and $b\in B$, we define
+ Let $c$ be an $A\times B$-corpus $c$. For any $a\in A$ and $b\in B$, we define
  the $A$-corpus $c_b$ by $c_b(a) := c(a,b)$, and the \emph{empirical
  conditional probability distribution} $\tilde c\in \um(A|B)$ by
  \[
-  \tilde c(a|b) := \frac{c(a,b)}{\sum_{a'\in A} c(a',b)} = \frac{c_b(a)}{\abs{c_b}} = \widetilde{c_b}(a). \qedhere
+  \tilde c(a|b) := \widetilde{c_b}(a) = \frac{c_b(a)}{\abs{c_b}} = \frac{c(a,b)}{\sum_{a'\in A} c(a',b)}. \qedhere
  \]
 \end{definition}
 
@@ -316,14 +313,14 @@ defined for any set $U$.
 
 The motivation for this definition is to model hidden information $y$ as
 consisting of countable events $c\in C$. The mapping $\lambda$ describes
-whether (and, possibly, with what probability) a certain $y$ can be the cause
-for a certain observation $x$.\footnote{Most instances of $\lambda$ use only
-integer images, i.~e.~$\lambda(X_{\not\bot}\times Y_{\not\bot}) = \brc{0,1}$,
-thus following this intuitive notion. However, the possibility of using
-fractional values for $\lambda(x,y)$ is occasionally useful, e.~g.,~to define a
-counting information for the IBM Model 1 in \cite[pp.~23]{bucstuvog15}.} For
-$\lambda(x,y)>0$, the $C$-corpus $\pi(x,y)$ describes how often each countable
-event occurs in this hidden information.
+whether (and, possibly, with what probability\footnote{Most instances of
+$\lambda$ use only integer images, i.~e.~$\lambda(X_{\not\bot}\times
+Y_{\not\bot}) = \brc{0,1}$, thus following this intuitive notion. However, the
+possibility of using fractional values for $\lambda(x,y)$ is occasionally
+useful, e.~g.,~to define a counting information for the IBM Model 1 in
+\cite[pp.~23]{bucstuvog15}.}) a certain $y$ can be the cause for a certain
+observation. For $\lambda(x,y)>0$, the $C$-corpus $\pi(x,y)$ describes how
+often each countable event occurs in this hidden information.
 
 Following the assumption that the countable events $C$ fully encode the hidden
 information $Y$, we can use these intuitive notions to describe the original
@@ -352,7 +349,7 @@ Since we now have a probability model $p = \varkappa^\flat$ as required by the
 corpus-based step mapping, we can lift its complete-data corpus into the domain
 of the counting information, obtaining a new complete-data corpus
 \[
- c\!\dangle{\omega,\varkappa}\colon C \to \zr_{\geq0}, \quad
+ c\!\dangle{\omega,\varkappa}\!\colon C \to \zr_{\geq0}, \quad
  (a,b) \mapsto \sum_{x,y} c\mnorm\dangle{\omega,\varkappa^\flat}(y,x) \cdot \mbig\kla{\pi(x,y)}(a,b).
 \]
 
@@ -366,14 +363,15 @@ of the counting information, obtaining a new complete-data corpus
  \]
 \end{definition}
 
-Using this definition, the \emph{simple counting step mapping} is
+Using this definition, the \emph{simple counting step
+mapping}\footnote{\cite[p.~13]{bucstuvog15} show that this step mapping is
+equivalent to $\mnorm\stepmap{\varkappa^\flat}_\mathrm{cb}$, and thus also
+nondecreasing.} for $\varkappa$ is
 \[
  \stepmap\varkappa_\mathrm{sc}\colon \Omega_0 \to \up(\Omega), \quad
  \omega \mapsto \cmle_q\mbig\kla{c\mnorm\dangle{\omega,\varkappa}} = \argmax_{\omega'} q_{\omega'}\mbig\kla{c\mnorm\dangle{\omega,\varkappa}}.
 \]
-\cite[p.~13]{bucstuvog15} show that this step mapping is
-equivalent to $\mnorm\stepmap{\varkappa^\flat}_\mathrm{cb}$, and thus also
-nondecreasing.
+
 The simple counting step mapping has two advantages over
 $\stepmap\cdot_\mathrm{cb}$: First, many language models can be described in
 terms of countable events only, such that $\Omega = C$. In this case,
@@ -401,7 +399,7 @@ the empirical probability distribution of $c\!\dangle{\omega,\varkappa}$.
  \]
 \end{proof}
 
-Second, even if lemma is not applicable, the set of countable events $C$ is
+Second, even if this lemma is not applicable, the set of countable events $C$ is
 usually much smaller than the set of all observations $X$ or hidden information
 $Y$, making the evaluation of the $\argmax$ more tractable than for the
 corpus-based step mapping. For example, when considering probabilistic
@@ -427,12 +425,12 @@ model in the next chapter.\footnote{The terms ``alphabet'', ``letters'' and
 symbols, its elements and strings of them. However, in natural language
 processing, the individual symbols are words rather than letters, and their
 strings are sentences rather than words. These terms will consequently be
-applied in chapter 3 and beyond.}
+applied in Chapter~3.}
 
 \begin{definition}
  Let $\Sigma$ be an alphabet. For any $n\in\zn$, a sequence $\sigma =
  \sigma_1\cdots\sigma_n$ of letters $\sigma_1,\ldots,\sigma_n\in\Sigma$ is
- called a \emph{word} over $\sigma$ with \emph{length} $\abs\sigma = n$. For
+ called a \emph{word} over $\Sigma$ with \emph{length} $\abs\sigma = n$. For
  $n=0$, the \emph{empty word} is denoted by $\eps$. Given two words
  $\sigma=\sigma_1\cdots\sigma_n$ and $\tau=\tau_1\cdots\tau_m$, their
  \emph{concatenation} is the word
@@ -518,8 +516,8 @@ using \emph{Gorn notation}.
  Given $t\in U_\Sigma(V)$, the set of \emph{positions} in $t$ is defined recursively by
  \[
   \pos(t) := \begin{cases}
-   \brc\eps & t = v\in V, \\
-   \brc\eps\cup \bigcup_{i=1}^k \brc{i} \cdot \pos(t_i) & t = \sigma(t_1,\ldots,t_k).
+   \brc\eps & \text{if } t = v\in V, \\
+   \brc\eps\cup \bigcup_{i=1}^k \brc{i} \cdot \pos(t_i) & \text{if } t = \sigma(t_1,\ldots,t_k).
   \end{cases}
   \qedhere
  \]
@@ -571,30 +569,30 @@ below.
  Given $t\in U_\Sigma(V)$ and $w\in\pos(t)$, $t(w)$ denotes the \emph{label} in $t$ at position $w$, i.~e.,
  \[
   t(w) := \begin{cases}
-   v & t = v\in V \text{ and } w=\eps, \\
-   \sigma & t = \sigma(t_1,\ldots,t_k) \text{ and } w = \eps, \\
-   t_i(w') & t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw' \text{ where } i\in\zn, w'\in\pos(t_i).
+   v & \text{if } t = v\in V \text{ and } w=\eps, \\
+   \sigma & \text{if } t = \sigma(t_1,\ldots,t_k) \text{ and } w = \eps, \\
+   t_i(w') & \text{if } t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw' \text{ where } i\in\zn, w'\in\pos(t_i).
   \end{cases}
  \]
- where $i\in\zn$ and $w'\in\pos(t_i)$. Moreover, $t|_w$ denotes the \emph{subtree} in $t$ at position $w$, i.~e.,
+ Moreover, $t|_w$ denotes the \emph{subtree} in $t$ at position $w$, i.~e.,
  \[
   t|_w := \begin{cases}
-   t & w = \eps, \\
-   t_i|_{w'} & t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw',
+   t & \text{if } w = \eps, \\
+   t_i|_{w'} & \text{if } t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw',
   \end{cases}
  \]
  and for any $t'\in U_\Sigma(V)$, $t[t']_w$ denotes the tree that results from replacing $t|_w$ by $t'$, i.~e.,
  \[
   t[t']_w := \begin{cases}
-   t' & w = \eps, \\
-   \sigma(t_1,\ldots,t_{i-1},t_i[t']_{w'},t_{i+1},t_k) & t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw'.
+   t' & \text{if } w = \eps, \\
+   \sigma(t_1,\ldots,t_{i-1},t_i[t']_{w'},t_{i+1},t_k) & \text{if } t = \sigma(t_1,\ldots,t_k) \text{ and } w = iw' \\[-0.5em] & \text{where } i\in\zn, w'\in\pos(t_i).
   \end{cases}
  \]
  Finally, $\osucc(t)$ denotes the set of \emph{successors} of $t$, i.~e.,
  \[
   \osucc(t) := \begin{cases}
-   \emptyset & t = v\in V, \\
-   \brc{t_1,\ldots,t_k} & t = \sigma(t_1,\ldots,t_k).
+   \emptyset & \text{if } t = v\in V, \\
+   \brc{t_1,\ldots,t_k} & \text{if } t = \sigma(t_1,\ldots,t_k).
   \end{cases}
   \qedhere
  \]
@@ -619,8 +617,7 @@ results from $t$ when the node labeled with $\square$ is replaced by $t'$.
  \emph{arity} to each symbol in $R$.
 \end{definition}
 
-A ranked alphabet is usually denoted only by $R$. The existence of a suitable
-$\rk$ is implied.
+A ranked alphabet is usually denoted only by $R$. The existence of $\rk$ is implied.
 
 \begin{definition}
  Let $R$ be a ranked alphabet and $V$ be a set. The \emph{set $T_R(V)$ of
@@ -631,7 +628,7 @@ $\rk$ is implied.
  \]
 \end{definition}
 
-In other words, the number of children of each node in $t$ with a label from
+In other words, the number of subtrees of each position in $t$ with a label from
 $R$ must be equal to the rank of that label.
 
 \begin{definition}
@@ -656,16 +653,16 @@ We will write $\mbig\kla{(q_1,\ldots,q_k),\sigma,q}$ as $q\to\sigma(q_1,\ldots,q
   q \in D^q \quad\text{and}\quad \forall \rho=\mbig\kla{q\to\sigma(q_1,\ldots,q_k)}\in R,d_1\in D^{q_1},\ldots,d_k\in D^{q_k}: \rho(d_1,\ldots,d_k) \in D^q.
  \]
  An \emph{abstract syntax tree} is a partial abstract syntax tree $d\in
- D^{q_0}(\ug)$ that does not have any nodes labeled with symbols from $Q$.
+ D^{q_0}(\ug)$ that does not have any labels from $Q$.
 \end{definition}
 
-An RTG generates a language (i.~e.,~a countable set) of trees. Trees are derived
-by starting with a tree containing only the a root node with the label $q_0$,
-then successively replacing $Q$-labeled nodes according to the RTG's rule set
-until no more $Q$-labeled nodes are left. The resulting tree is in $U_\Sigma$
-and its abstract syntax tree is in $T_R$. Partial abstract syntax trees are in $T_R(Q)$.
-For example, consider the RTG $\ug = \mbig\kla{\brc{q_0,q_1},q_0,R}$ where
-$\Sigma=\brc{a,b,c}$ and
+An RTG generates a language (i.~e.,~a countable set) of trees. Trees are
+derived by starting with a tree containing only a root node with the label
+$q_0$, then successively replacing nodes with labels from $Q$ according to the
+RTG's rule set until no such nodes are left. The resulting tree is in
+$U_\Sigma$ and its abstract syntax tree is in $T_R$. Partial abstract syntax
+trees are in $T_R(Q)$.  For example, consider the RTG $\ug =
+\mbig\kla{\brc{q_0,q_1},q_0,R}$ where $\Sigma=\brc{a,b,c}$ and
 \[
  R = \brc{ q_0 \to a(q_0,q_1), \quad q_0 \to b, \quad q_1 \to c }.
 \]
@@ -721,10 +718,11 @@ the right.)
  \end{tikzpicture}
 \end{matrix}\]
 
-From the (partial) abstract syntax tree on the right, the tree on the left can be derived easily
-by substituting the labels $q = \sigma(q_1,\ldots,q_k)\in R$ by the contained
-symbols $\sigma\in\Sigma$, without changing labels from $Q$. We shall call this
-projection $\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.\label{def:02-pi-sigma}
+From the (partial) abstract syntax tree on the right, the tree on the left can
+be derived by substituting each label $\rho = \mbig\kla{q =
+\sigma(q_1,\ldots,q_k)}\in R$ with the symbol $\sigma\in\Sigma$ that it
+contains, without changing labels from $Q$. We shall call this projection
+$\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.\label{def:02-pi-sigma}
 
 \begin{definition}\label{def:02-rtg-lang}
  Let $\ug$ be an RTG over $\Sigma$. The \emph{language of $\ug$} is the set
@@ -735,28 +733,34 @@ projection $\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.\label{def:02-pi-sigma}
  $\ug$ over $\Sigma$ such that $\lang\ug = L$.
 \end{definition}
 
-A useful property of RTGs is \emph{determinism}: An RTG $\ug$ over $\Sigma$ is
-called \emph{deterministic} if, for any $(q_1,\ldots,q_k)\in Q^*$ and
-$\sigma\in\Sigma$, there is at most one $q\in Q$ such that $\mbig\kla{q \to
-\sigma(q_1,\ldots,q_k)} \in R$. A language is called deterministic if it is
-described by a deterministic RTG.
+\begin{definition}
+ An RTG $\ug$ over $\Sigma$ is called \emph{deterministic} if, for any
+ $(q_1,\ldots,q_k)\in Q^*$ and $\sigma\in\Sigma$, there is at most one $q\in Q$
+ such that $\mbig\kla{q \to \sigma(q_1,\ldots,q_k)} \in R$. A language $L\subseteq U_\Sigma$ is
+ called \emph{deterministic} if there exists an RTG $\ug$ with $\lang\ug = L$.
+\end{definition}
+
+\begin{definition}
+ An RTG $\ug$ over $\Sigma$ is called \emph{unambiguous} if, for every tree
+ $t\in\lang\ug$, there exists exactly one abstract syntax tree $d\in
+ D^{q_0}(\ug)$ such that $\pi_\Sigma(d) = t$.
+ The set of all unambiguous RTG over $\Sigma$ shall be denoted as $\ur(\Sigma)$.
+\end{definition}
 
 \label{lemma:02-deterministic-is-unambiguous}
-From determinism results unambiguity: An RTG $\ug$ over $\Sigma$ is called
-\emph{unambiguous} if, for every tree $t\in\lang\ug$, there exists exactly one
-abstract syntax tree $d\in D^{q_0}(\ug)$ such that $\pi_\Sigma(d) = t$. To see why, have
-a look at the fully derived tree $t = a(b,c)$ above. Since $\ug$ in this
-example is deterministic, the abstract syntax tree can be recovered from $t$ by
-traversing the nodes from the bottom up and assigning the rules that are used
-at that position. At each position, we know the symbol $\sigma$ at this
-position in the tree and the states $q_1,\ldots,q_k$ from the left sides of the
-rules used for the child nodes. Therefore, the state $q$ (and therefore the
-rule $\rho$) for this position can be chosen deterministically.
+From determinism results unambiguity. To see why, recall the derivation of $t =
+a(b,c)$ above. Since $\ug$ in this example is deterministic, the abstract
+syntax tree can be recovered from $t$ by traversing the nodes from the bottom
+up and assigning the rules that are used at that position. At each position, we
+know the symbol $\sigma$ at this position in the tree and the states
+$q_1,\ldots,q_k$ from the left sides of the rules used for the child nodes.
+Therefore, the state $q$ (and therefore the rule $\rho$) for this position can
+be chosen deterministically.
 
 \begin{definition}
  A \emph{probabilistic regular tree grammar (PRTG) over $\Sigma$} is a pair
  $(\ug,p)$ of an RTG $\ug=(Q,q_0,R)$ over $\Sigma$ and a mapping
- $p:Q\to\zr_{\geq0}^{Q^*\times\Sigma}$ that is constrained to $R$ in the
+ $p:Q\to\zr_{\geq0}^{Q^*\times\Sigma}$ constrained to $R$ in the
  following way:
  \[
   \forall q\in Q, u\in Q^*\times\Sigma: \mbig\kla{p(q)}(u) \neq 0 \Rightarrow (u,q) \in R.
@@ -771,7 +775,6 @@ rule $\rho$) for this position can be chosen deterministically.
  \[
   \mbig\kla{\pi(d)}(p) := \mbig\abs{\mbig\brc{w\in\pos(d): d(w)=p}}.
  \]
- The set of all \emph{unambiguous} PRTG over $\Sigma$ shall be denoted as $\ur(\Sigma)$.
 \end{definition}
 
 We usually write a PRTG $(\ug,p)$ as just $\ug$ and imply the existence of $p$.
@@ -796,7 +799,7 @@ observation.
 \end{definition}
 
 The sum goes over all complete abstract syntax trees rooted at $q$. The inside weight
-describes the collective probability of all derivations starting at $q$. Inside
+thus measures the collective probability of all derivations starting at $q$. Inside
 weights are usually calculated by noting that each $d\in D^q(\ug)\cap T_R$ must
 have a rule of the form $q\to\ldots$ at its root. The remaining probabilities
 can then be expressed as the inside weights of the states that emerge from this
@@ -835,18 +838,18 @@ q\in Q$ can be approximated by performing as many iterations of $F$ as desired.
 \begin{definition}
  Let $\ug = (Q,q_0,R)$ be a PRTG. The \emph{outside weight} of a state $q\in Q$ is given by
  \[
-  \alpha(q) := \sum_{d\in D^{q_0}(\ug): \exists d'\in C_R: d = d'[q]} p(d).
+  \alpha(q) := \sum_{d\in D^{q_0}(\ug):\, \exists d'\in C_R:\, d = d'[q]} p(d).
   \qedhere
  \]
 \end{definition}
 
 The sum goes over all partial abstract syntax trees starting from $q_0$, where
 only one unexpanded state is left, and that state is $q$. The outside weight
-describes the collective probability of all derivations that use $q$, but
+measures the collective probability of all derivations that use $q$, but
 without considering derivations at or below $q$. Similar to what we did with
 inside weights, we can expand this definition into
 \begin{equation}\label{eq:02-alpha}
- \alpha(q) = \delta_{q_0}^q + \sum_{q',q_1,\ldots,q_k,\sigma,m:q_m=q} \alpha(q') \cdot p\mbig\kla{q'\to\sigma(q_1,\ldots,q_k)} \cdot \prod_{l\neq m} \beta(q_l).
+ \alpha(q) = \delta_{q_0}^q + \sum_{q',q_1,\ldots,q_k,\sigma,m:\,q_m=q} \alpha(q') \cdot p\mbig\kla{q'\to\sigma(q_1,\ldots,q_k)} \cdot \prod_{l\neq m} \beta(q_l).
 \end{equation}
 
 In this formulation, the sum goes over all rules that derive $q$, that is, $q$
@@ -875,8 +878,8 @@ We can now resume the task of describing hidden information in terms of trees,
 such that the countable events, as introduced by the counting information, are
 labels in these trees' nodes. Similar to how a language model can be described
 as a counting information for use with the simple counting step mapping, a
-language model may also be described as an inside-outside information, for use
-with the inside-outside step mapping.
+language model may also be described as an \emph{inside-outside information},
+for use with the inside-outside step mapping.
 
 Again, we assume the previous definitions of $X$, $Y$, $c$, $A$, $B$ and $C$
 throughout this section.
@@ -889,7 +892,7 @@ throughout this section.
  additional divergence from the definition in \cite{bucstuvog15}, where $\mu$
  is introduced as a quintuple $\mu=(q,\pi_1,\pi_2,K,H)$. Both definitions are
  congruent for language models by letting $\pi_2(y) :=
- \emptyset\in Z$.} $\mu = (q,\pi_1,K,H)$ such that
+ \emptyset\in Z$.} $\mu = (q,\pi_1,K,H)$ where
  \begin{itemize}\setlength\itemsep{-0.3em}
   \item $C\subseteq A\times B$ is a ranked alphabet such that $Y_{\not\bot}\subseteq T_C$ contains ranked trees over $C$,
   \item $q\colon\Omega\to\um_C(A|B)$ as for counting informations,
@@ -903,7 +906,7 @@ throughout this section.
  Furthermore, we require that, for every $\omega\in\Omega$, the PRTG $(K,p'_\omega)$ is proper, where
  \[
   p'_\omega(\rho) := \begin{cases}
-   q_\omega(a|b) & \text{if } \rho=q\to(a,b)(q_1,\ldots,q_k)\in R(K),
+   q_\omega(a|b) & \text{if } \rho=\mbig\kla{q\to(a,b)(q_1,\ldots,q_k)}\in R(K),
    \\ 0 & \text{otherwise}.
   \end{cases}\qedhere
  \]
@@ -953,23 +956,23 @@ where $(Q,q_0,R)$ is the PRTG $H(x)$ with rule probabilities $p_\omega'$ as defi
 and $\alpha_x$ and $\beta_x$ are the outside and inside weights of $H(x)$, respectively.
 
 To understand the formula for $\chi_{\omega,x}(a,b)$, recall that $H(x)$ is an
-RTG such that its derivations, that is: the set of its complete abstract syntax
-trees, is $\pi_1^{-1}(x)$, the set of all hidden informations that lead to the
-observation $x$. Each of these derivations $d$ has a probability $p(d)$, and
-the sum of all these probabilities is the inside weight $\beta_x(q_0)$.
-$\chi_{\omega,x}(a,b)$ describes, in simple terms, the contribution of rules
-containing the countable event $(a,b)$ to this total weight (such that
-multiple occurrences of $(a,b)$ in a single derivation are counted multiple
-times). For every such derivation, we have the part that leads up to the state
-$q$ (described by the outside weight $\alpha_x(q)$), the rule $\rho$ that
-produces $(a,b)$ with probability $p(\rho)$, and the derivations that occur
+RTG such that the set of its complete abstract syntax trees is $\pi_1^{-1}(x)$,
+the set of all hidden informations that lead to the observation $x$. Each of
+these derivations $d$ has a probability $p(d)$, and the sum of all these
+probabilities is the inside weight $\beta_x(q_0)$. The term
+$\chi_{\omega,x}(a,b)$ measures the contribution of rules containing the
+countable event $(a,b)$ to this total weight (such that multiple occurrences of
+$(a,b)$ in a single derivation are counted multiple times). For every such
+derivation, we have the part that leads up to the state $q$ (described by the
+outside weight $\alpha_x(q)$), the rule $\rho$ that produces $(a,b)$ with
+probability $p_\omega'(\rho) = q_\omega(a|b)$, and the derivations that occur
 below this rule application (described by the inside weights $\beta_x(q_i)$ of
 the produced states).
 
 \clearpage
 
 Given the complete-data corpus, we can once more apply a maximum-likelihood
-estimator for $q$ to arrive at the \emph{inside-outside step mapping}:
+estimator for $q$ to arrive at the \emph{inside-outside step mapping}
 \[
  \stepmap\mu_\mathrm{io}\colon \Omega_0 \to \up(\Omega), \quad
  \omega \mapsto \cmle_q\mbig\kla{c\mnorm\dangle{\omega,\mu}} = \argmax_{\omega'} q_{\omega'}\mbig\kla{c\mnorm\dangle{\omega,\mu}}.
@@ -983,9 +986,9 @@ which it follows that $\stepmap\cdot_\mathrm{io}$ is nondecreasing.
 This chapter introduced the three formalizations of language models
 proposed by \cite{bucstuvog15}:
 \begin{enumerate}\setlength\itemsep{-0.3em}
- \item models $p\colon\Omega\to\um(Y\times X)$
- \item counting informations $\varkappa=(q,\lambda,\pi)$
- \item inside-outside informations $\mu=(q,\pi_1,K,H)$
+ \item models $p\colon\Omega\to\um(Y\times X)$,
+ \item counting informations $\varkappa=(q,\lambda,\pi)$,
+ \item inside-outside informations $\mu=(q,\pi_1,K,H)$.
 \end{enumerate}
 Each formalization is more specific than the one before it, as evidenced by the
 $\flat$ operator that converts each formalization into the previous one.
