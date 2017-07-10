@@ -10,7 +10,7 @@ right margin refers to the page where the equation was originally derived.
 We imply that $\uh = (Q,V,\#,t,e)$ is an HMM. Let $v\in V^*$ be an observation.
 \begin{align*}
  \was{eq:03-p-v}
- P(v=v_1\cdots v_n) &= \sum_{q_1,\ldots,q_n} t(q_1|\#) \cdot e(v_1|q_1) \cdot \prod_{i=2}^n \mbig\brk{t(q_i|q_{i-1}) \cdot e(v_i|q_i)} \cdot t(\#|q_n), \\
+ P(v=v_1\cdots v_n) &= \sum_{q_1,\ldots,q_n\in Q} t(q_1|\#) \cdot e(v_1|q_1) \cdot \prod_{i=2}^n \mbig\brk{t(q_i|q_{i-1}) \cdot e(v_i|q_i)} \cdot t(\#|q_n), \\
  \was{eq:03-p-v-eps}
  P(v=\eps) &= t(\#|\#).
  \intertext{In terms of the forward weight $T_v(i,q)$ for $i\in\brc{1,\ldots,n}$ and $q\in Q$:}
@@ -44,7 +44,7 @@ information is structured according to
  \was{eq:03-ABC}
  A &= Q_\# \cup V, \quad B = Q_\# \times \brc T \cup Q \times \brc E, \\
  \was{eq:03-ABC}
- C &= \underbrace{\mbig\brc{\mbig\kla{q',(q,T)}\mid q,q'\in Q_\#}}_{\twosub{q_\omega(q'|(q,T)) \,=\, t(q',q)}{\text{rank 0 for $q'=\#$, 2 otherwise}}} \cup \underbrace{\mbig\brc{\mbig\kla{v,(q,E)}\mid v\in V, q\in Q}}_{\twosub{q_\omega(v|(q,E)) \,=\, e(v|q)}{\text{rank 0}}}.
+ C &= \underbrace{\mbig\brc{\mbig\kla{q',(q,T)}\mid q,q'\in Q_\#}}_{\twosub{q_\omega(q'|(q,T)) \,=\, t(q'|q)}{\text{rank 0 for $q'=\#$, 2 otherwise}}} \cup \underbrace{\mbig\brc{\mbig\kla{v,(q,E)}\mid v\in V, q\in Q}}_{\twosub{q_\omega(v|(q,E)) \,=\, e(v|q)}{\text{rank 0}}}.
 \end{align*}
 
 The grammar $K$ has states $Q_K = \brc T \times Q_\# \cup \brc E \times Q$, the initial state $(T,\#)$ and the rules
@@ -73,12 +73,13 @@ nonzero inside and outside weights are
 \end{align*}
 
 The following table shows inside and outside weights for $H(x)$ with
-$x=x_1\cdots x_n\in V^+$ and rule probabilities according to $q_\omega(a|b)$ of
+$x=x_1\cdots x_n\in V^+$ nonempty and rule probabilities according to $q_\omega(a|b)$ of
 the produced symbol $(a,b)\in C$.  Unreachable grammar states are shown greyed
 out. All statements apply for all $q\in Q$ and $i\in\brc{1,\ldots,n}$ unless
 otherwise noted.
 
 \newcommand\mystrut{\rule[-0.6em]{0pt}{1.8em}}%
+\newcommand\mylargestrut{\rule[-1.3em]{0pt}{3.2em}}%
 \newcommand\mute{\color{black!30}}
 \begin{center}\begin{tabular}{|c|c||c|c|}%
  \hline\mystrut
@@ -89,27 +90,15 @@ otherwise noted.
  $(T,\#,x)$ & yes (initial) & $P(x)$ & $1$
  \\\hline\mystrut
  \mute$(T,\#,x_i\cdots x_n)$ & \mute no & \mute not relevant & \mute0
- \\\hline\mystrut
+ \\\hhline{|=|=#=|=|}\mystrut
  $(T,q,\eps)$ & yes & $t(\#|q)=S_x(n,q)$ & $T_x(n,q)$
  \\\hline\mystrut
  \mute$(T,q,x)$ & \mute no & \mute not relevant & \mute0
  \\\hline\mystrut
  $(T,q,x_i\cdots x_n)$ & for $i>1$ & $S_x(i-1,q)$ for $i>1$ & $T_x(i-1,q)$ for $i>1$
- \\\hhline{|=|=#=|=|}\mystrut
- $(E,q,x)$ & yes & $e(x_1|q)$ & $T_x(1,q) \cdot S_x(1,q) \cdot e(x_1|q)^{-1}$
- \\\hline\mystrut
- $(E,q,x_i\cdots x_n)$ & yes & $e(x_i|q)$ & $T_x(i,q) \cdot S_x(i,q) \cdot e(x_i|q)^{-1}$
+ \\\hhline{|=|=#=|=|}\mylargestrut
+ $(E,q,x)$ & yes & $e(x_1|q)$ & $\dfrac{T_x(1,q) \cdot S_x(1,q)}{e(x_1|q)}$
+ \\\hline\mylargestrut
+ $(E,q,x_i\cdots x_n)$ & yes & $e(x_i|q)$ & $\dfrac{T_x(i,q) \cdot S_x(i,q)}{e(x_i|q)}$
  \\\hline
 \end{tabular}\end{center}
-
-\endinput
-\clearpage
-Let $c$ be an $V^*$-corpus. For all $q,q'\in Q$ and $v\in V$, the complete-data
-corpus is defined by
-\begin{align*}
- c\!\dangle{\omega,\mu_\uh}\mbig\kla{\#,(\#,T)} &= c(\eps), \\
- c\!\dangle{\omega,\mu_\uh}\mbig\kla{q,(\#,T)} &= \sum_{x\in\operatorname{supp}(h)\setminus\brc\eps} c(x) \cdot R_x(1,q), \\
- c\!\dangle{\omega,\mu_\uh}\mbig\kla{\#,(q,T)} &= \sum_{x\in\operatorname{supp}(h)\setminus\brc\eps} c(x) \cdot R_x\mbig\kla{\abs x,q}, \\
- c\!\dangle{\omega,\mu_\uh}\mbig\kla{q',(q,T)} &= \sum_{x\in\operatorname{supp}(h)\setminus\brc\eps} c(x) \cdot \sum_{i\in\brc{1,\ldots,\abs x-1}} U_x(i,q,q'), \\
- c\!\dangle{\omega,\mu_\uh}\mbig\kla{v,(q,E)} &= \sum_{x\in\operatorname{supp}(h)\setminus\brc\eps} c(x) \cdot \sum_{i\in\brc{1,\ldots,\abs x}: x_i=v} R_x(i,q), \\
-\end{align*}

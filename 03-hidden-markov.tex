@@ -36,7 +36,7 @@ caused by a certain sequence of states $q = q_1\cdots q_n\in Q^*$, but it is
 not known which one it was, only that the lengths of both sequences agree.
 Therefore, by the law of total probability,
 \[
- P(v) = \sum_{q\in Q^n} P(v|q) \cdot P(q).
+ P(v) = \sum_{q\in Q^n} P(v,q) = \sum_{q\in Q^n} P(v|q) \cdot P(q).
 \]
 
 %TODO find a reference for "Markov property" (this paragraph is currently more
@@ -52,7 +52,7 @@ the conditional probability distribution of each state depends only on the
 state directly preceding it. Second, the conditional probability distribution
 of each emitted word depends only on the state that was inhabited at the time
 of emission. These two conditional probability distributions are called $t$ and
-$e$, and are part of the quintuple $\uh=(Q,V,\#,t,e)$ as defined before.
+$e$, and are part of the quintuple $\uh=(Q,V,\#,t,e)$ as defined above.
 
 The progression of the probabilistic state machine of $\uh$ through the state
 sequence $q=q_1\cdots q_n$ involves several separate stochastic events:
@@ -88,7 +88,7 @@ and codify the second Markov property as
 
 Putting all these results into the original equation for $P(v)$, we obtain
 \[\label{eq:03-p-v}
- P(v=v_1\cdots v_n) = \sum_{q_1,\ldots,q_n} t(q_1|\#) \cdot e(v_1|q_1) \cdot \prod_{i=2}^n \mbig\brk{t(q_i|q_{i-1}) \cdot e(v_i|q_i)} \cdot t(\#|q_n).
+ P(v=v_1\cdots v_n) = \sum_{q_1,\ldots,q_n\in Q} t(q_1|\#) \cdot e(v_1|q_1) \cdot \prod_{i=2}^n \mbig\brk{t(q_i|q_{i-1}) \cdot e(v_i|q_i)} \cdot t(\#|q_n).
 \]
 As a special case, for the empty sentence $v=\eps$, we have
 \[\label{eq:03-p-v-eps}
@@ -110,7 +110,7 @@ are two well-known schemes for dividing $P(v)$ into subterms, which lead to the
 
 \begin{definition}
  Let $\uh=(Q,V,\#,t,e)$ be an HMM, $q\in Q$ be a state, $v=v_1\cdots v_n\in V^+$
- be a nonempty sentence, and $i\in\brc{1,\ldots,n}$.\footnote{\cite{jm09} uses
+ be a \emph{nonempty} sentence, and $i\in\brc{1,\ldots,n}$.\footnote{\cite{jm09} uses
  the term ``time'' and the symbol $t$ for this index. We avoid the symbol $t$
  because it is already used for the transition probability.} The \emph{forward
  weight}\footnote{The names ``forward/backward weight'' have been chosen
@@ -125,7 +125,7 @@ are two well-known schemes for dividing $P(v)$ into subterms, which lead to the
 The forward weight can be calculated by following the same methods as in the
 previous section for $P(v)$. For $i = 1$, the forward weight describes the
 transition from the initial state $\#$ into $q$, and the emission of $v_1$ in
-that state:
+that state,~i.~e.,
 \[
  T_v(1,q) = P(v_1,q_1=q) = P(q_1=q) \cdot P(v_1|q_1=q) = t(q|\#) \cdot e(v_1|q).
 \]
@@ -178,7 +178,7 @@ $i$ to obtain $P(v)$.
  \caption{Baum-Welch algorithm, based on \cite[p.~226]{jm09}. To reach a local
  maximum (or saddle point) for the corpus likelihood $p(c)$, the outermost loop
  needs to be executed until $(t,e)$ stop changing, possibly infinitely long.
- The loop condition is stated as ``not converged'' to capture that the loop is
+ The loop condition is stated as ``not converged'' to describe that the loop is
  typically aborted once the changes to $(t,e)$ per iteration fall below some
  manually chosen threshold.\\[1em]
  The formulation of the algorithm has been altered from \cite{jm09} to also
@@ -222,7 +222,7 @@ $i$ to obtain $P(v)$.
    \FOR{$q\in Q$ and $w\in V$}
     \STATE $e(w|q) \leftarrow \frac{\cnt_\mathrm{em}(w,q)}{\sum_{w'\in V} \cnt_\mathrm{em}(w',q)}$
    \ENDFOR
-   \STATE print~$(Q,V,\#,t,e)$
+   \STATE output~$(Q,V,\#,t,e)$
   \ENDWHILE
  \end{algorithmic}
 \end{algorithm}
@@ -232,9 +232,9 @@ notational conventions have changed considerably since then, we are using a
 contemporary formulation in \cite{jm09} as a reference (see
 Algorithm~\ref{alg:bw-vogler} on page~\pageref{alg:bw-vogler}).
 
-The algorithm uses two terms that have not yet been introduced: $U_v(i,q',q)$ is
-defined as the probability of the HMM progressing from state $q'$ into state
-$q$ at time $i+1$ while generating the sentence $v$. $R_v(i,q)$ is the probability
+The algorithm uses two terms that have not yet been introduced: $U_v(i,q,q')$ is
+defined as the probability of the HMM progressing from state $q$ at time $i$ into state
+$q'$ at time $i+1$ while generating the sentence $v$. $R_v(i,q)$ is the probability
 of the HMM being in state $q$ at time $i$ while generating the sentence $v$.
 \begin{align*}
  U_v(i,q,q') &:= P(q_i = q,q_{i+1} = q'|v) && \text{for } i\in\brc{1,\ldots,\abs v-1}, q,q'\in Q \\
@@ -243,15 +243,15 @@ of the HMM being in state $q$ at time $i$ while generating the sentence $v$.
 
 Both $U_v$ and $R_v$ can be expressed in terms of the forward and backward weights
 $T_v$ and $S_v$, by applying the same calculation rules for probabilities that were
-already used for deriving the formulas for $P(v)$, $T_v$ and $S_v$.
+already used for deriving formulas for $P(v)$, $T_v$ and $S_v$.
 \begin{align*}
  R_v(i,q)
-  &= P(q_i=q|v) = \frac{P(v_1,\ldots,v_n,n,q_i=q)}{P(v)} \\
+  &= P(q_i=q|v) = \frac{P(v,q_i=q)}{P(v)} = \frac{P(v_1,\ldots,v_n,n,q_i=q)}{P(v)} \\
   &= \frac{P(v_1,\ldots,v_i,q_i=q) \cdot P(v_{i+1},\ldots,v_n,n|q_i=q)}{P(v)} \\
   &= \frac{T_v(i,q) \cdot S_v(i,q)}{P(v)}
 \end{align*}\label{eq:03-R_v}
 
-And analogously,
+And analogously,\label{eq:03-U_v}
 \begin{align*}
  U_v(i,q,q')
   &= P(q_i = q,q_{i+1} = q'|v) = \frac{P(v_1,\ldots,v_n,n,q_i=q,q_{i+1}=q')}{P(v)} \\
@@ -260,16 +260,17 @@ And analogously,
    \cdot\; P(v_{i+1}|q_{i+1}=q') \cdot P(v_{i+2},\ldots,v_n,n|q_{i+1}=q')
   \end{matrix}} \\
   &= \frac{T_v(i,q) \cdot t(q'|q) \cdot e(v_{i+1}|q') \cdot S_v(i+1,q')}{P(v)}.
-\end{align*}\label{eq:03-U_v}
+\end{align*}
+
 With these definitions, we can observe the basic motivation and method of the
 Baum-Welch algorithm: Given a previous estimate for $t$ and $e$, the algorithm
-estimates how much probability is assigned to every state and state transition
-across the corpus, and normalizes these counts to obtain better estimates for
-$t$ and $e$.
+estimates how often each state is visited and how often each state transition
+occurs throughout the corpus, and normalizes these counts to obtain better
+estimates for $t$ and $e$.
 
 In particular, the algorithm employs counter variables $\cnt_\mathrm{tr}(q,q')$
-and $\cnt_\mathrm{em}(w,q$, which are reset in lines 4--5 and then computed in
-lines 6--22 by way of summing terms of the form $h(v) \cdot R_v(i,q)$ and
+and $\cnt_\mathrm{em}(w,q)$, which are reset in lines 4--5 and then computed in
+lines 6--22 by summing terms of the form $h(v) \cdot R_v(i,q)$ and
 $h(v)\cdot U_v(i,q,q')$ in a particular way. By rewriting the nested loops as
 closed formulas, we see that, for any $q,q'\in Q$, lines~4 and~8--12 result in
 \begin{equation}\label{eq:03-bw-start}
@@ -291,7 +292,7 @@ Finally, because of lines~5 and~13--17, we also have, for any $q\in Q$ and $w\in
 \cite{jm09} describes Baum-Welch as an instance of the EM algorithm. And
 indeed, the basic structure of the algorithm looks similar to the types of EM
 algorithms that we have introduced in Chapter~2 in several ways:
-\begin{itemize}
+\begin{itemize}\setlength\itemsep{-0.1em}
  \item The conditional probability distributions $t$ and $e$ are the model
   parameters that are iteratively optimized.
  \item The counter variables $\cnt_\mathrm{tr}$ and $\cnt_\mathrm{em}$ act like
@@ -299,7 +300,7 @@ algorithms that we have introduced in Chapter~2 in several ways:
   then new model parameters are obtained by taking the empirical probability
   distribution of these corpora, which is the efficient solution to the
   conditional maximum-likelihood estimator that is suggested by
-  Lemma~\ref{lemma:empirical2}.
+  Lemma~\ref{lemma:empirical3}.
  \item The hidden information is the state sequence $q$ that produces the
   sentence $v$ from the corpus. It can be decomposed into countable events in
   several ways (e.~g.,~states only, pairs of time and states, or pairs of
@@ -312,7 +313,8 @@ algorithms that we have introduced in Chapter~2 in several ways:
 
 Therefore, in the remainder of this chapter, we will show that the Baum-Welch
 algorithm can be obtained from the generic EM algorithm from Chapter~2 through
-suitable instantiation of the inside-outside step mapping.
+suitable instantiation of the inside-outside step mapping, from which follows
+that its convergence properties also apply to the Baum-Welch algorithm.
 
 \subsection{Model parameter and countable events}
 
@@ -323,7 +325,7 @@ with words from $V$, i.~e.,
  X = V^* \cup\brc\bot. \label{eq:03-X}
 \]
 
-An IO information contains only one component which can be subject to training:
+An IO information contains only one component which can be subject to training,
 the model parameter $\omega$ which chooses the conditional probability
 distribution
 \[
@@ -390,24 +392,27 @@ or an emission event
 
 \begin{figure}[t!]
  \centering
- \begin{tikzpicture}[every node/.style={rectangle,draw,minimum width=3cm}]
-  \node(t0) at (0,0) { $\text{noun},(\#,T)$ };
-  \node(t1) at (0,-1.5) { $\text{verb},(\text{noun},T)$ } edge[thick] (t0);
-  \node(t2) at (0,-3.0) { $\text{noun},(\text{verb},T)$ } edge[thick] (t1);
-  \node(t3) at (0,-4.5) { $\#,(\text{noun},T)$ }          edge[thick] (t2);
-  \node(e1) at (-4,-1.5) { $\text{he},(\text{noun},E)$ };
-  \node(e2) at (-4,-3.0) { $\text{ate},(\text{verb},E)$ };
-  \node(e3) at (-4,-4.5) { $\text{soup},(\text{noun},E)$ };
+ \begin{tikzpicture}[n/.style={rectangle,draw,minimum width=3cm},every label/.style={color={black!60}}]
+  \node[n,label=left:{$(T,\#)\to$}](t0) at (0,0) { $\text{noun},(\#,T)$ };
+  \node[n,label=left:{$(T,\text{noun})\to$}](t1) at (0,-1.5) { $\text{verb},(\text{noun},T)$ } edge[thick] (t0);
+  \node[n,label=left:{$(T,\text{verb})\to$}](t2) at (0,-3.0) { $\text{noun},(\text{verb},T)$ } edge[thick] (t1);
+  \node[n,label=left:{$(T,\text{noun})\to$}](t3) at (0,-4.5) { $\#,(\text{noun},T)$ }          edge[thick] (t2);
+  \node[n,label=left:{$(E,\text{noun})\to$}](e1) at (-6,-1.5) { $\text{he},(\text{noun},E)$ };
+  \node[n,label=left:{$(E,\text{verb})\to$}](e2) at (-6,-3.0) { $\text{ate},(\text{verb},E)$ };
+  \node[n,label=left:{$(E,\text{noun})\to$}](e3) at (-6,-4.5) { $\text{soup},(\text{noun},E)$ };
   \draw[thick] (t0.south west) -- (e1.north east);
   \draw[thick] (t1.south west) -- (e2.north east);
   \draw[thick] (t2.south west) -- (e3.north east);
  \end{tikzpicture}
- \caption{Example for a hidden information $y\in Y\subseteq T_C$ corresponding
- to the observation $x = \text{``He ate soup.''}$ and the state sequence
- ``noun-verb-noun''.\label{fig:03-example-y}}
+ \caption{
+  Example for a hidden information $y\in Y_{\not\bot}\subseteq T_C$
+  corresponding to the observation $x = \text{``He ate soup.''}$ and the state
+  sequence ``noun-verb-noun''. The label to the left of each node shows which
+  grammar state produces this particular subtree when $y$ is generated by $K$.
+ \label{fig:03-example-y}}
 \end{figure}
 
-In order to describe hidden information $y\in Y$ as a ranked tree of countable
+In order to describe hidden information $y\in Y_{\not\bot}$ as a ranked tree of countable
 events from $C$, we assign a rank to each $c = \mbig\kla{a,(q,s)}\in C$ as follows:
 \begin{align*}
  \rk\mbig\kla{a,(q,s)} := \begin{cases}
@@ -425,7 +430,7 @@ state marks the end of the stochastic process after which no further events
 occur. This rank assignment results in trees such as the one in
 Figure~\ref{fig:03-example-y}.
 
-The trees $y\in Y$ are generated by the tree grammars $H(x)$ and $K$. We
+The trees $y\in Y_{\not\bot}$ are generated by the tree grammars $H(x)$ and $K$. We
 define\footnote{The set of grammar states $Q_K$ is isomorphic to $B$, but the
 components of each pair are swapped: We write $(s,q)\in Q_K$, but $(q,s)\in B$.
 This deliberate choice provides a visual cue for distinguishing grammar states
@@ -440,10 +445,12 @@ and $R_K$ contains the following rules:
  (E,q) &\to \mbig\kla{v,(q,E)} &&\forall q\in Q \text{ and } v\in V.
 \end{align*}
 
-The IO information requires two properties of $K$: First, $K$ must be
-unambiguous. This is easily seen: $K$ is deterministic because each $c\in C$ is
-produced by at most one rule from $R_K$, and all deterministic RTG are also
-unambiguous (see~page~\pageref{lemma:02-deterministic-is-unambiguous}). Furthermore, we need to show the following lemma.
+The grammar $K$ is an RTG since each rule produces as much subtrees as the rank
+of its label $(a,b)$. The IO information requires that $K$ have certain
+properties: First, it must be unambiguous. Because each $c\in C$ is produced by
+at most one rule from $R_K$, $K$ is deterministic and, hence, unambiguous
+(see~page~\pageref{lemma:02-deterministic-is-unambiguous}). Furthermore, we
+need to show the following lemma.
 
 \begin{lemma}
  For every $\omega\in\Omega$, the PRTG $(K,p_\omega')$ is proper, where
@@ -458,11 +465,11 @@ unambiguous (see~page~\pageref{lemma:02-deterministic-is-unambiguous}). Furtherm
 \begin{proof}
  The restriction of $p_\omega'$ to $R_K$, i.~e., that $p_\omega'(\rho)=0$ for all
  $\rho\notin R_K$, follows directly from the definition above. It remains to be seen
- that $p_\omega'\in\um(Q^*\times C|Q)$. For any $q\in Q_\#$, we have
+ that $p_\omega'\in\um(Q_K^*\times C|Q_K)$. For any $q\in Q_\#$, we have
  \begin{align*}
   &\hspace{1.5em} \sum_{q_1\cdots q_k,(a,b)} p_\omega'\underbrace{\mBig\kla{(q_1\cdots q_k,(a,b)\npipe(T,q)}}_{=\,(T,q)\to(a,b)(q_1,\ldots,q_k)} \\
   &= p_\omega'\mBig\kla{(T,q) \to \mbig\kla{\#,(q,T)}} + \sum_{q'\in Q} p_\omega'\mBig\kla{(T,q) \to \mbig\kla{q',(q,T)}\mbig\kla{(E,q'),(T,q')}} \\
-  &= q_\omega\mbig\kla{\#,(q,T)} + \sum_{q'\in Q} \mbig\kla{q',(q,T)} = t(\#|q) + \sum_{q'\in Q} t(q'|q) = \sum_{q'\in Q_\#} t(q'|q) = 1
+  &= q_\omega\mbig\kla{\#,(q,T)} + \sum_{q'\in Q} q_\omega\mbig\kla{q',(q,T)} = t(\#|q) + \sum_{q'\in Q} t(q'|q) = \sum_{q'\in Q_\#} t(q'|q) = 1
  \end{align*}
  because $t\in\um(Q_\#|Q_\#)$. Analogously, for any $q\in Q$, it follows from $e\in\um(V|Q)$ that
  \begin{align*}
@@ -501,12 +508,12 @@ Using $K$, we can define the set $Y$ of hidden information as
    = v_1v_2
  \end{align*}
  \caption{\label{fig:03-readoff}%
-  Example for how $\pi_X$ can be used to read the generated sentence from a hidden information tree, where the HMM has states $Q = \{q_1,q_2,\ldots\}$ and words $V = \{v_1,v_2,\ldots\}$.
+  Example for how $\pi_X$ can be used to read the generated sentence from a tree $y\in Y_{\not\bot}$, where the HMM has states $Q = \{q_1,q_2,\ldots\}$ and words $V = \{v_1,v_2,\ldots\}$.
  }
 \end{figure}
 
 \label{def:03-def-pi-x}
-Furthermore, we can introduce a mapping $\pi_X: T_C \to V^*$ that reads the
+Furthermore, we introduce a mapping $\pi_X: T_C \to V^*$ that reads the
 generated sentence from a tree $t\in T_C$ (see Figure~\ref{fig:03-readoff}),
 i.~e.,
 \label{eq:03-pi_X}\[
@@ -521,7 +528,7 @@ From $\pi_X$, we derive the mapping $\pi_1: Y_{\not\bot} \to X_{\not\bot}$ that
 the IO information requires by restricting the domain of $\pi_X$ to
 $Y_{\not\bot}$\footnote{We cannot use the recursive definition of $\pi_X$ to
 define $\pi_1$ directly, since the recursion goes over arguments from $T_C$
-that are not always in $Y_{\not\bot}$.}, i.~e.,
+that are not all in $Y_{\not\bot}$.}, i.~e.,
 \[
  \pi_1(y) := \pi_X(y) \quad\forall y\in Y_{\not\bot}.
 \]
@@ -543,7 +550,7 @@ sentence $x$ can be generated.
 \end{definition}
 
 \begin{definition}
- The operators $\car:V^+\to V$ and $\cdr:V^+\to V^*$ decompose a nonempty sentence into its leading word and the rest of the sentence, i.~e., for any $x = v_1\cdots v_n\in V^+$,
+ The operators $\car\colon V^+\to V$ and $\cdr\colon V^+\to V^*$ decompose a nonempty sentence into its leading word and the rest of the sentence, i.~e., for any $x = v_1\cdots v_n\in V^+$,
  \[
   \car(x) := v_1
   \quad\text{and}\quad
@@ -613,7 +620,7 @@ The proofs for these lemmas can be found in Appendix~\ref{sec:appendix-hk-proofs
  = \bigcup_{x'\in X_{\not\bot}} \mbig\brc{y\in\mbig\lang{H(x')} \pipe \pi_1(y) = x}
 \]
 by Lemma~\ref{lemma:03-language-partition}. Because of
-Lemma~\ref{lemma:03-consistent-yield}, we can see that only $x'=x$ contributes
+Lemma~\ref{lemma:03-consistent-yield}, only $x'=x$ contributes
 a nonempty set to this union, yielding
 \[
  \pi_1^{-1}(x) = \mbig\brc{y\in\mbig\lang{H(x)} \pipe \pi_1(y) = x} = \mbig\lang{H(x)}
@@ -659,7 +666,7 @@ the previous equation, we have
 \[
  \beta_x(T,q,x_i\cdots x_n) = \sum_{q'\in Q} t(q'|q) \cdot e(x_i|q') \cdot \beta_x(T,q',x_{i+1}\cdots x_n).
 \]
-By comparing with~\eqref{eq:03-S_v}, we see that, for $q\neq\#$ and $i>1$, the inside weights recover the backward weights, i.~e.,
+By comparing with~\eqref{eq:03-S_v} on page~\pageref{eq:03-S_v}, we see that, for $q\neq\#$ and $i>1$, the inside weights recover the backward weights, i.~e.,
 \[
  \beta_x(T,q,x_i\cdots x_n) = S_x(i-1,q).
 \]
@@ -736,10 +743,10 @@ the complete-data corpus $c\!\dangle{\omega,\mu}$ according to
  c\!\dangle{\omega,\mu}\!(a,b) = \sum_x c(x) \cdot \chi_{\omega,x}(a,b).
 \]
 We therefore need to derive expressions for all $\chi_{\omega,x}(a,b)$ first.
-Following the definition of $\chi_{\omega,x}(a,b)$ in
-Equation~\eqref{eq:02-chi} on page~\pageref{eq:02-chi}, we have, in general,
+Following the definition of $\chi_{\omega,x}(a,b)$ in~\eqref{eq:02-chi} on
+page~\pageref{eq:02-chi}, we have, in general,
 \begin{equation}\label{eq:03-chi}
- \chi_{\omega,x}(a,b) = \underbrace{\beta_x(T,\#,x)^{-1}}_{=P(x)^{-1}} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\in R_x} \alpha_x(q) \cdot q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k).
+ \chi_{\omega,x}(a,b) = \underbrace{\beta_x(T,\#,x)^{-1}}_{=P(x)^{-1}} \cdot \sum_{(q\to(a,b)(q_1,\ldots,q_k))\in R_x} \alpha_x(q) \cdot q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k).
 \end{equation}
 
 For $x=\eps$, we only have one nonzero outside weight, $\alpha_\eps(T,\#,\eps)
@@ -756,10 +763,10 @@ and therefore $\chi_{\omega,x}\mbig\kla{\#,(\#,T)}=0$ for all $x\neq\eps$, and f
 \]
 
 This concludes the consideration of $x=\eps$. Let $x=x_1\cdots x_n\in V^+$. For emission events
-$\mbig\kla{v,(q,E)}$ with $v\in V$ and $q\in Q$, Equation~\eqref{eq:03-chi} leads to
+$\mbig\kla{v,(q,E)}$ with $v\in V$ and $q\in Q$, \eqref{eq:03-chi} leads to
 \begin{align*}
  \chi_{\omega,x}\mbig\kla{v,(q,E)}
- &= P(x)^{-1} \cdot \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} \underbrace{\alpha_x(E,q,x_1\cdots x_n)}_{=T_x(i,q)\cdot S_x(i,q)\cdot e(x_i|q)^{-1}} \cdot \underbrace{q_\omega\mbig\kla{v\npipe(q,E)}}_{=e(v|q)} \\
+ &= P(x)^{-1} \cdot \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} \underbrace{\alpha_x(E,q,x_i\cdots x_n)}_{=T_x(i,q)\cdot S_x(i,q)\cdot e(x_i|q)^{-1}} \cdot \underbrace{q_\omega\mbig\kla{v\npipe(q,E)}}_{=e(v|q)} \\
  &= \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} \frac{T_x(i,q)\cdot S_x(i,q)}{P(x)}
   = \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} R_x(i,q).
 \end{align*}
@@ -823,7 +830,7 @@ Algorithm~\ref{alg:bw-vogler},
  \quad\text{and}\quad
  \cnt_\mathrm{em}(v,q) = c_h\!\dangle{\omega,\mu}\!\mbig\kla{v,(q,E)}
 \end{equation}
-for all $(q',q)\in Q_\#\times Q_\#$ and $(v,q)\in V\times Q$. This equivalence
+for all $(q',q)\in Q_\#\times Q_\#$ and $(v,q)\in V\times Q$, respectively. This equivalence
 also shows how the Baum-Welch algorithm can be extended to allow for a
 $V^*$-corpus instead of a $V^+$-corpus. The only difference is that
 $\cnt_\mathrm{tr}(\#,\#)$ has to be set to $c(\eps)$ between lines~4 and~22.
@@ -897,7 +904,8 @@ Comparison with Algorithm~\ref{alg:bw-vogler} shows that this is exactly the
 same computation carried out by lines 23--28. In total, we see that each
 iteration of the main loop of this algorithm takes in a previous $\omega=(t,e)$
 and computes $\hat\omega=(\hat t,\hat e)\in\stepmap\mu_\mathrm{io}(\omega)$.
-This is the same that we described more abstractly in
+This is the same behavior that we described more abstractly in
 Algorithm~\ref{alg:skeleton} (see page~\pageref{alg:skeleton}). This shows that
 the Baum-Welch algorithm is, in fact, an instance of the EM algorithm from
-\cite{bucstuvog15} that was introduced in Chapter~2.
+\cite{bucstuvog15} that was introduced in Chapter~2, and consequently, that the
+convergence properties of the generic EM algorithm apply to it as well.
