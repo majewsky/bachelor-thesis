@@ -467,7 +467,7 @@ We also use $\Sigma^+ := \Sigma^* \setminus\brc{\eps}$ to refer to the set of
  V=\emptyset$. The \emph{set $U_\Sigma(V)$ of unranked trees over $\Sigma$
  indexed by $V$} is the smallest set $T$ such that
  \[
-  V \subseteq T \quad\text{and}\quad \forall k\in\zn: \forall \sigma\in\Sigma, t_1,\ldots,t_k\in T: \sigma(t_1,\ldots,t_k)\in T.
+  V \subseteq T \quad\text{and}\quad \forall k\in\zn\colon \forall \sigma\in\Sigma, t_1,\ldots,t_k\in T\colon \sigma(t_1,\ldots,t_k)\in T.
   \qedhere
  \]
 \end{definition}
@@ -720,7 +720,7 @@ the right.)
 
 From the (partial) abstract syntax tree on the right, the tree on the left can
 be derived by substituting each label $\rho = \mbig\kla{q =
-\sigma(q_1,\ldots,q_k)}\in R$ with the symbol $\sigma\in\Sigma$ that it
+\sigma(q_1,\ldots,q_k)}\isin R$ with the symbol $\sigma\in\Sigma$ that it
 contains, without changing labels from $Q$. We shall call this projection
 $\pi_\Sigma: T_R(Q)\to U_\Sigma(Q)$.\label{def:02-pi-sigma}
 
@@ -892,7 +892,7 @@ throughout this section.
  additional divergence from the definition in \cite{bucstuvog15}, where $\mu$
  is introduced as a quintuple $\mu=(q,\pi_1,\pi_2,K,H)$. Both definitions are
  congruent for language models by letting $\pi_2(y) :=
- \emptyset\in Z$.} $\mu = (q,\pi_1,K,H)$ where
+ \emptyset$.} $\mu = (q,\pi_1,K,H)$ where
  \begin{itemize}\setlength\itemsep{-0.3em}
   \item $C\subseteq A\times B$ is a ranked alphabet such that $Y_{\not\bot}\subseteq T_C$ contains ranked trees over $C$,
   \item $q\colon\Omega\to\um_C(A|B)$ as for counting informations,
@@ -906,7 +906,7 @@ throughout this section.
  Furthermore, we require that, for every $\omega\in\Omega$, the PRTG $(K,p'_\omega)$ is proper, where
  \[
   p'_\omega(\rho) := \begin{cases}
-   q_\omega(a|b) & \text{if } \rho=\mbig\kla{q\to(a,b)(q_1,\ldots,q_k)}\in R(K),
+   q_\omega(a|b) & \text{if } \rho=\mbig\kla{q\to(a,b)(q_1,\ldots,q_k)}\isin R(K),
    \\ 0 & \text{otherwise}.
   \end{cases}\qedhere
  \]
@@ -950,7 +950,7 @@ $c$ instead of relying on the complete-data corpus of the previous step
 mapping. In this expression, $(\chi_{\omega,x}|\omega\in\Omega,x\in
 X_{\not\bot})$ is a family of $C$-corpora, defined by
 \begin{equation}\label{eq:02-chi}
- \chi_{\omega,x}(a,b) := \beta_x(q_0)^{-1} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\in R} \alpha_x(q) \cdot p_\omega'(\rho) \cdot \beta_x(q_1) \cdots \beta_x(q_k),
+ \chi_{\omega,x}(a,b) := \beta_x(q_0)^{-1} \cdot \sum_{\rho = (q\to(a,b)(q_1,\ldots,q_k))\isin R} \alpha_x(q) \cdot p_\omega'(\rho) \cdot \beta_x(q_1) \cdots \beta_x(q_k),
 \end{equation}
 where $(Q,q_0,R)$ is the PRTG $H(x)$ with rule probabilities $p_\omega'$ as defined above,
 and $\alpha_x$ and $\beta_x$ are the outside and inside weights of $H(x)$, respectively.

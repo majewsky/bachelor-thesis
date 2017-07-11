@@ -31,8 +31,8 @@ states from $Q$, and in the end reaches $\#$ again. Each time a state from $Q$
 is reached, a word from $V$ is emitted. The sequence of all these emitted words
 is the sentence that is observed.
 
-When a sentence $v = v_1\cdots v_n\in V^*$ is observed, is must have been
-caused by a certain sequence of states $q = q_1\cdots q_n\in Q^*$, but it is
+When a sentence $v = v_1\cdots v_n\isin V^*$ is observed, is must have been
+caused by a certain sequence of states $q = q_1\cdots q_n\isin Q^*$, but it is
 not known which one it was, only that the lengths of both sequences agree.
 Therefore, by the law of total probability,
 \[
@@ -109,7 +109,7 @@ are two well-known schemes for dividing $P(v)$ into subterms, which lead to the
 \emph{forward algorithm} and the \emph{backward algorithm}, respectively.
 
 \begin{definition}
- Let $\uh=(Q,V,\#,t,e)$ be an HMM, $q\in Q$ be a state, $v=v_1\cdots v_n\in V^+$
+ Let $\uh=(Q,V,\#,t,e)$ be an HMM, $q\in Q$ be a state, $v=v_1\cdots v_n\isin V^+$
  be a \emph{nonempty} sentence, and $i\in\brc{1,\ldots,n}$.\footnote{\cite{jm09} uses
  the term ``time'' and the symbol $t$ for this index. We avoid the symbol $t$
  because it is already used for the transition probability.} The \emph{forward
@@ -366,7 +366,7 @@ or an emission event
 \end{lemma}
 
 \begin{proof}
- Let $\omega=(t,e)\in\Omega$. It is easy to see that
+ Let $\omega=(t,e)\isin\Omega$. It is easy to see that
  $q_\omega\mbig\kla{a|(q,s)} = 0$ for every $\mbig\kla{a,(q,s)}\notin C$
  because $q_\omega$ was defined in that way. According to
  Definitions~\ref{def:02-cpd} and~\ref{def:02-cpd-restr}, what remains to be
@@ -413,7 +413,7 @@ or an emission event
 \end{figure}
 
 In order to describe hidden information $y\in Y_{\not\bot}$ as a ranked tree of countable
-events from $C$, we assign a rank to each $c = \mbig\kla{a,(q,s)}\in C$ as follows:
+events from $C$, we assign a rank to each $c = \mbig\kla{a,(q,s)}\isin C$ as follows:
 \begin{align*}
  \rk\mbig\kla{a,(q,s)} := \begin{cases}
   0 & \text{if } s = E, \\
@@ -456,7 +456,7 @@ need to show the following lemma.
  For every $\omega\in\Omega$, the PRTG $(K,p_\omega')$ is proper, where
  \[
   p'_\omega(\rho) := \begin{cases}
-   q_\omega(a|b) & \text{if } \rho=\mbig\kla{q\to(a,b)(q_1,\ldots,q_k)}\in R_K, \\
+   q_\omega(a|b) & \text{if } \rho=\mbig\kla{q\to(a,b)(q_1,\ldots,q_k)}\isin R_K, \\
    0 & \text{if } \rho\notin R_K.
   \end{cases}
  \]
@@ -550,7 +550,7 @@ sentence $x$ can be generated.
 \end{definition}
 
 \begin{definition}
- The operators $\car\colon V^+\to V$ and $\cdr\colon V^+\to V^*$ decompose a nonempty sentence into its leading word and the rest of the sentence, i.~e., for any $x = v_1\cdots v_n\in V^+$,
+ The operators $\car\colon V^+\to V$ and $\cdr\colon V^+\to V^*$ decompose a nonempty sentence into its leading word and the rest of the sentence, i.~e., for any $x = v_1\cdots v_n\isin V^+$,
  \[
   \car(x) := v_1
   \quad\text{and}\quad
@@ -642,7 +642,7 @@ Let $x\in X_{\not\bot}=V^*$. Recall that inside weights can, in general, be
 calculated by~\eqref{eq:02-beta} (see page~\pageref{eq:02-beta}).
 Instantiation of this equation for $\mbig\kla{H(x),p_\omega'}$ yields
 \[
- \beta_x(q) = \sum_{q\to(a,b)(q_1,\ldots,q_k)\in R_x} q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k)
+ \beta_x(q) = \sum_{q\to(a,b)(q_1,\ldots,q_k)\isin R_x} q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k)
 \]
 for all $q\in Q_x$, which can be expanded to
 \begin{align*}
@@ -690,7 +690,7 @@ As shown before, the outside weights form a linear equation system according
 to~\eqref{eq:02-alpha} (see page~\pageref{eq:02-alpha}). Instantiation of this
 equation for the PRTG $\mbig\kla{H(x),p_\omega'}$ yields
 \[
- \alpha_x(q) = \delta_{(T,\#,x)}^q + \sum_{q'\to(a,b)(q_1,\ldots,q_k)\in R_x, m:\,q_m=q} \alpha_x(q') \cdot q_\omega(a|b) \cdot \prod_{l\neq m} \beta_x(q_l)
+ \alpha_x(q) = \delta_{(T,\#,x)}^q + \sum_{(q'\to(a,b)(q_1,\ldots,q_k))\in R_x, m:\,q_m=q} \alpha_x(q') \cdot q_\omega(a|b) \cdot \prod_{l\neq m} \beta_x(q_l)
 \]
 for all $q\in Q_x$. For all $x\in V^*$, we have
 \label{eq:03-alpha-eps}\[
@@ -698,7 +698,7 @@ for all $q\in Q_x$. For all $x\in V^*$, we have
 \]
 for the initial state, since it is not produced by any rule. For $x=\eps$, all
 other outside weights vanish because no other grammar states can be produced.
-Otherwise, let $x=x_1\cdots x_n\in V^+$ so that, as before, every
+Otherwise, let $x=x_1\cdots x_n\isin V^+$ so that, as before, every
 $x'\in\suff(x)$ has the form $x'=x_i\cdots x_n$ for some
 $i\in\brc{1,\ldots,n}$. Other than $\alpha_x(T,\#,x)$, we have nonzero
 outside weights
@@ -762,7 +762,7 @@ and therefore $\chi_{\omega,x}\mbig\kla{\#,(\#,T)}=0$ for all $x\neq\eps$, and f
  c\!\dangle{\omega,\mu}\!\mbig\kla{\#,(\#,T)} = c(\eps) \cdot \underbrace{\chi_{\omega,\eps}\mbig\kla{\#,(\#,T)}}_{=1} + \sum_{x\neq\eps} c(x) \cdot \underbrace{\chi_{\omega,x}\mbig\kla{\#,(\#,T)}}_{=0} = c(\eps).
 \]
 
-This concludes the consideration of $x=\eps$. Let $x=x_1\cdots x_n\in V^+$. For emission events
+This concludes the consideration of $x=\eps$. Let $x=x_1\cdots x_n\isin V^+$. For emission events
 $\mbig\kla{v,(q,E)}$ with $v\in V$ and $q\in Q$, \eqref{eq:03-chi} leads to
 \begin{align*}
  \chi_{\omega,x}\mbig\kla{v,(q,E)}
@@ -880,7 +880,7 @@ Since $c\!\dangle{\omega,\mu}$ is restricted to $C$ (i.~e., zero-valued
 anywhere outside $C$), we have
 $\widetilde{c\!\dangle{\omega,\mu}}\in\um_C(A|B)$. We can therefore apply the
 construction for $t$ and $e$ from this proof to obtain $\hat\omega=(\hat t,\hat
-e)\in\stepmap\mu_\mathrm{io}(\omega)$.
+e)$ which is in $\stepmap\mu_\mathrm{io}(\omega)$.
 \begin{align*}
  \hat t(q'|q) &:= \widetilde{c\!\dangle{\omega,\mu}}\mbig\kla{q'\npipe(q,T)} &&\forall q,q'\in Q_\#, \\
  \hat e(v|q) &:= \widetilde{c\!\dangle{\omega,\mu}}\mbig\kla{v\npipe(q,E)} &&\forall v\in V,q\in Q.
@@ -903,7 +903,7 @@ Q_\#$ and $v\in V$,
 Comparison with Algorithm~\ref{alg:bw-vogler} shows that this is exactly the
 same computation carried out by lines 23--28. In total, we see that each
 iteration of the main loop of this algorithm takes in a previous $\omega=(t,e)$
-and computes $\hat\omega=(\hat t,\hat e)\in\stepmap\mu_\mathrm{io}(\omega)$.
+and computes $\hat\omega=(\hat t,\hat e)$ such that $\hat\omega\in\stepmap\mu_\mathrm{io}(\omega)$.
 This is the same behavior that we described more abstractly in
 Algorithm~\ref{alg:skeleton} (see page~\pageref{alg:skeleton}). This shows that
 the Baum-Welch algorithm is, in fact, an instance of the EM algorithm from
