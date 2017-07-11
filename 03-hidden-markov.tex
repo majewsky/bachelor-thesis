@@ -39,8 +39,6 @@ Therefore, by the law of total probability,
  P(v) = \sum_{q\in Q^n} P(v,q) = \sum_{q\in Q^n} P(v|q) \cdot P(q).
 \]
 
-%TODO find a reference for "Markov property" (this paragraph is currently more
-%or less copied from en.wikipedia)
 \begin{definition}
  A stochastic process is said to have the \emph{Markov property} if the
  conditional probability distribution of the next state of the process only
@@ -87,13 +85,13 @@ and codify the second Markov property as
 \]
 
 Putting all these results into the original equation for $P(v)$, we obtain
-\[\label{eq:03-p-v}
+\begin{equation}\label{eq:03-p-v}
  P(v=v_1\cdots v_n) = \sum_{q_1,\ldots,q_n\in Q} t(q_1|\#) \cdot e(v_1|q_1) \cdot \prod_{i=2}^n \mbig\brk{t(q_i|q_{i-1}) \cdot e(v_i|q_i)} \cdot t(\#|q_n).
-\]
+\end{equation}
 As a special case, for the empty sentence $v=\eps$, we have
-\[\label{eq:03-p-v-eps}
+\begin{equation}\label{eq:03-p-v-eps}
  P(v=\eps) = t(\#|\#)
-\]
+\end{equation}
 since the state machine goes from the initial directly into the final state,
 without ever visiting a state that emits a word.
 
@@ -253,23 +251,23 @@ of the HMM being in state $q$ at time $i$ while generating the sentence $v$.
 Both $U_v$ and $R_v$ can be expressed in terms of the forward and backward weights
 $T_v$ and $S_v$, by applying the same calculation rules for probabilities that were
 already used for deriving formulas for $P(v)$, $T_v$ and $S_v$.
-\begin{align*}
+\begin{align}
  R_v(i,q)
-  &= P(q_i=q|v) = \frac{P(v,q_i=q)}{P(v)} = \frac{P(v_1,\ldots,v_n,n,q_i=q)}{P(v)} \\
-  &= \frac{P(v_1,\ldots,v_i,q_i=q) \cdot P(v_{i+1},\ldots,v_n,n|q_i=q)}{P(v)} \\
-  &= \frac{T_v(i,q) \cdot S_v(i,q)}{P(v)}
-\end{align*}\label{eq:03-R_v}
+  &= P(q_i=q|v) = \frac{P(v,q_i=q)}{P(v)} = \frac{P(v_1,\ldots,v_n,n,q_i=q)}{P(v)} \nonumber\\
+  &= \frac{P(v_1,\ldots,v_i,q_i=q) \cdot P(v_{i+1},\ldots,v_n,n|q_i=q)}{P(v)} \nonumber\\
+  &= \frac{T_v(i,q) \cdot S_v(i,q)}{P(v)} \label{eq:03-R_v}
+\end{align}
 
-And analogously,\label{eq:03-U_v}
-\begin{align*}
+And analogously,
+\begin{align}
  U_v(i,q,q')
-  &= P(q_i = q,q_{i+1} = q'|v) = \frac{P(v_1,\ldots,v_n,n,q_i=q,q_{i+1}=q')}{P(v)} \\
+  &= P(q_i = q,q_{i+1} = q'|v) = \frac{P(v_1,\ldots,v_n,n,q_i=q,q_{i+1}=q')}{P(v)} \nonumber\\
   &= \frac1{P(v)} \cdot \brk{\begin{matrix}
-   P(v_1,\ldots,v_i,q_i=q) \cdot P(q_{i+1}=q'|q_i=q) \\
+   P(v_1,\ldots,v_i,q_i=q) \cdot P(q_{i+1}=q'|q_i=q) \nonumber\\
    \cdot\; P(v_{i+1}|q_{i+1}=q') \cdot P(v_{i+2},\ldots,v_n,n|q_{i+1}=q')
-  \end{matrix}} \\
-  &= \frac{T_v(i,q) \cdot t(q'|q) \cdot e(v_{i+1}|q') \cdot S_v(i+1,q')}{P(v)}.
-\end{align*}
+  \end{matrix}} \nonumber\\
+  &= \frac{T_v(i,q) \cdot t(q'|q) \cdot e(v_{i+1}|q') \cdot S_v(i+1,q')}{P(v)}. \label{eq:03-U_v}
+\end{align}
 
 With these definitions, we can observe the basic motivation and method of the
 Baum-Welch algorithm: Given a previous estimate for $t$ and $e$, the algorithm
