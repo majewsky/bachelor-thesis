@@ -646,7 +646,7 @@ $c\!\dangle{\omega,\mu}$ according to
 \begin{equation}\label{eq:03-c}
  c\!\dangle{\omega,\mu}\!(a,b) = \sum_{x\in X_{\not\bot}=V^*} c(x) \cdot \chi_{\omega,x}(a,b)
 \end{equation}
-for any $(a,b)\in C$.  We therefore need to derive expressions for all
+for any $(a,b)\in C$.  We therefore need to derive expressions for all such
 $\chi_{\omega,x}(a,b)$ first. Following the definition of
 $\chi_{\omega,x}(a,b)$ in~\eqref{eq:02-chi} on page~\pageref{eq:02-chi}, we
 have, for every $(a,b)\in C$ and $x\in V^*$,
@@ -692,9 +692,9 @@ inside weights, outside weights, and complete-data corpus contributions for
 all $x=x_1\cdots x_n\isin V^+$. We begin by noting that any $x'\in\suff(x)$ has the form
 $x' = x_i\cdots x_n$ for some $i\in\brc{1,\ldots,n}$, and we have
 \[
- \car(x') = x_i
+ \car(x_i\cdots x_n) = x_i
  \quad\text{and}\quad
- \cdr(x') = x_{i+1} \cdots x_n,
+ \cdr(x_i\cdots x_n) = x_{i+1} \cdots x_n,
 \]
 if we define $x_{n+1}\cdots x_n := \eps$ as a corner case. We are going to use
 this representation of $x'$ multiple times in the following sections.
@@ -716,7 +716,7 @@ for any $i\in\brc{1,\ldots,n}$. For transmission states $(T,q,x')$,~\eqref{eq:03
 \end{align*}
 for all $q\in Q_\#$ and $x'\in\suff(x)$. Again, we insert $x' = x_i\cdots x_n$, and obtain
 \begin{align*}
- \beta_x\doublekla{T,q,x_{n+1}\cdots x_n} &= t(\#|q), \\
+ \beta_x\doublekla{T,q,x_{n+1}\cdots x_n} &= t(\#|q) = S_x(n,q), \\
  \beta_x\doublekla{T,q,x_i\cdots x_n} &= \sum_{q'\in Q} t(q'|q) \cdot e(x_i|q') \cdot \beta_x\doublekla{T,q',x_{i+1}\cdots x_n}
 \end{align*}
 for all $q\in Q_\#$ and $i\in\brc{1,\ldots,n}$. Comparison of this set of
@@ -781,8 +781,7 @@ for any $q\in Q$ and $x'\in\suff(x)$ or, in other words,
 \[
  \alpha_x\doublekla{E,q,x_i\cdots x_n} = \sum_{q'\in Q_\#} \alpha_x\doublekla{T,q',x_i\cdots x_n} \cdot t(q|q') \cdot \underbrace{\beta_x\mBig\kla{\mbig\kla{T,q,x_{i+1}\cdots x_n}}}_{=S_x(i,q)}.
 \]
-
-We need to consider two subcases. For $i=1$, we obtain
+for $q\in Q$ and $i\in\brc{1,\ldots,n}$. We need to consider two subcases. For $i=1$, we obtain
 \begin{align*}
  \alpha_x\doublekla{E,q,x_1\cdots x_n}
  &= \sum_{q'\in Q_\#} \underbrace{\alpha_x\doublekla{T,q',x_1\cdots x_n}}_{\text{$1$ for $q'=\#$, $0$ otherwise}} \cdot\, t(q|q') \cdot S_x(1,q) \\
@@ -801,7 +800,7 @@ and for $i\in\brc{2,\ldots,n}$, we likewise have
 
 In the previous two sections, we have derived expressions for all relevant
 inside and outside weights\footnote{All these inside and outside weights are
-assembled in the table in Appendix~\ref{sec:appendix-formulary} for quick
+assembled in the table at the end of Appendix~\ref{sec:appendix-formulary} for quick
 referencing.} of $H(x)$ for any $x\in X_{\not\bot}=V^*$. In this section, we will
 compute the complete-data corpus by expanding the equations~\eqref{eq:03-c}
 and~\eqref{eq:03-chi}. The results of this computation will be used in the
@@ -809,7 +808,7 @@ following section to instantiate the inside-outside step mapping
 $\stepmap\mu_\mathrm{io}$ for $\mu=\mu_\uh$.
 
 In section~\ref{sect:03-complete-data-intro}, we already considered the case
-$x=\eps$, and obtained
+that $x=\eps$, and obtained
 \[
  c\!\dangle{\omega,\mu}\!\mbig\kla{\#,(\#,T)} = c(\eps).
 \]
