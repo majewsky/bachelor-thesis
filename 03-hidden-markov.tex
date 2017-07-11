@@ -638,88 +638,126 @@ as required by the definition of the IO information. By all the considerations
 in this subsection, the tuple $\mu_\uh := (q,\pi_1,K,H)$ therefore fulfils
 Definition~\ref{02:def-io-info} and is, in fact, an IO information.
 
-\subsection{Inside weights}
+\subsection{Complete-data corpus}\label{sect:03-complete-data-intro}
 
-Let $\omega = (t,e)\in\Omega$. The definition of the complete-data corpus
-$c\!\dangle{\omega,\mu}$ is based on the family $\chi_{\omega,x}$ of
-$C$-corpora, which in turn is defined in terms of the inside weights $\beta_x$
-and outside weights $\alpha_x$ of the PRTG $\mbig\kla{H(x),p_\omega'}$ for all
-$x\in X_{\not\bot}=V^*$. We therefore have to derive expressions for all these
-components.
+For the remainder of this chapter, let $c$ be a $V^*$-corpus,
+$\omega=(t,e)\isin\Omega$, and $\mu := \mu_\uh$. Our goal is to instantiate the
+inside-outside step mapping $\stepmap\mu_\mathrm{io}$. The E-step of
+$\stepmap\mu_\mathrm{io}$ involves the computation of the complete-data corpus
+$c\!\dangle{\omega,\mu}$ according to
+\begin{equation}\label{eq:03-c}
+ c\!\dangle{\omega,\mu}\!(a,b) = \sum_{x\in X_{\not\bot}=V^*} c(x) \cdot \chi_{\omega,x}(a,b)
+\end{equation}
+for any $(a,b)\in C$.  We therefore need to derive expressions for all
+$\chi_{\omega,x}(a,b)$ first. Following the definition of
+$\chi_{\omega,x}(a,b)$ in~\eqref{eq:02-chi} on page~\pageref{eq:02-chi}, we
+have, for every $(a,b)\in C$ and $x\in V^*$,
+\begin{equation}\label{eq:03-chi}
+ \chi_{\omega,x}(a,b) = \beta_x\doublekla{T,\#,x}^{-1} \cdot \sum_{(q\to(a,b)(q_1,\ldots,q_k))\in R_x} \alpha_x(q) \cdot q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k).
+\end{equation}
 
-Let $x\in X_{\not\bot}=V^*$. Recall that inside weights can, in general, be
-calculated by~\eqref{eq:02-beta} (see page~\pageref{eq:02-beta}).
-Instantiation of this equation for $\mbig\kla{H(x),p_\omega'}$ yields
+The inside and outside weights are defined by~\eqref{eq:02-beta}
+and~\eqref{eq:02-alpha}, i.~e., for any $x\in V^*$ and $q\in Q_x$,
+\begin{align}
+ \beta_x(q) &= \sum_{(q\to(a,b)(q_1,\ldots,q_k))\in R_x} q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k), \label{eq:03-beta} \\
+ \alpha_x(q) &= \delta_{(T,\#,x)}^q + \sum_{(q'\to(a,b)(q_1,\ldots,q_k))\in R_x,\,m\in\brc{1,\ldots,k}:\,q_m=q} \alpha_x(q') \cdot q_\omega(a|b) \cdot \prod_{l\in\brc{1,\ldots,k}:\,l\neq m} \beta_x(q_l). \label{eq:03-alpha}
+\end{align}
+
+In computing the inside weights, outside weights, and complete-data corpus
+contributions, we start with the simple case of $x=\eps$. The RTG $H(\eps)$ has
+only one rule,
 \[
- \beta_x(q) = \sum_{q\to(a,b)(q_1,\ldots,q_k)\isin R_x} q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k)
+ R_x = \mBig\brc{(T,\#,\eps) \to \mbig\kla{\#,(\#,T)}}.
 \]
-for all $q\in Q_x$, which can be expanded to
-\begin{align*}
- \beta_x\doublekla{E,q,x'} &= q_\omega\mbig\kla{\car(x')\npipe(q,E)} = e\mbig\kla{\car(x')\npipe q}
- && \forall q\in Q \text{ and } x'\in\suff(x), \\
- \beta_x\doublekla{T,q,\eps} &= q_\omega\mbig\kla{\#\npipe(q,T)} = t(\#|q)
- && \forall q\in Q_\#, \\
- \beta_x\doublekla{T,q,x'} &= \sum_{q'\in Q} \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \underbrace{\beta_x\doublekla{E,q',x'}}_{=e(\car(x')|q')} \cdot \beta_x\mBig\kla{\mbig\kla{T,q',\cdr(x')}}
- && \forall q\in Q_\# \text{ and } x'\in\suff(x).
-\end{align*}
-States $(T,q,x')$ with $x'\neq\eps$ only exist for $x\neq\eps$. In this
-case, let $x=x_1\cdots x_n\in V^+$. Then, each suffix $x'\in\suff(x)$ has the
-form $x' = x_i\cdots x_n$ for some $i\in\brc{1,\ldots,n}$, and we have
+Therefore, all inside weights $\beta_\eps(q)$ vanish, except for
+\label{eq:03-beta-eps}\[
+ \beta_\eps\doublekla{T,\#,\eps} = q_\omega\mbig\kla{\#\npipe(\#,T)} = t(\#|\#).
+\]
+Furthermore, because no rule produces any further grammar states, all outside
+weights $\alpha_\eps(q)$ vanish, except for $\alpha_\eps\doublekla{T,\#,\eps} =
+1$ \label{eq:03-alpha-eps} since $(T,\#,\eps)$ is the initial state of
+$H(\eps)$. We therefore have
+\[
+ \chi_{\omega,\eps}\mbig\kla{\#,(\#,T)} = \underbrace{\beta_x\doublekla{T,\#,\eps}^{-1}}_{=t(\#|\#)^{-1}} \cdot \underbrace{\alpha_x\doublekla{T,\#,\eps}}_{=1} \cdot \underbrace{q_\omega\mbig\kla{\#\npipe(\#,T)}}_{=t(\#|\#)} = 1
+\]
+and all other $\chi_{\omega,\eps}(a,b)$ vanish. The grammar state $(T,\#,\eps)$
+is unreachable in all other $H(x)$, i.~e., it is neither the initial state nor
+produced by any rule $\rho\in R_x$. We therefore have $\alpha_x(T,\#,\eps) = 0$
+and thus $\chi_{\omega,x}\mbig\kla{\#,(\#,T)}=0$ for $x\neq\eps$, from which
+follows that
+\[
+ c\!\dangle{\omega,\mu}\!\mbig\kla{\#,(\#,T)} = c(\eps) \cdot \underbrace{\chi_{\omega,\eps}\mbig\kla{\#,(\#,T)}}_{=1} + \sum_{x\neq\eps} c(x) \cdot \underbrace{\chi_{\omega,x}\mbig\kla{\#,(\#,T)}}_{=0} = c(\eps).
+\]
+
+This concludes the consideration of $x=\eps$. It remains to calculate the
+inside weights, outside weights, and complete-data corpus contributions for
+all $x=x_1\cdots x_n\isin V^+$. We begin by noting that any $x'\in\suff(x)$ has the form
+$x' = x_i\cdots x_n$ for some $i\in\brc{1,\ldots,n}$, and we have
 \[
  \car(x') = x_i
  \quad\text{and}\quad
  \cdr(x') = x_{i+1} \cdots x_n,
 \]
-if we define $x_{n+1}\cdots x_n := \eps$ as a corner case. Substitution of $x'$ by $x_i\cdots x_n$ in the equation for $\beta_x\doublekla{T,q,x'}$ above leads to
+if we define $x_{n+1}\cdots x_n := \eps$ as a corner case. We are going to use
+this representation of $x'$ multiple times in the following sections.
+
+\subsection{Inside weights}
+
+We start with emission states $(E,q,x')$. For any $q\in Q$ and $x'\in\suff(x)$, we initially have
 \[
- \beta_x\doublekla{T,q,x_i\cdots x_n} = \sum_{q'\in Q} t(q'|q) \cdot e(x_i|q') \cdot \beta_x\doublekla{T,q',x_{i+1}\cdots x_n}.
+ \beta_x\doublekla{E,q,x'} = q_\omega\mbig\kla{\car(x')\npipe(q,E)} = e\mbig\kla{\car(x')\npipe q}.
 \]
-The way in which $\beta_x\doublekla{T,q,x_i\cdots x_n}$ is expressed in terms of $\beta_x\doublekla{T,q,x_{i+1}\cdots x_n}$ is the same way in which the backward weights depend on each other in~\eqref{eq:03-S_v} on page~\pageref{eq:03-S_v}. Because
+Replacing $x'$ by $x_i\cdots x_n$ results in
 \[
- \beta_x\doublekla{T,q,x_{n+1}\cdots x_n} = \beta_x\doublekla{T,q,\eps} = t(\#|q) = S_x(n,q)
+ \beta_x\doublekla{E,q,x_i\cdots x_n} = e(x_i|q)
 \]
-for all $q\in Q$, the inside weights recover the backward weights, i.~e.,
+for any $i\in\brc{1,\ldots,n}$. For transmission states $(T,q,x')$,~\eqref{eq:03-beta} leads to
+\begin{align*}
+ \beta_x\doublekla{T,q,\eps} &= q_\omega\mbig\kla{\#\npipe(q,T)} = t(\#|q), \\
+ \beta_x\doublekla{T,q,x'} &= \sum_{q'\in Q} \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \underbrace{\beta_x\doublekla{E,q',x'}}_{=e(\car(x')|q')} \cdot \beta_x\mBig\kla{\mbig\kla{T,q',\cdr(x')}}
+\end{align*}
+for all $q\in Q_\#$ and $x'\in\suff(x)$. Again, we insert $x' = x_i\cdots x_n$, and obtain
+\begin{align*}
+ \beta_x\doublekla{T,q,x_{n+1}\cdots x_n} &= t(\#|q), \\
+ \beta_x\doublekla{T,q,x_i\cdots x_n} &= \sum_{q'\in Q} t(q'|q) \cdot e(x_i|q') \cdot \beta_x\doublekla{T,q',x_{i+1}\cdots x_n}
+\end{align*}
+for all $q\in Q_\#$ and $i\in\brc{1,\ldots,n}$. Comparison of this set of
+equations with~\eqref{eq:03-S_v} on page~\pageref{eq:03-S_v} shows that, for
+all $q\in Q$ (specifically, $q\neq\#$) and $i\in\brc{2,\ldots,n}$
+(specifically, $i\neq1$), the inside weights recover the backward weights,
+i.~e.,
 \[
  \beta_x\doublekla{T,q,x_i\cdots x_n} = S_x(i-1,q).
 \]
-Furthermore, for the initial grammar state $(T,\#,x)$, we have
+
+This leaves grammar states $(T,q,x')$ where either $q=\#$ or $x'=x$. Only one
+such state is reachable, the initial grammar state $(T,\#,x)$ with
 \[
  \beta_x\doublekla{T,\#,x} = \beta_x\doublekla{T,\#,x_1\cdots x_n} = \sum_{q'\in Q} t(q'|q) \cdot e(x_1|q') \cdot \underbrace{\beta_x\doublekla{T,q',x_2\cdots x_n}}_{=S_x(1,q)} = P(x)
 \]
-by~\eqref{eq:03-p-by-s}. The statement $\beta_x\doublekla{T,\#,x} = P(x)$ also holds for $x=\eps$ because
-\label{eq:03-beta-eps}\[
- \beta_\eps\doublekla{T,\#,\eps} = t(\#|\#) = P(\eps).
-\]
-
-We technically also have nonzero inside weights for grammar states $(T,q,x)$
-with $q\in Q$, and grammar states $(T,\#,x')$ with $x'\in\suff(x)\setminus\brc
-x$. But those grammar states are not reachable, which is why their exact inside
-weights bear no relevance for the following.
+because of~\eqref{eq:03-p-by-s}. We technically also have nonzero inside
+weights for grammar states $(T,q,x)$ with $q\in Q$, and grammar states
+$(T,\#,x')$ with $x'\in\suff(x)\setminus\brc x$. But those grammar states are
+not reachable, which is why their exact inside weights bear no relevance for
+the following.
 
 \subsection{Outside weights}
 
-As shown before, the outside weights form a linear equation system according
-to~\eqref{eq:02-alpha} (see page~\pageref{eq:02-alpha}). Instantiation of this
-equation for the PRTG $\mbig\kla{H(x),p_\omega'}$ yields
+Whereas we started with emission states $(E,q,x')$ in the previous section, it
+will now prove useful to consider the transmission states $(T,q,x')$ first. We
+begin by noting that
 \[
- \alpha_x(q) = \delta_{(T,\#,x)}^q + \sum_{(q'\to(a,b)(q_1,\ldots,q_k))\in R_x,\,m\in\brc{1,\ldots,k}:\,q_m=q} \alpha_x(q') \cdot q_\omega(a|b) \cdot \prod_{l\in\brc{1,\ldots,k}:\,l\neq m} \beta_x(q_l)
-\]
-for all $q\in Q_x$. For all $x\in V^*$, we have
-\label{eq:03-alpha-eps}\[
  \alpha_x\doublekla{T,\#,x} = 1
 \]
-for the initial state, since it is not produced by any rule. For $x=\eps$, all
-other outside weights vanish because no other grammar states can be produced.
-Otherwise, let $x=x_1\cdots x_n\isin V^+$ such that, as before, every
-$x'\in\suff(x)$ has the form $x'=x_i\cdots x_n$ for some
-$i\in\brc{1,\ldots,n}$. Other than $\alpha_x\doublekla{T,\#,x}$, we have nonzero
-outside weights
-\begin{align*}
- \alpha_x\doublekla{T,q,x_{i+1}\cdots x_n} &= \sum_{q'\in Q_\#} \alpha_x\doublekla{T,q',x_i\cdots x_n} \cdot \underbrace{q_\omega\mbig\kla{q\npipe(q',T)}}_{=t(q|q')} \cdot \underbrace{\beta_x\doublekla{E,q,x_i\cdots x_n}}_{=e(x_i|q)} \\
- \text{and }
- \alpha_x\doublekla{E,q,x_i\cdots x_n}     &= \sum_{q'\in Q_\#} \alpha_x\doublekla{T,q',x_i\cdots x_n} \cdot \underbrace{q_\omega\mbig\kla{q\npipe(q',T)}}_{=t(q|q')} \cdot \underbrace{\beta_x\doublekla{T,q,x_{i+1}\cdots x_n}}_{=S_x(i,q)},
-\end{align*}
-both for $i\in\brc{1,\ldots,n}$ and $q\in Q$. The grammar states $(T,q,x)$ with $q\neq\#$ are unreachable. For $i=1$, we therefore have
+for the initial grammar state, since it is not produced by any rule. By expanding~\eqref{eq:03-alpha} for $H(x)$ with $x=x_1\cdots x_n\isin V^+$, we initially obtain
+\[
+ \alpha_x\mBig\kla{\mbig\kla{T,q,\cdr(x')}} = \sum_{q'\in Q_\#} \alpha_x\doublekla{T,q',x'} \cdot \underbrace{q_\omega\mbig\kla{q\npipe(q',T)}}_{=t(q|q')} \cdot \underbrace{\beta_x\doublekla{E,q,x'}}_{=e(\car(x')|q)}
+\]
+for all $q\in Q$ and $x'\in\suff(x)$. Replacing $x'$ by $x_i\cdots x_n$ yields
+\[
+ \alpha_x\doublekla{T,q,x_{i+1}\cdots x_n} = \sum_{q'\in Q_\#} \alpha_x\doublekla{T,q',x_i\cdots x_n} \cdot t(q|q') \cdot e(x_i|q)
+\]
+for all $q\in Q$ and $i\in\brc{1,\ldots,n}$. The grammar states $(T,q,x)$ with $q\neq\#$ are not produced by any rule in $R_x$ and therefore unreachable, which means that their inside weights vanish. For $i=1$, we therefore have
 \[
  \alpha_x\doublekla{T,q,x_2\cdots x_n} = \sum_{q'\in Q_\#} \underbrace{\alpha_x\doublekla{T,q',x_1\cdots x_n}}_{\text{$1$ for $q'=\#$, $0$ otherwise}} \cdot\, t(q|q') \cdot e(x_1|q)
  = t(q|\#) \cdot e(x_1|q) = T_x(1,q).
@@ -728,15 +766,25 @@ For $x'\neq x$, we can likewise observe that the grammar states $(T,\#,x')$ are
 unreachable, hence in $\alpha_x\doublekla{T,q,x_{i+1}\cdots x_n}$ for
 $i\in\brc{2,\ldots,n}$, it suffices to sum over $q'\in Q$ only. We therefore have
 \begin{align*}
- \alpha_x\doublekla{T,q,x_1\cdots x_n} &= T_x(1,q), \\
- \alpha_x\doublekla{T,q,x_i\cdots x_n} &= \sum_{q'\in Q} \alpha_x\doublekla{T,q',x_i\cdots x_n} \cdot t(q|q') \cdot e(x_i|q) &\text{for } i\in\brc{2,\ldots,n}
+ \alpha_x\doublekla{T,q,x_2\cdots x_n} &= T_x(1,q), \\
+ \alpha_x\doublekla{T,q,x_{i+1}\cdots x_n} &= \sum_{q'\in Q} \alpha_x\doublekla{T,q',x_i\cdots x_n} \cdot t(q|q') \cdot e(x_i|q)
 \end{align*}
-for any $q\in Q$. Comparison of this set of equations with~\eqref{eq:03-T_v-base} and~\eqref{eq:03-T_v} shows that the outside weights recover the inside weights, i.~e.,
+for any $q\in Q$ and $i\in\brc{2,\ldots,n}$. Comparison of this set of equations with~\eqref{eq:03-T_v-base} and~\eqref{eq:03-T_v} shows that the outside weights recover the inside weights, i.~e.,
 \[
  \alpha_x\doublekla{T,q,x_{i+1}\cdots x_n} = T_x(i,q)
 \]
-for all $i\in\brc{1,\ldots,n}$ and $q\in Q$. Inserting these findings into the
-outside weights of the states $(E,q,x_i\cdots x_n)$, we obtain, for $i=1$,
+for all $i\in\brc{1,\ldots,n}$ and $q\in Q$.
+
+It remains to consider emission states $(E,q,x')$. For those states, \eqref{eq:03-alpha} leads to
+\[
+ \alpha_x\doublekla{E,q,x'} = \sum_{q'\in Q_\#} \alpha_x\doublekla{T,q',x'} \cdot \underbrace{q_\omega\mbig\kla{q\npipe(q',T)}}_{=t(q|q')} \cdot \beta_x\mBig\kla{\mbig\kla{T,q,\cdr(x')}}
+\]
+for any $q\in Q$ and $x'\in\suff(x)$ or, in other words,
+\[
+ \alpha_x\doublekla{E,q,x_i\cdots x_n} = \sum_{q'\in Q_\#} \alpha_x\doublekla{T,q',x_i\cdots x_n} \cdot t(q|q') \cdot \underbrace{\beta_x\mBig\kla{\mbig\kla{T,q,x_{i+1}\cdots x_n}}}_{=S_x(i,q)}.
+\]
+
+We need to consider two subcases. For $i=1$, we obtain
 \begin{align*}
  \alpha_x\doublekla{E,q,x_1\cdots x_n}
  &= \sum_{q'\in Q_\#} \underbrace{\alpha_x\doublekla{T,q',x_1\cdots x_n}}_{\text{$1$ for $q'=\#$, $0$ otherwise}} \cdot\, t(q|q') \cdot S_x(1,q) \\
@@ -751,60 +799,51 @@ and for $i\in\brc{2,\ldots,n}$, we likewise have
  = \frac{T_x(i,q) \cdot S_x(i,q)}{e(x_i|q)}.
 \end{align*}
 
-\subsection{Complete-data corpus}\label{sect:03-complete-data}
+\subsection{Complete-data corpus (cont.)}\label{sect:03-complete-data}
 
-For the remainder of this chapter, let $c$ be a $V^*$-corpus, and
-$\mu:=\mu_\uh$. The E-step of the IO step mapping involves the computation of
-the complete-data corpus $c\!\dangle{\omega,\mu}$ according to
-\[
- c\!\dangle{\omega,\mu}\!(a,b) = \sum_x c(x) \cdot \chi_{\omega,x}(a,b).
-\]
-We therefore need to derive expressions for all $\chi_{\omega,x}(a,b)$ first.
-Following the definition of $\chi_{\omega,x}(a,b)$ in~\eqref{eq:02-chi} on
-page~\pageref{eq:02-chi}, we have, in general,
-\begin{equation}\label{eq:03-chi}
- \chi_{\omega,x}(a,b) = \underbrace{\beta_x\doublekla{T,\#,x}^{-1}}_{=P(x)^{-1}} \cdot \sum_{(q\to(a,b)(q_1,\ldots,q_k))\in R_x} \alpha_x(q) \cdot q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k).
-\end{equation}
+In the previous two sections, we have derived expressions for all relevant
+inside and outside weights\footnote{All these inside and outside weights are
+assembled in the table in Appendix~\ref{sec:appendix-formulary} for quick
+referencing.} of $H(x)$ for any $x\in X_{\not\bot}=V^*$. In this section, we will
+compute the complete-data corpus by expanding the equations~\eqref{eq:03-c}
+and~\eqref{eq:03-chi}. The results of this computation will be used in the
+following section to instantiate the inside-outside step mapping
+$\stepmap\mu_\mathrm{io}$ for $\mu=\mu_\uh$.
 
-For $x=\eps$, we only have one nonzero outside weight, $\alpha_\eps\doublekla{T,\#,\eps}
-= 1$, and only one rule that applies to this state, $(T,\#,\eps) \to
-\mbig\kla{\#,(\#,T)}$, from which follows that
+In section~\ref{sect:03-complete-data-intro}, we already considered the case
+$x=\eps$, and obtained
 \[
- \chi_{\omega,\eps}\mbig\kla{\#,(\#,T)} = \underbrace{P(x)^{-1}}_{=t(\#|\#)^{-1}} \cdot \underbrace{\alpha_x\doublekla{T,\#,\eps}}_{=1} \cdot \underbrace{q_\omega\mbig\kla{\#\npipe(\#,T)}}_{=t(\#|\#)} = 1
-\]
-and all other $\chi_{\omega,\eps}(a,b)$ vanish. Since $(T,\#,\eps)$ is
-unreachable in all $H(x)$ with $x\neq\eps$, we have $\alpha_x\doublekla{T,\#,\eps} = 0$
-and therefore $\chi_{\omega,x}\mbig\kla{\#,(\#,T)}=0$ for all $x\neq\eps$, and finally,
-\[
- c\!\dangle{\omega,\mu}\!\mbig\kla{\#,(\#,T)} = c(\eps) \cdot \underbrace{\chi_{\omega,\eps}\mbig\kla{\#,(\#,T)}}_{=1} + \sum_{x\neq\eps} c(x) \cdot \underbrace{\chi_{\omega,x}\mbig\kla{\#,(\#,T)}}_{=0} = c(\eps).
+ c\!\dangle{\omega,\mu}\!\mbig\kla{\#,(\#,T)} = c(\eps).
 \]
 
-This concludes the consideration of $x=\eps$. Let $x=x_1\cdots x_n\isin V^+$. For emission events
-$\mbig\kla{v,(q,E)}$ with $v\in V$ and $q\in Q$, \eqref{eq:03-chi} leads to
+Therefore, as in the previous sections, it remains to consider $x=x_1\cdots
+x_n\isin V^+$. For emission events $\mbig\kla{v,(q,E)}$ with $v\in V$ and $q\in
+Q$, \eqref{eq:03-chi} leads to
 \begin{align*}
  \chi_{\omega,x}\mbig\kla{v,(q,E)}
  &= P(x)^{-1} \cdot \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} \underbrace{\alpha_x\doublekla{E,q,x_i\cdots x_n}}_{=T_x(i,q)\cdot S_x(i,q)\cdot e(x_i|q)^{-1}} \cdot \underbrace{q_\omega\mbig\kla{v\npipe(q,E)}}_{=e(v|q)} \\
  &= \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} \frac{T_x(i,q)\cdot S_x(i,q)}{P(x)}
   = \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} R_x(i,q).
 \end{align*}
+
 For transition events into and out of the $\#$ state, we obtain, for any $q\in Q$,
 \begin{align*}
  \chi_{\omega,x}\mbig\kla{\#,(q,T)}
  &= P(x)^{-1} \cdot \underbrace{\alpha_x\doublekla{T,q,\eps}}_{=T_x(n,q)} \cdot \underbrace{q_\omega\mbig\kla{\#\npipe(q,T)}}_{=t(\#|q)=S_x(n,q)} = R_x(n,q), \\
- \text{and } \chi_{\omega,x}\mbig\kla{q,(\#,T)}
+ \chi_{\omega,x}\mbig\kla{q,(\#,T)}
  &= P(x)^{-1} \cdot \sum_{x'\in\suff(x)} \underbrace{\alpha_x\doublekla{T,\#,x'}}_{=0\text{ for }x'\neq x} \cdot \underbrace{q_\omega\mbig\kla{q\npipe(\#,T)}}_{=t(q|\#)} \cdot \beta_x\doublekla{E,q,x'} \cdot \beta_x\mBig\kla{\mbig\kla{T,q,\cdr(x')}} \\
  &= P(x)^{-1} \cdot \underbrace{\alpha_x\doublekla{T,\#,x}}_{=1} \cdot t(q|\#) \cdot \underbrace{\beta_x\doublekla{E,q,x}}_{=e(x_1|q)} \cdot \underbrace{\beta_x\mBig\kla{\mbig\kla{T,q,\cdr(x)}}}_{=S_x(1,q)} \\
  &= P(x)^{-1} \cdot \underbrace{t(q|\#) \cdot e(x_1|q)}_{=T_x(1,q)} \cdot S_x(1,q)
   = R_x(1,q).
 \end{align*}
 
-For transition events from some $q\in Q$ to some $q'\in Q$, we initially get
+For transition events from $q\in Q$ to $q'\in Q$, we initially get
 \begin{align*}
  \chi_{\omega,x}\mbig\kla{q',(q,T)}
- &= P(x)^{-1} \cdot \sum_{x'\in\suff(x)} \alpha_x\doublekla{T,q,x'} \cdot \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \beta_x\doublekla{E,q',x'} \cdot \beta_x\mBig\kla{\mbig\kla{T,q,\cdr(x')}}. \\
- \intertext{To simplify this expression, we once more rewrite $\sum_{x'\in\suff(x)}$ into $\sum_{i=1}^n$ such that $x' = x_i\cdots x_n$.}
+ &= P(x)^{-1} \cdot \sum_{x'\in\suff(x)} \!\!\!\!\alpha_x\doublekla{T,q,x'} \cdot \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \underbrace{\beta_x\doublekla{E,q',x'}}_{=e(\car(x')|q')} \cdot\, \beta_x\mBig\kla{\mbig\kla{T,q,\cdr(x')}}. \\
+ \intertext{To simplify this expression, we once more replace $x'$ by $x_i\cdots x_n$.}
  \chi_{\omega,x}\mbig\kla{q',(q,T)}
- &= P(x)^{-1} \cdot \sum_{i=1}^n \,\underbrace{\alpha_x\doublekla{T,q,x_i\cdots x_n}}_{=\,0\text{ for }i\,=\,1} \cdot t(q'|q) \cdot \underbrace{\beta_x\doublekla{E,q',x_i\cdots x_n}}_{=e(x_i|q)} \cdot \underbrace{\beta_x\mBig\kla{\mbig\kla{T,q,x_{i+1}\cdots x_n}}}_{=S_x(i,q)} \\
+ &= P(x)^{-1} \cdot \sum_{i=1}^n \,\underbrace{\alpha_x\doublekla{T,q,x_i\cdots x_n}}_{=\,0\text{ for }i\,=\,1} \cdot t(q'|q) \cdot e(x_i|q) \cdot \underbrace{\beta_x\mBig\kla{\mbig\kla{T,q,x_{i+1}\cdots x_n}}}_{=S_x(i,q)} \\
  &= P(x)^{-1} \cdot \sum_{i=2}^n \,\underbrace{\alpha_x\doublekla{T,q,x_i\cdots x_n}}_{=T_x(i-1,q)} \cdot t(q'|q) \cdot e(x_i|q) \cdot S_x(i,q) \\
  &= \sum_{i=2}^n U_x(i-1,q,q') = \sum_{i=1}^{n-1} U_x(i,q,q').
 \end{align*}
@@ -893,6 +932,14 @@ $\hat\omega$ exists.
  since $p\in\um_C(A|B)$ is restricted to $C$.
 \end{proof}
 
+Using this lemma, we obtain the final and principal result of this thesis.
+
+\begin{theorem}
+ Algorithm~\ref{alg:bw-vogler} (see page~\pageref{alg:bw-vogler}) is an
+ instance of Algorithm~\ref{alg:skeleton} (see page~\pageref{alg:skeleton}).
+\end{theorem}
+
+\begin{proof}
 Since $c\!\dangle{\omega,\mu}$ is restricted to $C$ (i.~e., zero-valued
 anywhere outside $C$), we have
 $\widetilde{c\!\dangle{\omega,\mu}}\in\um_C(A|B)$. We can therefore apply the
@@ -919,10 +966,23 @@ Q_\#$ and $v\in V$,
 
 Comparison with Algorithm~\ref{alg:bw-vogler} shows that this is exactly the
 same computation carried out by lines 23--28. In total, we see that each
-iteration of the main loop of this algorithm takes in a previous $\omega=(t,e)$
-and computes $\hat\omega=(\hat t,\hat e)$ such that $\hat\omega\in\stepmap\mu_\mathrm{io}(\omega)$.
-This is the same behavior that we described more abstractly in
-Algorithm~\ref{alg:skeleton} (see page~\pageref{alg:skeleton}). This shows that
-the Baum-Welch algorithm is, in fact, an instance of the EM algorithm from
-\cite{bucstuvog15} that was introduced in Chapter~2, and consequently, that the
-convergence properties of the generic EM algorithm apply to it as well.
+iteration of the main loop of this algorithm takes in a previous
+$\omega=(t,e)$ and computes $\hat\omega=(\hat t,\hat e)$ as shown above, such
+that $\hat\omega\in\stepmap\mu_\mathrm{io}(\omega)$.  This is the same
+behavior that we described more abstractly in Algorithm~\ref{alg:skeleton}.
+\end{proof}
+
+\section{Review}
+
+The principal insights of this chapter, and this thesis overall, are twofold:
+\begin{enumerate}
+ \item We have shown that any Hidden Markov model $\uh$ can be described as an
+  inside-outside information $\mu_\uh$.
+ \item Using the step mapping $\stepmap{\mu_\uh}_\mathrm{io}$, we have
+  instantiated the generic EM algorithm from~\cite{bucstuvog15}, and shown that
+  the algorithm thus obtained is identical to the well-known Baum-Welch algorithm.
+\end{enumerate}
+
+From this follows that all theorems regarding the generic EM algorithm,
+esp.~concering its convergence properties, apply to the Baum-Welch algorithm as
+well.
