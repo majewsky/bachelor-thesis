@@ -633,11 +633,11 @@ $R$ must be equal to the rank of that label.
 
 \begin{definition}
  Given an alphabet $\Sigma$, a \emph{regular tree grammar (RTG) over $\Sigma$}
- is a triple $\ug = (Q,q_0,R)$ where $Q$ is a nonempty alphabet (of states),
- $q_0\in Q$ is an initial state, and $R\subset Q^*\times\Sigma\times Q$ is a
- finite ranked alphabet (of rules) such that
+ is a triple $\ug = (Q,q_0,R)$ where $Q$ is a nonempty alphabet (of \emph{grammar states}),
+ $q_0\in Q$ is an \emph{initial state}, and $R\subset Q^*\times\Sigma\times Q$ is a
+ finite ranked alphabet (of \emph{rules}) such that
  \[
-  \forall \rho = \mbig\kla{(q_1,\ldots,q_k),\sigma,q}\in R\colon \rk(\rho) = k.
+  \forall \rho = \mbig\kla{(q_1,\ldots,q_k),\sigma,q}\isin R\colon \rk(\rho) = k.
   \qedhere
  \]
 \end{definition}
@@ -650,7 +650,7 @@ We will write $\mbig\kla{(q_1,\ldots,q_k),\sigma,q}$ as $q\to\sigma(q_1,\ldots,q
  $\ug$} is the smallest $Q$-indexed family $(D^q|q\in Q)$ such that, for all
  $q\in Q$,
  \[
-  q \in D^q \quad\text{and}\quad \forall \rho=\mbig\kla{q\to\sigma(q_1,\ldots,q_k)}\in R,d_1\in D^{q_1},\ldots,d_k\in D^{q_k}: \rho(d_1,\ldots,d_k) \in D^q.
+  q \in D^q \quad\text{and}\quad \forall \rho=\mbig\kla{q\to\sigma(q_1,\ldots,q_k)}\isin R,d_1\in D^{q_1},\ldots,d_k\in D^{q_k}\colon \rho(d_1,\ldots,d_k) \in D^q.
  \]
  An \emph{abstract syntax tree} is a partial abstract syntax tree $d\in
  D^{q_0}(\ug)$ that does not have any labels from $Q$.

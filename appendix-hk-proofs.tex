@@ -141,17 +141,17 @@ going to show that
 \begin{equation}\label{eq:p21}
  \forall y\in T_C\colon\;
  \mBig\kla{y\in\mbig\lang K_{(T\!,\pi_Q(y))}}
- \Leftrightarrow
+ \text{ iff }
  \mBig\kla{y\in\mbig\lang{H\mbig\kla{\pi_X(y)}}_{(T\!,\pi_Q(y),\pi_X(y))}},
 \end{equation}
 by structural induction on $y$. According to the definition of the ranked
-alphabet $C$, each $y\in T_C$ can have one of four forms,
+alphabet $C$, each $y\in T_C$ can have one of three forms,
 \begin{align*}
  y_1(v,q) &:= \mbig\kla{v,(q,E)} &&\text{ where } v\in V\text{ and } q\in Q, \\
  y_2(q) &:= \mbig\kla{\#,(q,T)} &&\text{ where } q\in Q_\#, \\
  y_3(q,q',y_e,y_t) &:= \mbig\kla{q',(q,T)}(y_e,y_t) &&\text{ where } q\in Q_\#, q'\in Q, \text{ and } y_e,y_t\in T_C.
 \end{align*}
-The first three forms are the base cases for the structural induction on $y$,
+The first two forms are the base cases for the structural induction on $y$,
 and the last form represents the inductive step.
 
 \subsubsection*{Base cases}
@@ -222,9 +222,8 @@ Because of~\eqref{eq:a5}, the second statement is equivalent to
 From~\eqref{eq:a3}, we see that $\pi_Q(y_t)$ must be $q'$. Since $y_t$ is a
 substructure of $y$, it can be assumed to satisfy~\eqref{eq:p21}, from which
 follows that $y_t \in \mbig\lang K_{(T\!,q')}$. According to~\eqref{eq:a4}, it
-therefore holds that $y\in\mbig\lang K_{(T\!,q)}$ for any
-$y\in\mbig\lang{H(x)}_{(T\!,\pi_Q(y),x)}$. The proof for~\eqref{eq:p21} is
-thereby complete.
+therefore holds that $y\in\mbig\lang K_{(T\!,q)}$. The proof for~\eqref{eq:p21}
+is thereby complete.
 
 \subsubsection*{Conclusion of the proof}
 
@@ -234,7 +233,7 @@ To finally derive Lemma~\ref{lemma:03-language-partition}, we first note that
  \quad\text{ and }\quad
  \pi_Q\mbig\kla{\mbig\lang{H(x)}_{(T\!,\#,x)}} = \brc\#
 \end{equation}
-for any $x\in X_{\not\bot}$, which follows from~\eqref{eq:a4} and~\eqref{eq:a3}, respectively.
+for every $x\in X_{\not\bot}$, which follows from~\eqref{eq:a4} and~\eqref{eq:a3}, respectively.
 We can thus expand $\lang K$ into
 \begin{align*}
  \mbig\lang K

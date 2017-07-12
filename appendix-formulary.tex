@@ -14,23 +14,23 @@ We imply that $\uh = (Q,V,\#,t,e)$ is an HMM. Let $v\in V^*$ be an observation.
  P(v=v_1\cdots v_n) &= \sum_{q_1,\ldots,q_n\in Q} t(q_1|\#) \cdot e(v_1|q_1) \cdot \prod_{i=2}^n \mbig\brk{t(q_i|q_{i-1}) \cdot e(v_i|q_i)} \cdot t(\#|q_n), \\
  \waseq{eq:03-p-v-eps}
  P(v=\eps) &= t(\#|\#).
- \intertext{In terms of the forward weight $T_v(i,q)$ for $i\in\brc{1,\ldots,n}$ and $q\in Q$:}
+ \intertext{In terms of the forward weight $T_v(i,q)$ for $v=v_1\cdots v_n\isin V^+$, $i\in\brc{1,\ldots,n}$ and $q\in Q$:}
  \waseq{eq:03-p-by-t}
- P(v_1\cdots v_n) &= \sum_{q\in Q} T_v(n,q) \cdot t(\#|q), \\
+ P(v) &= \sum_{q\in Q} T_v(n,q) \cdot t(\#|q), \\
  \waseq{eq:03-T_v}
  T_v(i,q) &= \begin{cases}
   e(v_1|q) \cdot t(q|\#) & \text{if } i = 1, \\
   e(v_i|q) \cdot \sum_{q'\in Q} T_v(i-1,q') \cdot t(q|q') & \text{if } i \in\brc{2,\ldots,n}.
  \end{cases}
- \intertext{In terms of the backward weight $S_v(i,q)$ for $i\in\brc{1,\ldots,n}$ and $q\in Q$:}
+ \intertext{In terms of the backward weight $S_v(i,q)$ for $v=v_1\cdots v_n\isin V^+$, $i\in\brc{1,\ldots,n}$ and $q\in Q$:}
  \waseq{eq:03-p-by-s}
- P(v_1\cdots v_n) &= \sum_{q\in Q} t(q|\#) \cdot e(v_1|q) \cdot S_v(1,q), \\
+ P(v) &= \sum_{q\in Q} t(q|\#) \cdot e(v_1|q) \cdot S_v(1,q), \\
  \waseq{eq:03-S_v}
  S_v(i,q) &= \begin{cases}
   t(\#|q) & \text{if }i=n, \\
   \sum_{q'\in Q} t(q'|q) \cdot e(v_{i+1}|q') \cdot S_v(i+1,q') & \text{if } i\in\brc{1,\ldots,n-1}.
  \end{cases}
- \intertext{Expressions from the Baum-Welch algorithm, for $i\in\brc{1,\ldots,n}$ and $q,q'\in Q$:}
+ \intertext{Expressions from the Baum-Welch algorithm, for $v=v_1\cdots v_n\isin V^+$, $i\in\brc{1,\ldots,n}$ and $q,q'\in Q$:}
  \waseq{eq:03-R_v}
  R_v(i,q) &= \frac{T_v(i,q) \cdot S_v(i,q)}{P(v)}, \\
  \waseq{eq:03-U_v}
