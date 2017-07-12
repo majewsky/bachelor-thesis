@@ -773,7 +773,7 @@ be chosen deterministically.
  \]
  Herein, $p(d) := p\mbig\kla{\pi(d)}$, where $\pi(d)$ is an $R$-corpus with
  \[
-  \mbig\kla{\pi(d)}(p) := \mbig\abs{\mbig\brc{w\in\pos(d): d(w)=p}}.
+  \mbig\kla{\pi(d)}(p) := \mbig\abs{\mbig\brc{w\in\pos(d): d(w)=p}}. \qedhere
  \]
 \end{definition}
 
@@ -813,7 +813,7 @@ for $q\in Q$. In some cases, this system can be solved intuitively by starting
 with those equations where no $\beta(q_i)$ occurs on the right-hand side, then
 substituting the obtained value in the other equations until they are all
 solved. This is not possible, however, if states derive other states in a
-cyclic way. For example:
+cyclic way, e.~g.,
 \[
  R = \brc{\begin{aligned}
   \rho_1 &= q_0 \to \sigma_1(q_1, q_1), \\

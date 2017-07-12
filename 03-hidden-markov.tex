@@ -64,26 +64,22 @@ having length $n$ if $q_1,\ldots,q_n$ are known or, in other words, the
 probability of the state sequence terminating (by the state machine coming back
 to $\#$) after these $n$ states. Since, by the first Markov property, each
 state only depends on the one directly preceding it, we can reformulate each
-factor in terms of the transition probability distribution $t$:
-\begin{align*}
- P(q_1) &= t(q_1|\#), \\
- P(q_i|q_1,\ldots,q_{i-1}) &= t(q_i|q_{i-1}), \\
- P(n|q_1,\ldots,q_n) &= t(\#|q_n),
-\end{align*}
-and therefore,
+factor in terms of the transition probability distribution $t$, i.~e.,
 \[
+ \left.\begin{aligned}
+  P(q_1) &= t(q_1|\#), \\
+  P(q_i|q_1,\ldots,q_{i-1}) &= t(q_i|q_{i-1}), \\
+  P(n|q_1,\ldots,q_n) &= t(\#|q_n)
+ \end{aligned}\right\}
+ \quad\Rightarrow\quad
  P(q_1\cdots q_n) = t(q_1|\#) \cdot t(q_2|q_1) \cdots t(q_n|q_{n-1}) \cdot t(\#|q_n).
 \]
 
 In a similar way, we can rewrite $P(v|q)$ as
 \[
- P(v_1\cdots v_n|q_1\cdots q_n) = \prod_{i=1}^n P(v_i|q_1\cdots q_n)
+ P(v_1\cdots v_n|q_1\cdots q_n) = \prod_{i=1}^n P(v_i|q_1\cdots q_n) = \prod_{i=1}^n e(v_i|q_i)
 \]
-and codify the second Markov property as
-\[
- P(v_i|q_1\cdots q_n) = e(v_i|q_i).
-\]
-
+because of the second Markov property.
 Putting all these results into the original equation for $P(v)$, we obtain
 \begin{equation}\label{eq:03-p-v}
  P(v=v_1\cdots v_n) = \sum_{q_1,\ldots,q_n\in Q} t(q_1|\#) \cdot e(v_1|q_1) \cdot \prod_{i=2}^n \mbig\brk{t(q_i|q_{i-1}) \cdot e(v_i|q_i)} \cdot t(\#|q_n).
@@ -104,7 +100,7 @@ sequences $q$ share several common factors. By following a \emph{dynamic
 programming} approach, i.~e., by storing common subterms in a tabular memory
 for later re-use, the computational effort can be reduced significantly. There
 are two well-known schemes for dividing $P(v)$ into subterms, which lead to the
-\emph{forward algorithm} and the \emph{backward algorithm}, respectively.
+\emph{forward} and \emph{backward algorithm}, respectively.
 
 \begin{definition}
  Let $\uh=(Q,V,\#,t,e)$ be an HMM, $q\in Q$ be a state, $v=v_1\cdots v_n\isin V^+$
@@ -117,13 +113,13 @@ are two well-known schemes for dividing $P(v)$ into subterms, which lead to the
  of the HMM being in state $q$ after having emitted the first $i$ words of
  $v$, i.~e.,
  \[
-  T_v(i,q) = P(v_1,\ldots,v_i,q_i=q).
+  T_v(i,q) := P(v_1,\ldots,v_i,q_i=q).
  \]
  The \emph{backward weight} $S_v(i,q)$ is the probability of the HMM
  generating $v$ when the first $i$ words of $v$ have already been emitted and
  the HMM is in state $q$ after that many words, i.~e.,
  \[
-  S_v(i,q) = P(v_{i+1},\ldots,v_n,n|q_i=q). \qedhere
+  S_v(i,q) := P(v_{i+1},\ldots,v_n,n|q_i=q). \qedhere
  \]
 \end{definition}
 
@@ -141,7 +137,7 @@ $q'\in Q$, because
  T_v(i,q) = P(v_1,\ldots,v_i,q_i=q) = \sum_{q'\in Q} P(v_1,\ldots,v_i,q_{i-1}=q',q_i=q)
 \]
 by the law of total probability, and then, by the chain rule and the Markov
-properties of the HMM,
+properties of $\uh$,
 \begin{align}
  T_v(i,q)
   &= \sum_{q'\in Q} P(v_1,\ldots,v_{i-1},q_{i-1}=q') \cdot P(q_i=q|q_{i-1}=q') \cdot P(v_i|q_i=q) \nonumber\\
@@ -255,8 +251,9 @@ already used for deriving formulas for $P(v)$, $T_v$ and $S_v$.
  R_v(i,q)
   &= P(q_i=q|v) = \frac{P(v,q_i=q)}{P(v)} = \frac{P(v_1,\ldots,v_n,n,q_i=q)}{P(v)} \nonumber\\
   &= \frac{P(v_1,\ldots,v_i,q_i=q) \cdot P(v_{i+1},\ldots,v_n,n|q_i=q)}{P(v)} \nonumber\\
-  &= \frac{T_v(i,q) \cdot S_v(i,q)}{P(v)} \label{eq:03-R_v}
+  &= \frac{T_v(i,q) \cdot S_v(i,q)}{P(v)}. \label{eq:03-R_v}
 \end{align}
+\clearpage
 
 And analogously,
 \begin{align}
@@ -334,11 +331,7 @@ with words from $V$, i.~e.,
 
 An IO information contains only one component which can be subject to training,
 the model parameter $\omega$ which chooses the conditional probability
-distribution
-\[
- q_\omega \in \um_C(A|B).
-\]
-
+distribution $q_\omega \in \um_C(A|B)$.
 For a HMM, $q_\omega$ must describe both the transition and emission
 probability distribution. We therefore choose
 \label{eq:03-omega}
@@ -361,7 +354,7 @@ emission probability distribution for~$\uh$. Moreover, we choose
 Herein, $E$ and $T$ are symbols such that $E,T\notin Q\cup V$ that denote if a
 countable event $c\in C$ is a transition event
 \[
- c = \mbig\kla{q',(q,T)} \text{ with probability } q_{(t,e)}(c) = t(q'|q).
+ c = \mbig\kla{q',(q,T)} \text{ with probability } q_{(t,e)}(c) = t(q'|q),
 \]
 or an emission event
 \[
@@ -420,7 +413,7 @@ or an emission event
 \end{figure}
 
 In order to describe hidden information $y\in Y_{\not\bot}$ as a ranked tree of countable
-events from $C$, we assign a rank to each $c = \mbig\kla{a,(q,s)}\isin C$ as follows:
+events from $C$, we assign a rank to each $c = \mbig\kla{a,(q,s)}\isin C$ by
 \begin{align*}
  \rk\mBig\kla{\mbig\kla{a,(q,s)}} := \begin{cases}
   0 & \text{if } s = E, \\
@@ -478,6 +471,7 @@ need to show the following lemma.
   &= p_\omega'\mBig\kla{(T,q) \to \mbig\kla{\#,(q,T)}} + \sum_{q'\in Q} p_\omega'\mBig\kla{(T,q) \to \mbig\kla{q',(q,T)}\mbig\kla{(E,q'),(T,q')}} \\
   &= q_\omega\mbig\kla{\#,(q,T)} + \sum_{q'\in Q} q_\omega\mbig\kla{q',(q,T)} = t(\#|q) + \sum_{q'\in Q} t(q'|q) = \sum_{q'\in Q_\#} t(q'|q) = 1
  \end{align*}
+ \clearpage
  because $t\in\um(Q_\#|Q_\#)$. Analogously, for any $q\in Q$, it follows from $e\in\um(V|Q)$ that
  \begin{align*}
   \sum_{q_1\cdots q_k\in Q^*,(a,b)\in C} p_\omega'\mbig\kla{(E,q)\to(a,b)(q_1,\ldots,q_k)}
@@ -576,7 +570,7 @@ Using these operators, we define, for any $x\in X_{\not\bot} = V^*$,
 \begin{align*}
  H(x) := \mbig\brc{Q_x,(T,\#,x),R_x} \quad\text{where}\quad
  Q_x &:= \brc T \times Q_\# \times \mbig\kla{\suff(x)\cup\brc\eps} \\
- &\hspace{0.15em}\cup\hspace{0.15em} \brc E \times Q \times \suff(x)
+ &\hspace{0.40em}\cup\hspace{0.15em} \brc E \times Q \times \suff(x)
 \end{align*}
 and $R_x$ contains the following rules:
 \label{eq:03-R_x}\begin{align*}
@@ -597,7 +591,8 @@ We therefore have
 \]
 %
 Using the same reasoning as above for $K$, we see that each $H(x)$ is
-deterministic and, therefore, unambiguous. It remains to be shown that
+deterministic and, therefore, unambiguous. For $(q,\pi_1,K,H)$ to be an IO
+information, it remains to be shown that
 \[
  \forall x\in X_{\not\bot}\colon\;
  \mbig\lang{H(x)} = \pi_1^{-1}(x).
@@ -795,6 +790,7 @@ and for $i\in\brc{2,\ldots,n}$, we likewise have
  &= \sum_{q'\in Q} T_x(i-1,q') \cdot t(q|q') \cdot S_x(i,q)
  = \frac{T_x(i,q) \cdot S_x(i,q)}{e(x_i|q)}.
 \end{align*}
+\clearpage
 
 \subsection{Complete-data corpus (cont.)}\label{sect:03-complete-data}
 
@@ -838,7 +834,7 @@ For transition events from $q\in Q$ to $q'\in Q$, we initially get
 \begin{align*}
  \chi_{\omega,x}\mbig\kla{q',(q,T)}
  &= P(x)^{-1} \cdot \sum_{x'\in\suff(x)} \!\!\!\!\alpha_x\doublekla{T,q,x'} \cdot \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \underbrace{\beta_x\doublekla{E,q',x'}}_{=e(\car(x')|q')} \cdot\, \beta_x\mBig\kla{\mbig\kla{T,q',\cdr(x')}}. \\
- \intertext{To simplify this expression, we once more replace $x'$ by $x_i\cdots x_n$.}
+ \intertext{To simplify this expression, we replace $x'$ by $x_i\cdots x_n$ once more.}
  \chi_{\omega,x}\mbig\kla{q',(q,T)}
  &= P(x)^{-1} \cdot \sum_{i=1}^n \,\underbrace{\alpha_x\doublekla{T,q,x_i\cdots x_n}}_{=\,0\text{ for }i\,=\,1} \cdot t(q'|q) \cdot e(x_i|q') \cdot \underbrace{\beta_x\mBig\kla{\mbig\kla{T,q',x_{i+1}\cdots x_n}}}_{=S_x(i,q')} \\
  &= P(x)^{-1} \cdot \sum_{i=2}^n \,\underbrace{\alpha_x\doublekla{T,q,x_i\cdots x_n}}_{=T_x(i-1,q)} \cdot t(q'|q) \cdot e(x_i|q') \cdot S_x(i,q') \\
@@ -947,6 +943,7 @@ e)$ which is in $\stepmap\mu_\mathrm{io}(\omega)$.
  \hat e(v|q) &:= \widetilde{c\!\dangle{\omega,\mu}}\mbig\kla{v\npipe(q,E)} &&\forall v\in V,q\in Q.
 \end{align*}
 
+\clearpage
 In the case of Algorithm~\ref{alg:bw-vogler}, we have $c=c_h$, and the
 equations~\eqref{eq:03-cnt-by-c} apply. We therefore have, for every $q,q'\in
 Q_\#$ and $v\in V$,
