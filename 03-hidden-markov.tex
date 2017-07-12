@@ -687,7 +687,7 @@ follows that
  c\!\dangle{\omega,\mu}\!\mbig\kla{\#,(\#,T)} = c(\eps) \cdot \underbrace{\chi_{\omega,\eps}\mbig\kla{\#,(\#,T)}}_{=1} + \sum_{x\neq\eps} c(x) \cdot \underbrace{\chi_{\omega,x}\mbig\kla{\#,(\#,T)}}_{=0} = c(\eps).
 \]
 
-This concludes the consideration of $x=\eps$. It remains to calculate the
+After having considered the case that $x=\eps$, it remains to calculate the
 inside weights, outside weights, and complete-data corpus contributions for
 all $x=x_1\cdots x_n\isin V^+$. We begin by noting that any $x'\in\suff(x)$ has the form
 $x' = x_i\cdots x_n$ for some $i\in\brc{1,\ldots,n}$, and we have
@@ -716,19 +716,19 @@ for any $i\in\brc{1,\ldots,n}$. For transmission states $(T,q,x')$,~\eqref{eq:03
 \end{align*}
 for all $q\in Q_\#$ and $x'\in\suff(x)$. Again, we insert $x' = x_i\cdots x_n$, and obtain
 \begin{align*}
- \beta_x\doublekla{T,q,x_{n+1}\cdots x_n} &= t(\#|q) = S_x(n,q), \\
+ \beta_x\doublekla{T,q,x_{n+1}\cdots x_n} &= t(\#|q), \\
  \beta_x\doublekla{T,q,x_i\cdots x_n} &= \sum_{q'\in Q} t(q'|q) \cdot e(x_i|q') \cdot \beta_x\doublekla{T,q',x_{i+1}\cdots x_n}
 \end{align*}
 for all $q\in Q_\#$ and $i\in\brc{1,\ldots,n}$. Comparison of this set of
 equations with~\eqref{eq:03-S_v} on page~\pageref{eq:03-S_v} shows that, for
-all $q\in Q$ (specifically, $q\neq\#$) and $i\in\brc{2,\ldots,n}$
+all $q\in Q$ (specifically, $q\neq\#$) and $i\in\brc{2,\ldots,n+1}$
 (specifically, $i\neq1$), the inside weights recover the backward weights,
 i.~e.,
 \[
  \beta_x\doublekla{T,q,x_i\cdots x_n} = S_x(i-1,q).
 \]
 
-This leaves grammar states $(T,q,x')$ where either $q=\#$ or $x'=x$. Only one
+It remains to consider grammar states $(T,q,x')$ where either $q=\#$ or $x'=x$. Only one
 such state is reachable, the initial grammar state $(T,\#,x)$ with
 \[
  \beta_x\doublekla{T,\#,x} = \beta_x\doublekla{T,\#,x_1\cdots x_n} = \sum_{q'\in Q} t(q'|q) \cdot e(x_1|q') \cdot \underbrace{\beta_x\doublekla{T,q',x_2\cdots x_n}}_{=S_x(1,q)} = P(x)
@@ -823,7 +823,7 @@ Q$, \eqref{eq:03-chi} leads to
   = \sum_{i\in\brc{1,\ldots,n}:\, x_i=v} R_x(i,q).
 \end{align*}
 
-For transition events into and out of the $\#$ state, we obtain, for any $q\in Q$,
+For transition events into and out of the $\#$ state, we obtain, for every $q\in Q$,
 \begin{align*}
  \chi_{\omega,x}\mbig\kla{\#,(q,T)}
  &= P(x)^{-1} \cdot \underbrace{\alpha_x\doublekla{T,q,\eps}}_{=T_x(n,q)} \cdot \underbrace{q_\omega\mbig\kla{\#\npipe(q,T)}}_{=t(\#|q)=S_x(n,q)} = R_x(n,q), \\
@@ -837,21 +837,22 @@ For transition events into and out of the $\#$ state, we obtain, for any $q\in Q
 For transition events from $q\in Q$ to $q'\in Q$, we initially get
 \begin{align*}
  \chi_{\omega,x}\mbig\kla{q',(q,T)}
- &= P(x)^{-1} \cdot \sum_{x'\in\suff(x)} \!\!\!\!\alpha_x\doublekla{T,q,x'} \cdot \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \underbrace{\beta_x\doublekla{E,q',x'}}_{=e(\car(x')|q')} \cdot\, \beta_x\mBig\kla{\mbig\kla{T,q,\cdr(x')}}. \\
+ &= P(x)^{-1} \cdot \sum_{x'\in\suff(x)} \!\!\!\!\alpha_x\doublekla{T,q,x'} \cdot \underbrace{q_\omega\mbig\kla{q'\npipe(q,T)}}_{=t(q'|q)} \cdot \underbrace{\beta_x\doublekla{E,q',x'}}_{=e(\car(x')|q')} \cdot\, \beta_x\mBig\kla{\mbig\kla{T,q',\cdr(x')}}. \\
  \intertext{To simplify this expression, we once more replace $x'$ by $x_i\cdots x_n$.}
  \chi_{\omega,x}\mbig\kla{q',(q,T)}
- &= P(x)^{-1} \cdot \sum_{i=1}^n \,\underbrace{\alpha_x\doublekla{T,q,x_i\cdots x_n}}_{=\,0\text{ for }i\,=\,1} \cdot t(q'|q) \cdot e(x_i|q) \cdot \underbrace{\beta_x\mBig\kla{\mbig\kla{T,q,x_{i+1}\cdots x_n}}}_{=S_x(i,q)} \\
- &= P(x)^{-1} \cdot \sum_{i=2}^n \,\underbrace{\alpha_x\doublekla{T,q,x_i\cdots x_n}}_{=T_x(i-1,q)} \cdot t(q'|q) \cdot e(x_i|q) \cdot S_x(i,q) \\
+ &= P(x)^{-1} \cdot \sum_{i=1}^n \,\underbrace{\alpha_x\doublekla{T,q,x_i\cdots x_n}}_{=\,0\text{ for }i\,=\,1} \cdot t(q'|q) \cdot e(x_i|q') \cdot \underbrace{\beta_x\mBig\kla{\mbig\kla{T,q',x_{i+1}\cdots x_n}}}_{=S_x(i,q')} \\
+ &= P(x)^{-1} \cdot \sum_{i=2}^n \,\underbrace{\alpha_x\doublekla{T,q,x_i\cdots x_n}}_{=T_x(i-1,q)} \cdot t(q'|q) \cdot e(x_i|q') \cdot S_x(i,q') \\
  &= \sum_{i=2}^n U_x(i-1,q,q') = \sum_{i=1}^{n-1} U_x(i,q,q').
 \end{align*}
 
-When we put these expressions into the definition of
-$c\!\dangle{\omega,\mu}$, the sum over $x$ initially goes over all $x\in
-V^+ = X_{\not\bot}\setminus\brc\eps$. However, we can restrict the sum to
-$\operatorname{supp}(c)$ since the factor $c(x)$ makes every contribution from
-outside $\operatorname{supp}(c)$ vanish. The sum therefore goes over
-$\operatorname{supp}(c)\setminus\brc\eps$ only, which we shall denote by $X_c$.
-For any $q,q'\in Q$ and $v\in V$, we finally have
+When we put these expressions into the definition of $c\!\dangle{\omega,\mu}$,
+we initially sum over over all $x\in V^+ = X_{\not\bot}$. However, we can
+exclude $x=\eps$ from the sum since, as was discussed in
+section~\ref{sect:03-complete-data-intro}, all $\chi_{\omega,\eps}(a,b)$ vanish
+except for $(a,b) = \mbig\kla{\#,(\#,T)}$. Furthermore, the factor $c(x)$ makes
+every contribution from outside $\operatorname{supp}(c)$ vanish. It therefore
+suffices to sum over $\operatorname{supp}(c)\setminus\brc\eps$ only, which we
+shall denote by $X_c$.  For any $q,q'\in Q$ and $v\in V$, we finally have
 \begin{align}\label{eq:03-c-dangle}
  c\!\dangle{\omega,\mu}\!\mbig\kla{\#,(\#,T)} &= c(\eps), \\
  c\!\dangle{\omega,\mu}\!\mbig\kla{\#,(q,T)} &= \sum_{x\in X_c} c(x) \cdot R_x\mbig\kla{\abs x\!,q}, &
@@ -875,7 +876,7 @@ By using $c_h$ instead of $c$ in the equations~\eqref{eq:03-c-dangle}, and by no
 \[
  X_{c_h} = \operatorname{supp}(c_h)\setminus\brc\eps = \operatorname{supp}(h)\setminus\brc\eps = \operatorname{supp}(h),
 \]
-we find that~\eqref{eq:03-bw-start} and~\eqref{eq:03-bw-end} are equivalent
+we find that~\eqref{eq:03-bw-start}--\eqref{eq:03-bw-end} are equivalent
 to~\eqref{eq:03-c-dangle}. Therefore, after line~22 of
 Algorithm~\ref{alg:bw-vogler},
 \begin{equation}\label{eq:03-cnt-by-c}
