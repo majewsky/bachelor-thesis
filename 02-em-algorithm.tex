@@ -608,7 +608,7 @@ below.
 1-contexts are used to describe trees that are not fully known yet: The
 symbol $\square$ is a placeholder for a missing subtree. Given a 1-context
 $t\in C_\Sigma$ and a tree $t'\in U_\Sigma(V)$, we abbreviate $t[t'] :=
-t[t']_w$ such that $t(w) = \square$. In other words, $t[t']$ is the tree that
+t[t']_w$ where $w\in\pos(t)$ such that $t(w) = \square$. In other words, $t[t']$ is the tree that
 results from $t$ when the node labeled with $\square$ is replaced by $t'$.
 
 \begin{definition}
@@ -993,6 +993,7 @@ proposed by \cite{bucstuvog15}:
 Each formalization is more specific than the one before it, as evidenced by the
 $\flat$ operator that converts each formalization into the previous one.
 A step mapping can be defined for each of these formalizations.
+\cite{bucstuvog15} illustrate these relationships as follows:
 \begin{center}\begin{tikzpicture}[scale=2,>=stealth]
  \begin{scope}[every node/.style={rectangle,draw},minimum height=2em]
   \node (sm) at (+0,+0) { step mapping };
