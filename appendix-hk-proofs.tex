@@ -89,6 +89,7 @@ from which follows~\eqref{eq:a5}.
   \pi_1(y) = x.
  \]
 \end{repeatlemma}
+\clearpage
 
 \emph{Proof.} Let $x\in X_{\not\bot} = V^*$. We are going to show that
 \begin{equation}\label{eq:p11}
@@ -212,12 +213,8 @@ because of~\eqref{eq:a3a}.
 Consider any $y = y_3(q,q',y_e,y_t)$ such that
 $y\in\mbig\lang{H(x)}_{(T\!,\pi_Q(y),x)}$, wherein $x := \pi_X(y)$. Since
 $\pi_Q(y) = q$, it follows from~\eqref{eq:a3} that
-\[
- y_e = \mbig\kla{\car(x),(q',E)}
- \quad\text{ and }\quad
- y_t \in \mbig\lang{H(x)}_{(T\!,q',\cdr(x))}.
-\]
-
+$y_e = \mbig\kla{\car(x),(q',E)}$ and
+$y_t \in \mbig\lang{H(x)}_{(T\!,q',\cdr(x))}$.
 Because of~\eqref{eq:a5}, the second statement is equivalent to
 \[
  y_t \in \mbig\lang{H\mbig\kla{\cdr(x)}}_{(T\!,q',\cdr(x))}.
@@ -265,6 +262,9 @@ Because of~\eqref{eq:p22}, each $H(x)_{(T,\#,x)}$ is a subset of $\pi_Q^{-1}(\#)
  = \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)}_{(T\!,\#,x)} \npipe x = \pi_X(y)}
  = \bigcup_{x\in X_{\not\bot}} \mbig\brc{y\in \mbig\lang{H(x)} \npipe x = \pi_X(y)},
 \]
+which is equivalent to Lemma~\ref{lemma:03-language-partition} because of Lemma~\ref{lemma:03-consistent-yield}.\qed
+
+\endinput
 which is equivalent to the desired statement,
 \[
  \mbig\lang K = \bigcup_{x\in X_{\not\bot}} \mbig\lang{H(x)},
