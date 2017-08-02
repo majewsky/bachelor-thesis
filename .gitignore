@@ -4,8 +4,11 @@
 *.loa
 *.lof
 *.log
+*.nav
 *.out
+*.snm
 *.toc
 display.pdf
 main.pdf
+slides.pdf
 pdfa.xmpi
