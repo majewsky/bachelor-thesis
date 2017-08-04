@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 % language
-\usepackage[english]{babel}
+\usepackage[ngerman]{babel}
 % beamer theme
 \usetheme{default}
 \beamertemplatenavigationsymbolsempty
@@ -19,7 +19,7 @@
 \usepackage{amsmath,amsfonts,amssymb,amsthm,sistyle,xcolor,delim}
 \SIstyle{German}
 \usepackage{graphicx,tikz,calc,tabularx,hhline}
-\usetikzlibrary{backgrounds,calc}
+\usetikzlibrary{backgrounds,calc,decorations.pathreplacing,positioning}
 
 \tikzset{
  >=stealth,
@@ -79,7 +79,39 @@
 \begin{frame}\frametitle{Bigramm-Modell}
  \begin{itemize}
   \item Idee: Wahrscheinlichkeit jedes Wortes hängt nur vom vorhergehenden Wort ab
+   \pause
+   \[\begin{tikzpicture}[node distance=10mm]
+    \node at (0,0) {~};
+    \node (x0) at (1.2,0) { \strut \# };
+    \node (x1) at (3.25,0) { \strut Alice };
+    \node (x2) at (5.7,0) { \strut sees };
+    \node (x3) at (7.95,0) { \strut Bob };
+    \node (x4) at (9.6,0) { \strut \# };
+    \node at (10,0) {~};
+    \draw[decorate,decoration={brace,amplitude=5pt,mirror}] ($(x0.south)!0.3!(x0.south east)+(0,5pt)$) -- ($(x1.south)!0.3!(x1.south west)+(0,5pt)$);
+    \draw[decorate,decoration={brace,amplitude=5pt,mirror}] ($(x1.south)!0.3!(x1.south east)+(0,5pt)$) -- ($(x2.south)!0.3!(x2.south west)+(0,5pt)$);
+    \draw[decorate,decoration={brace,amplitude=5pt,mirror}] ($(x2.south)!0.3!(x2.south east)+(0,5pt)$) -- ($(x3.south)!0.3!(x3.south west)+(0,5pt)$);
+    \draw[decorate,decoration={brace,amplitude=5pt,mirror}] ($(x3.south)!0.3!(x3.south east)+(0,5pt)$) -- ($(x4.south)!0.3!(x4.south west)+(0,5pt)$);
+   \end{tikzpicture}\vspace*{-2em}\]
+   \pause
+   \[
+    p(x) = b(\text{Alice}|\#) \cdot b(\text{sees}|\text{Alice}) \cdot b(\text{Bob}|\text{sees}) \cdot b(\#|\text{Bob})
+   \]
  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Bigramm-Modell: Training}
+ \begin{itemize}
+  \item Korpus: "`Alice sees Bob"', "`Alice likes cake"'
+ \end{itemize}
+ \begin{center}\begin{tabular}{c|c|c}
+  $x$   & \only<1>{\color{white}}$\operatorname{count}(\text{Alice}\;x)$ & \only<-2>{\color{white}}$b(x|\text{Alice})$ \\\hline
+  Alice & \only<2->{0} & \only<3->{0}         \\
+  sees  & \only<2->{1} & \only<3->{\num{0.5}} \\
+  Bob   & \only<2->{0} & \only<3->{0}         \\
+  likes & \only<2->{1} & \only<3->{\num{0.5}} \\
+  cake  & \only<2->{0} & \only<3->{0}         \\
+ \end{tabular}\end{center}
 \end{frame}
 
 \end{document}\endinput
