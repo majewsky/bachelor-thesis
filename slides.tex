@@ -102,16 +102,115 @@
 
 \begin{frame}\frametitle{Bigramm-Modell: Training}
  \begin{itemize}
-  \item Korpus: "`Alice sees Bob"', "`Alice likes cake"'
+  \item Likelihood eines Korpus...
+   {\scriptsize\[
+    p(c) = \prod_x p(x)^{c(x)}
+   \]}
+  \item ...wird durch empirische Wahrscheinlichkeit maximiert
+   {\scriptsize\[
+    b(w'|w) = \frac{\operatorname{count}(w\;w')}{\sum_{w''}\operatorname{count}(w\;w'')}
+   \]}
+   \pause
+  \item z.~B.~für Korpus: "`Alice sees Bob"', "`Alice likes cake"'
  \end{itemize}
  \begin{center}\begin{tabular}{c|c|c}
-  $x$   & \only<1>{\color{white}}$\operatorname{count}(\text{Alice}\;x)$ & \only<-2>{\color{white}}$b(x|\text{Alice})$ \\\hline
-  Alice & \only<2->{0} & \only<3->{0}         \\
-  sees  & \only<2->{1} & \only<3->{\num{0.5}} \\
-  Bob   & \only<2->{0} & \only<3->{0}         \\
-  likes & \only<2->{1} & \only<3->{\num{0.5}} \\
-  cake  & \only<2->{0} & \only<3->{0}         \\
+  $x$   & \only<2>{\color{white}}$\operatorname{count}(\text{Alice}\;x)$ & \only<-3>{\color{white}}$b(x|\text{Alice})$ \\\hline
+  Alice & \only<3->{0} & \only<4->{0}         \\
+  sees  & \only<3->{1} & \only<4->{\num{0.5}} \\
+  Bob   & \only<3->{0} & \only<4->{0}         \\
+  likes & \only<3->{1} & \only<4->{\num{0.5}} \\
+  cake  & \only<3->{0} & \only<4->{0}         \\
  \end{tabular}\end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Hidden-Markov-Modell}
+ \begin{columns}\column{0.5\linewidth}\centering
+  \begin{tikzpicture}
+   \tikzstyle{q}=[rectangle,draw,minimum size=4ex]
+   \tikzstyle{l}=[auto,node font=\scriptsize,rectangle,inner sep=0.5mm]
+   \node[q,double] (q0) at (+0,+0) {\strut \#};
+   \node[q]        (q1) at (+2,-2) {\strut noun};
+   \node[q]        (q2) at (-2,-2) {\strut verb};
+   \draw[->] (q0) edge[bend left=10] (q1);
+   \draw[->] (q0) edge[bend left=10] (q2);
+   \draw[->] (q1) edge[bend left=10] node[l] { $t(\text{verb}|\text{noun})$ } (q2);
+   \draw[->] (q1) edge[bend left=10] (q0);
+   \draw[->] (q2) edge[bend left=10] (q0);
+   \draw[->] (q2) edge[bend left=10] node[l] { $t(\text{noun}|\text{verb})$ } (q1);
+   \draw[->] (q0) edge[loop right] (q0);
+   \draw[->] (q1) edge[loop above] (q1);
+   \draw[->] (q2) edge[loop above] (q2);
+
+   \only<2->{
+    \node[anchor=north,node font=\scriptsize] (e1) at (+1.5,-3.25) {
+     \begin{tabular}{c|c}
+      $x$ & $e(x|\text{noun})$ \\\hline
+      Alice & \num{0.5} \\
+      Bob & \num{0.25} \\
+      cake & \num{0.25} \\
+      likes & 0 \\
+      sees & 0
+     \end{tabular}
+    };
+    \draw[->,dashed] (q1.south) -- (e1.north);
+
+    \node[anchor=north,node font=\scriptsize] (e2) at (-1.5,-3.25) {
+     \begin{tabular}{c|c}
+      $x$ & $e(x|\text{verb})$ \\\hline
+      Alice & 0 \\
+      Bob & 0 \\
+      cake & 0 \\
+      likes & \num{0.5} \\
+      sees & \num{0.5}
+     \end{tabular}
+    };
+    \draw[->,dashed] (q2.south) -- (e2.north);
+   }
+
+   \draw[draw=none] (3.0,-5.5) rectangle (-3.0,0.5);
+  \end{tikzpicture}
+ \column{0.5\linewidth}
+  \begin{itemize}
+   \item Idee: Wahrscheinlichkeit jedes Wortes hängt vom Verhalten eines Zustandsautomaten ab
+   \pause\pause
+   \item Modellparameter:
+    \begin{itemize}
+     \item Transitions-Wrsl.~$t$
+     \item Emissions-Wrsl.~$e$
+    \end{itemize}
+  \end{itemize}
+ \end{columns}
+ \scriptsize\vspace{1em}\[
+  p(x=x_1\cdots x_n) = \sum_{q_1,\ldots,q_n} t(q_1|\#) \cdot e(x_1|q_1) \cdot \Bigl[\prod_{i=2}^n t(q_i|q_{i-1}) \cdot e(x_i|q_i)\Bigr] \cdot t(\#|q_n)
+ \]
+\end{frame}
+
+\begin{frame}
+ \frametitle{Hidden-Markov-Modell: Training}
+ \begin{itemize}
+  \item Problem: Korpus enthält meist nur Sätze, keine Zustände
+   \begin{itemize}
+    \item $t,e$ nicht durch reine Maximierung ermittelbar
+   \end{itemize}
+  \pause\item Idee: alle möglichen Beiträge zum Ergebnis abschätzen
+   \begin{itemize}
+    \item \emph{Baum-Welch-Algorithmus}
+   \end{itemize}
+  \pause\item z.~B.~für Transitionswahrscheinlichkeit von $\#$ nach $q$
+   \begin{center}\begin{tikzpicture}
+    \tikzstyle{n}=[rectangle,draw,minimum width=2.7cm]
+    \node (spacing) at (0,+1){~};
+    \node[n] (e) at (0,+0) { \strut Expectation };
+    \node[n] (m) at (0,-1.5) { \strut Maximization };
+    \draw[->] ($(e.south)!0.5!(e.south west)$) -- ($(m.north)!0.5!(m.north west)$);
+    \draw[->] ($(m.north)!0.5!(m.north east)$) -- ($(e.south)!0.5!(e.south east)$);
+    \draw[<-] (e.west) -- +(-0.5,0);
+
+    \tikzstyle{f}=[anchor=west,node font=\scriptsize]
+    \node[f] at (e.east) { $\qquad\operatorname{count}(q,\#) = \sum_x c(x) \cdot P(q_1=q|x)$ };
+    \node[f] at (m.east) { $\qquad t(q|\#) = \frac{\operatorname{count}(q,\#)}{\sum_{q'} \operatorname{count}(q,\#)} $ };
+   \end{tikzpicture}\end{center}
+ \end{itemize}
 \end{frame}
 
 \end{document}\endinput
