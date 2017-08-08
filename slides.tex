@@ -19,7 +19,7 @@
 \usepackage{amsmath,amsfonts,amssymb,amsthm,sistyle,xcolor,delim}
 \SIstyle{German}
 \usepackage{graphicx,tikz,calc,tabularx,hhline}
-\usetikzlibrary{backgrounds,calc,decorations.pathreplacing,positioning}
+\usetikzlibrary{backgrounds,calc,decorations.pathreplacing,positioning,shapes.geometric}
 
 \tikzset{
  >=stealth,
@@ -32,11 +32,18 @@
 
 \begin{document}
 
+%TODO references, esp. [BSV15]
+
 \begin{frame}
-  \titlepage
+ \titlepage
 \end{frame}
 
-\begin{frame}\frametitle{Gliederung}
+\begin{frame}\frametitle{Caveat emptor!}
+ Die Definitionen in diesem Vortrag sind aus Zeitgründen stark verkürzt. In der
+ eigentlichen Arbeit wird alles rigoros eingeführt und abgeleitet.
+\end{frame}
+
+\begin{frame}<1-3>[label=gliederung]\frametitle{Gliederung}
  Sprachmodelle
  \begin{itemize}
   \item Bigramm-Modell
@@ -47,7 +54,7 @@
  \begin{itemize}
   \item Baum-Welch-Algorithmus
   \pause
-  \item Inside-Outside-EM-Algorithmus
+  \item<alert@4> Inside-Outside-EM-Algorithmus
   \item Instanziierung für Hidden-Markov-Modelle
  \end{itemize}
 \end{frame}
@@ -74,6 +81,7 @@
     \draw[->] (omega.south) |- ($(eval.north)!0.5!(omega.south)$) -| (eval.north);
    \end{tikzpicture}\]
  \end{itemize}
+ \scriptsize Grafik nach: H. Vogler. \emph{Maschinelles Übersetzen natürlicher Sprachen.}\\Vorlesung, TU Dresden, Wintersemester 2015/2016.
 \end{frame}
 
 \begin{frame}\frametitle{Bigramm-Modell}
@@ -185,8 +193,7 @@
  \]
 \end{frame}
 
-\begin{frame}
- \frametitle{Hidden-Markov-Modell: Training}
+\begin{frame}\frametitle{Hidden-Markov-Modell: Training}
  \begin{itemize}
   \item Problem: Korpus enthält meist nur Sätze, keine Zustände
    \begin{itemize}
@@ -207,10 +214,253 @@
     \draw[<-] (e.west) -- +(-0.5,0);
 
     \tikzstyle{f}=[anchor=west,node font=\scriptsize]
-    \node[f] at (e.east) { $\qquad\operatorname{count}(q,\#) = \sum_x c(x) \cdot P(q_1=q|x)$ };
-    \node[f] at (m.east) { $\qquad t(q|\#) = \frac{\operatorname{count}(q,\#)}{\sum_{q'} \operatorname{count}(q,\#)} $ };
+    \node[f] at (e.east) { $\qquad\operatorname{count}(q,\#) \leftarrow \sum_x c(x) \cdot P(q_1=q|x)$ };
+    \node[f] at (m.east) { $\qquad t(q|\#) \leftarrow \frac{\operatorname{count}(q,\#)}{\sum_{q'} \operatorname{count}(q',\#)} $ };
    \end{tikzpicture}\end{center}
  \end{itemize}
+\end{frame}
+
+\againframe<4>{gliederung}
+
+\begin{frame}\frametitle{Warum ein allgemeiner EM-Algorithmus?}
+ \begin{center}\begin{tikzpicture}
+  \tikzstyle{n}=[rectangle,draw,minimum width=2.7cm]
+  \node (spacing) at (0,+1){~};
+  \node[n] (e) at (0,+0) { \strut Expectation };
+  \node[n] (m) at (0,-1.5) { \strut Maximization };
+  \draw[->] ($(e.south)!0.5!(e.south west)$) -- ($(m.north)!0.5!(m.north west)$);
+  \draw[->] ($(m.north)!0.5!(m.north east)$) -- ($(e.south)!0.5!(e.south east)$);
+  \draw[<-] (e.west) -- +(-0.5,0);
+ \end{tikzpicture}\end{center}
+ \begin{itemize}
+  \item EM = iterative Anpassung des Modellparameters
+  \pause
+  \item Ist der neue Modellparameter wirklich \emph{besser} als der alte?
+  \pause
+  \item EM-Algorithmen nach [BSV15] haben bewiesene Konvergenz-Eigenschaften
+   \[
+    \forall \omega' \in \psi(\omega)\colon
+    p_{\omega'}(c) \geq p_\omega(c)
+   \]
+ \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Inside-Outside-EM-Algorithmus nach [BSV15]}
+ \begin{overlayarea}{\linewidth}{2.5cm}\begin{itemize}
+  \item $X$: abzählbare Menge der \emph{Beobachtungen} (z.~B.~Sätze)
+  \item $Y$: abzählbare Menge der \emph{versteckten Informationen} (z.~B.~Syntaxbäume)
+  \item<2-> $\pi_1\colon Y\to X$ ordnet jedem $y$ eine Beobachtung $x$ zu
+ \end{itemize}\end{overlayarea}
+ \begin{center}\begin{tikzpicture}
+  \draw (0,0) ellipse[x radius=1.5,y radius=1] node {$X$};
+  \draw (4,0) ellipse[x radius=1.5,y radius=1] node {$Y$};
+  \tikzstyle{p}=[circle,fill,inner sep=0.3mm];
+
+  \only<2->{
+   \node[p] (x1) at (1,0,+0.0) {};
+   \node[p] (x2) at (0.3,-0.6) {};
+   \node[p] (y1) at (3.0,+0.0) {} edge [->,bend left=10] (x1);
+   \node[p] (y2) at (3.4,-0.4) {} edge [->,bend left=10] (x2);
+   \node[p] (y3) at (4.5,-0.7) {} edge [->,bend left=20] (x1);
+   \node at (2.0,-1.0) { $\pi_1$ };
+  }
+
+  \draw[draw=none] (-1.5,1) rectangle (5.5,-1.4); % establish common size
+ \end{tikzpicture}\end{center}
+ \begin{itemize}
+  \item<3-> $Z$, $\pi_2$: hier nicht; für Sprachmodelle nicht relevant
+ \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Bsp. Kontextfreie Grammatiken}
+ \begin{center}\begin{tikzpicture}
+  \draw (0,0) ellipse[x radius=1.5,y radius=1] node {$X$};
+  \draw (4,0) ellipse[x radius=1.5,y radius=1] node {$Y$};
+  \tikzstyle{p}=[circle,fill,inner sep=0.3mm];
+
+  \node[p] (x1) at (1,0,+0.0) {};
+  \node[p] (x2) at (0.3,-0.6) {};
+  \node[p] (y1) at (3.0,+0.0) {} edge [->,bend left=10] (x1);
+  \node[p] (y2) at (3.4,-0.4) {} edge [->,bend left=10] (x2);
+  \node[p] (y3) at (4.5,-0.7) {} edge [->,bend left=20] (x1);
+  \node at (2.0,-1.0) { $\pi_1$ };
+
+  \begin{scope}[every node/.style={rectangle,draw}]
+   \node (r00) at (+4.0,-3.0) { $\text{S} \to \text{NP}\;\text{VP}$ };
+   \node (r11) at (+2.5,-4.0) { $\text{NP} \to \text{Alice}$ };
+   \node (r12) at (+5.5,-4.0) { $\text{VP} \to \text{VBP}\;\text{NP}$ };
+   \node (r21) at (+4.0,-5.0) { $\text{VBP} \to \text{sees}$ };
+   \node (r22) at (+7.0,-5.0) { $\text{NP} \to \text{Bob}$ };
+   \draw[->] ($(r00.south)!0.2!(r00.south west)$) -- (r11.north);
+   \draw[->] ($(r00.south)!0.2!(r00.south east)$) -- (r12.north);
+   \draw[->] ($(r12.south)!0.2!(r12.south west)$) -- (r21.north);
+   \draw[->] ($(r12.south)!0.2!(r12.south east)$) -- (r22.north);
+  \end{scope}
+
+  \draw[dashed] (r00.north) ++(0,0.15) -- (y2);
+
+  \node (x) at (-0.5,-3.0) { Alice sees Bob };
+  \draw[dashed] (x.north) ++(0,0.15) -- (x2);
+ \end{tikzpicture}\end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Zählinformationen}
+ Jedes $y$ ist ein Baum mit Rang, der mit Zählereignissen beschriftet ist.
+ \begin{overlayarea}{\linewidth}{2cm}
+  \only<2-4>{\begin{itemize}
+   \item \strut $C\subseteq A\times B$: \emph{Zählereignisse} (hierbei $A$, $B$ abzählbare Mengen)
+   \item \emph{Baum mit Rang:} Anzahl der Nachfolger eines Knotens ist eine Funktion der Beschriftung des Knotens
+  \end{itemize}}
+  \only<5->{\begin{itemize}
+   \item $\Omega$: abzählbare Menge von \emph{Modellparametern}
+   \item $q$: \emph{$\Omega$-Wahrscheinlichkeitsmodell} für $A$ und $B$ {\scriptsize(eingeschränkt auf $C$)}
+   \item $q_\omega(a|b)$: Wahrscheinlichkeit des Zählereignisses $c = (a,b)$
+  \end{itemize}}
+ \end{overlayarea}
+ \[\begin{tikzpicture}
+  \node[draw=none] (setsize) at (+0,-2.5) {};
+  \node[draw=none] (setsize) at (+9,-5.5) {};
+
+  \only<3->{\begin{scope}[every node/.style={rectangle,draw}]
+   \node (r00) at (+4.0,-3.0) { $\text{S} \to \text{NP}\;\text{VP}$ };
+   \node (r11) at (+2.5,-4.0) { $\text{NP} \to \text{Alice}$ };
+   \node (r12) at (+5.5,-4.0) { $\text{VP} \to \text{VBP}\;\text{NP}$ };
+   \node (r21) at (+4.0,-5.0) { $\text{VBP} \to \text{sees}$ };
+   \node (r22) at (+7.0,-5.0) { $\text{NP} \to \text{Bob}$ };
+   \draw[->] ($(r00.south)!0.2!(r00.south west)$) -- (r11.north);
+   \draw[->] ($(r00.south)!0.2!(r00.south east)$) -- (r12.north);
+   \draw[->] ($(r12.south)!0.2!(r12.south west)$) -- (r21.north);
+   \draw[->] ($(r12.south)!0.2!(r12.south east)$) -- (r22.north);
+  \end{scope}}
+
+  \only<4->{\begin{scope}[every node/.style={ellipse,draw=black}]
+   \node[pin=left:{$b\in B$},minimum size=0.8cm] (lb) at (+3.1,-3.0) {};
+   \node[pin=right:{$a\in A$},minimum height=0.8cm,minimum width=1.6cm] (la) at (+4.4,-3.0) {};
+  \end{scope}}
+ \end{tikzpicture}\]
+\end{frame}
+
+\begin{frame}\frametitle{Inside-Outside-EM-Algorithmus (Forts.)}
+ Bestandteile einer \emph{Inside-Outside-Information:}
+ \begin{itemize}
+  \item $X$, $Y$, $\pi_1$, $A$, $B$, $C$, $\Omega$, $q$: wie gesehen
+  \pause
+  \item $K$: reguläre Baumgrammatik (RTG), die alle $y$ erzeugt
+  \item $H(x)$: RTG, die alle $y$ mit $\pi_1(y)=x$ erzeugt
+  \pause
+  \item \emph{reguläre Baumgrammatik:} erzeugt Bäumen aus Regeln wie
+   \[
+    q_\text{VP} \to \left(
+     \begin{tikzpicture}[baseline=(current bounding box.center)]
+      \node[rectangle,draw] (r0) at (+0.0,+0.0) { $\text{VP} \to \text{VBP}\;\text{NP}$ };
+      \node                 (r1) at (-0.8,-1.0) { $q_\text{VBP}$ };
+      \node                 (r2) at (+0.8,-1.0) { $q_\text{NP}$ };
+      \draw[->] ($(r0.south)!0.2!(r0.south west)$) -- (r1.north);
+      \draw[->] ($(r0.south)!0.2!(r0.south east)$) -- (r2.north);
+     \end{tikzpicture}
+    \right)
+   \]
+ \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{EM-Algorithmus für Inside-Outside-Informationen}
+ \begin{center}\begin{tikzpicture}
+  \tikzstyle{n}=[rectangle,draw,minimum width=2.7cm]
+  \node[n] (e) at (0,+0.0) { \strut Expectation };
+  \node[n] (m) at (0,-1.5) { \strut Maximization };
+  \draw[->] ($(e.south)!0.5!(e.south west)$) -- ($(m.north)!0.5!(m.north west)$);
+  \draw[->] ($(m.north)!0.5!(m.north east)$) -- ($(e.south)!0.5!(e.south east)$);
+  \draw[<-] (e.west) -- +(-0.5,0);
+
+  \node (spacing) at (6.3,0) {};
+  \tikzstyle{f}=[anchor=west,node font=\scriptsize]
+  \only<1>{
+   \node[f] at (e.east) { $\qquad\operatorname{count}(q,\#) \leftarrow \sum_x c(x) \cdot P(q_1=q|x)$ };
+   \node[f] at (m.east) { $\qquad t(q|\#) \leftarrow \frac{\operatorname{count}(q,\#)}{\sum_{q'} \operatorname{count}(q',\#)} $ };
+  }
+  \only<2->{
+   \node[f] at (e.east) { $\qquad\operatorname{count}(a,b) \leftarrow \sum_x c(x) \cdot \chi_{\omega,x}(a,b)$ };
+   \node[f] at (m.east) { $\qquad q_\omega(a|b) \leftarrow \frac{\operatorname{count}(a,b)}{\sum_{a'} \operatorname{count}(a',b)} $ };
+  }
+ \end{tikzpicture}\end{center}
+ \pause\pause
+ \begin{itemize}
+  \item $\chi_{\omega,x}(a,b)$ nutzt bekanntes $q_\omega$, um Beitrag von $(a,b)$ zur Beobachtung $x$ abzuschätzen
+  \item dann $\omega$ so neu wählen, dass $q_\omega$ der empirischen Wahrscheinlichkeitsverteilung von $\operatorname{count}(a,b)$ entspricht
+ \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Zur Berechnung von $\chi_{\omega,x}(a,b)$}
+ \begin{center}\begin{tikzpicture}
+  \node[anchor=south,rectangle] at (0,0) { $q_0$ };
+  \only<1-5>{
+   \draw (0,0) -- (5,-6) -- (-5,-6) -- cycle;
+   \node[coordinate,pin=60:{\scriptsize Ableitungsbaum aus $H(x)$}] at ($(0,0)!0.2!(5,-6)$) {};
+  }
+  \only<6>{
+   \draw[thick,blue] (0,0) -- (5,-6) -- (-5,-6) -- cycle;
+   \node[coordinate,pin=60:{\color{blue}$\beta_x(q_0)$}] at ($(0,0)!0.2!(5,-6)$) {};
+  }
+  \node[rectangle,draw] (rule) at (0,-4) { $q\to (a,b)(q_1,q_2,q_3)$ };
+  \only<2->{
+   \node (q0) at (0,-3) { $q$ };
+   \node (q1) at (-1.0,-5) { $q_1$ };
+   \node (q2) at (+0.0,-5) { $q_2$ };
+   \node (q3) at (+1.0,-5) { $q_3$ };
+   \draw[->] (q0.south) -- (rule.north);
+   \draw[->] ($(rule.south)+(-1,0)$) -- (q1.north);
+   \draw[->] ($(rule.south)+(+0,0)$) -- (q2.north);
+   \draw[->] ($(rule.south)+(+1,0)$) -- (q3.north);
+  }
+  \only<3->{
+   \begin{scope}[on background layer]
+    \fill[fill=green!20] (rule.north west) rectangle (rule.south east);
+   \end{scope}
+   \node[anchor=south west,node font=\scriptsize,color=green!60!black] at (rule.north) { $q_\omega(a|b)$ };
+   }
+  \only<4->{
+    \begin{scope}[on background layer]
+    \fill[fill=blue!20] ($(rule.south)+(-1,0)$) -- (-0.5,-6) -- (-2.0,-6) -- cycle;
+    \fill[fill=blue!10] ($(rule.south)+(+0,0)$) -- (-0.5,-6) -- (+0.5,-6) -- cycle;
+    \fill[fill=blue!20] ($(rule.south)+(+1,0)$) -- (+0.5,-6) -- (+2.0,-6) -- cycle;
+   \end{scope}
+   \node[anchor=south,node font=\scriptsize,color=blue] at (-1.25,-6.0) { $\beta_x(q_1)$ };
+   \node[anchor=south,node font=\scriptsize,color=blue] at (+0.00,-6.0) { $\beta_x(q_2)$ };
+   \node[anchor=south,node font=\scriptsize,color=blue] at (+1.25,-6.0) { $\beta_x(q_3)$ };
+  }
+  \only<5->{
+   \begin{scope}[on background layer]
+    \fill[fill=red!20] (0,0) -- (5,-6) -- (2,-6) -- (rule.north east) -- (q0.south east) -- (q0.south west) -- (rule.north west) -- (-2,-6) -- (-5,-6) -- cycle;
+   \end{scope}
+   \node[color=red] at (0,-1.5) { $\alpha_x(q)$ };
+  }
+ \end{tikzpicture}\end{center}
+ \scriptsize Grafik nach: H. Vogler. \emph{Maschinelles Übersetzen natürlicher Sprachen.}\\Vorlesung, TU Dresden, Wintersemester 2015/2016.
+\end{frame}
+
+\begin{frame}\frametitle{EM-Algorithmus für Inside-Outside-Informationen}
+ \begin{center}\begin{tikzpicture}
+  \tikzstyle{n}=[rectangle,draw,minimum width=2.7cm]
+  \node[n] (e) at (0,+0.0) { \strut Expectation };
+  \node[n] (m) at (0,-1.5) { \strut Maximization };
+  \draw[->] ($(e.south)!0.5!(e.south west)$) -- ($(m.north)!0.5!(m.north west)$);
+  \draw[->] ($(m.north)!0.5!(m.north east)$) -- ($(e.south)!0.5!(e.south east)$);
+  \draw[<-] (e.west) -- +(-0.5,0);
+
+  \node (spacing) at (6.3,0) {};
+  \tikzstyle{f}=[anchor=west,node font=\scriptsize]
+  \node[f] at (e.east) { $\qquad\operatorname{count}(a,b) \leftarrow \sum_x c(x) \cdot \chi_{\omega,x}(a,b)$ };
+  \node[f] at (m.east) { $\qquad q_\omega(a|b) \leftarrow \frac{\operatorname{count}(a,b)}{\sum_{a'} \operatorname{count}(a',b)} $ };
+ \end{tikzpicture}\end{center}\vspace{1em}
+ \[
+  \chi_{\omega,x}(a,b) = \frac{
+   \sum_{q \to (a,b)(q_1,\ldots,q_k)} \alpha_x(q) \cdot q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k)
+  }{\beta_x{q_0}}
+ \]
+ \pause
+ \begin{center}
+  \textbf{Ist der Baum-Welch-Algorithmus eine Instanz hiervon?}
+ \end{center}
 \end{frame}
 
 \end{document}\endinput
