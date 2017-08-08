@@ -55,7 +55,7 @@
   \item Baum-Welch-Algorithmus
   \pause
   \item<alert@4> Inside-Outside-EM-Algorithmus
-  \item Instanziierung für Hidden-Markov-Modelle
+  \item<alert@5> Instanziierung für Hidden-Markov-Modell
  \end{itemize}
 \end{frame}
 
@@ -455,13 +455,15 @@
  \[
   \chi_{\omega,x}(a,b) = \frac{
    \sum_{q \to (a,b)(q_1,\ldots,q_k)} \alpha_x(q) \cdot q_\omega(a|b) \cdot \beta_x(q_1) \cdots \beta_x(q_k)
-  }{\beta_x{q_0}}
+  }{\beta_x(q_0)}
  \]
  \pause
  \begin{center}
   \textbf{Ist der Baum-Welch-Algorithmus eine Instanz hiervon?}
  \end{center}
 \end{frame}
+
+\againframe<5>{gliederung}
 
 \end{document}\endinput
 
