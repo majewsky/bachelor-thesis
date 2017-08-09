@@ -53,7 +53,7 @@
   \item Baum-Welch-Algorithmus
   \pause
   \item<alert@4> Inside-Outside-EM-Algorithmus
-  \item<alert@5> Instanziierung für Hidden-Markov-Modell
+  \item Instanziierung für Hidden-Markov-Modell
  \end{itemize}
 \end{frame}
 
@@ -464,7 +464,54 @@
  \end{center}
 \end{frame}
 
-\againframe<5>{gliederung}
+\begin{frame}\frametitle{Versteckte Information für Hidden-Markov-Modell}
+ \begin{center}\begin{tikzpicture}
+  \draw (0,0) ellipse[x radius=1.5,y radius=1] node {$X$};
+  \draw (4,0) ellipse[x radius=1.5,y radius=1] node {$Y$};
+  \tikzstyle{p}=[circle,fill,inner sep=0.3mm];
+
+  \node[p] (x1) at (1,0,+0.0) {};
+  \node[p] (x2) at (0.3,-0.6) {};
+  \node[p] (y1) at (3.0,+0.0) {} edge [->,bend left=10] (x1);
+  \node[p] (y2) at (3.4,-0.4) {} edge [->,bend left=10] (x2);
+  \node[p] (y3) at (4.5,-0.7) {} edge [->,bend left=20] (x1);
+  \node at (2.0,-1.0) { $\pi_1$ };
+
+  \begin{scope}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm}]
+   \node (r00) at (+5.0,-3.0) { $(\#,T) \to \text{noun}$ };
+   \node (r10) at (+5.0,-4.0) { $(\text{noun},T) \to \text{verb}$ };
+   \node (r11) at (+2.0,-4.0) { $(\text{noun},E) \to \text{Alice}$ };
+   \node (r20) at (+5.0,-5.0) { $(\text{verb},T) \to \text{noun}$ };
+   \node (r21) at (+2.0,-5.0) { $(\text{verb},E) \to \text{sees}$ };
+   \node (r30) at (+5.0,-6.0) { $(\text{noun},T) \to \#$ };
+   \node (r31) at (+2.0,-6.0) { $(\text{noun},E) \to \text{Bob}$ };
+   \draw[->] (r00.south) -- (r10.north);
+   \draw[->] (r10.south) -- (r20.north);
+   \draw[->] (r20.south) -- (r30.north);
+   \draw[->] (r00.south west) -- (r11.north east);
+   \draw[->] (r10.south west) -- (r21.north east);
+   \draw[->] (r20.south west) -- (r31.north east);
+  \end{scope}
+
+  \draw[dashed] (r00.north) ++(0,0.15) -- (y2);
+
+  \node (x) at (-0.5,-3.0) { Alice sees Bob };
+  \draw[dashed] (x.north) ++(0,0.15) -- (x2);
+
+  \begin{scope}[note/.style={color=white},every node/.style={node font=\tiny,note}]
+   \only<2>{\tikzset{note/.style={color=black}}}
+   \node[anchor=south] at (r00.north east) { $t(\text{noun}|\#)$ };
+   \node[anchor=south] at (r10.north east) { $t(\text{verb}|\text{noun})$ };
+   \node[anchor=south] at (r20.north east) { $t(\text{noun}|\text{verb})$ };
+   \node[anchor=south] at (r30.north east) { $t(\#|\text{noun})$ };
+   \node[anchor=south east] at (r11.north east) { $e(\text{Alice}|\text{noun})$ };
+   \node[anchor=south east] at (r21.north east) { $e(\text{sees}|\text{verb})$ };
+   \node[anchor=south east] at (r31.north east) { $e(\text{Bob}|\text{noun})$ };
+  \end{scope}
+ \end{tikzpicture}\end{center}
+\end{frame}
+
+\againframe<3>{gliederung}
 
 \end{document}\endinput
 
