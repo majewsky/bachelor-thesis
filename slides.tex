@@ -477,38 +477,87 @@
   \node[p] (y3) at (4.5,-0.7) {} edge [->,bend left=20] (x1);
   \node at (2.0,-1.0) { $\pi_1$ };
 
-  \begin{scope}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm}]
-   \node (r00) at (+5.0,-3.0) { $(\#,T) \to \text{noun}$ };
-   \node (r10) at (+5.0,-4.0) { $(\text{noun},T) \to \text{verb}$ };
-   \node (r11) at (+2.0,-4.0) { $(\text{noun},E) \to \text{Alice}$ };
-   \node (r20) at (+5.0,-5.0) { $(\text{verb},T) \to \text{noun}$ };
-   \node (r21) at (+2.0,-5.0) { $(\text{verb},E) \to \text{sees}$ };
-   \node (r30) at (+5.0,-6.0) { $(\text{noun},T) \to \#$ };
-   \node (r31) at (+2.0,-6.0) { $(\text{noun},E) \to \text{Bob}$ };
-   \draw[->] (r00.south) -- (r10.north);
-   \draw[->] (r10.south) -- (r20.north);
-   \draw[->] (r20.south) -- (r30.north);
-   \draw[->] (r00.south west) -- (r11.north east);
-   \draw[->] (r10.south west) -- (r21.north east);
-   \draw[->] (r20.south west) -- (r31.north east);
-  \end{scope}
-
-  \draw[dashed] (r00.north) ++(0,0.15) -- (y2);
-
   \node (x) at (-0.5,-3.0) { Alice sees Bob };
   \draw[dashed] (x.north) ++(0,0.15) -- (x2);
 
-  \begin{scope}[note/.style={color=white},every node/.style={node font=\tiny,note}]
-   \only<2>{\tikzset{note/.style={color=black}}}
-   \node[anchor=south] at (r00.north east) { $t(\text{noun}|\#)$ };
-   \node[anchor=south] at (r10.north east) { $t(\text{verb}|\text{noun})$ };
-   \node[anchor=south] at (r20.north east) { $t(\text{noun}|\text{verb})$ };
-   \node[anchor=south] at (r30.north east) { $t(\#|\text{noun})$ };
-   \node[anchor=south east] at (r11.north east) { $e(\text{Alice}|\text{noun})$ };
-   \node[anchor=south east] at (r21.north east) { $e(\text{sees}|\text{verb})$ };
-   \node[anchor=south east] at (r31.north east) { $e(\text{Bob}|\text{noun})$ };
+  \only<2->{
+   \begin{scope}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm}]
+    \node (r00) at (+5.0,-3.0) { $\bigl(\text{noun},(\#,T)\bigr)$ };
+    \node (r10) at (+5.0,-4.0) { $\bigl(\text{verb},(\text{noun},T)\bigr)$ };
+    \node (r11) at (+2.0,-4.0) { $\bigl(\text{Alice},(\text{noun},E)\bigr)$ };
+    \node (r20) at (+5.0,-5.0) { $\bigl(\text{noun},(\text{verb},T)\bigr)$ };
+    \node (r21) at (+2.0,-5.0) { $\bigl(\text{sees},(\text{verb},E)\bigr)$ };
+    \node (r30) at (+5.0,-6.0) { $\bigl(\#,(\text{noun},T)\bigr)$ };
+    \node (r31) at (+2.0,-6.0) { $\bigl(\text{Bob},(\text{noun},E)\bigr)$ };
+    \draw[->] (r00.south) -- (r10.north);
+    \draw[->] (r10.south) -- (r20.north);
+    \draw[->] (r20.south) -- (r30.north);
+    \draw[->] (r00.south west) -- (r11.north east);
+    \draw[->] (r10.south west) -- (r21.north east);
+    \draw[->] (r20.south west) -- (r31.north east);
+   \end{scope}
+
+   \draw[dashed] (r00.north) ++(0,0.15) -- (y2);
+
+   \begin{scope}[note/.style={color=white},every node/.style={node font=\tiny,note}]
+    \only<3>{\tikzset{note/.style={color=black}}}
+    \node[anchor=south] at (r00.north east) { $t(\text{noun}|\#)$ };
+    \node[anchor=south] at (r10.north east) { $t(\text{verb}|\text{noun})$ };
+    \node[anchor=south] at (r20.north east) { $t(\text{noun}|\text{verb})$ };
+    \node[anchor=south] at (r30.north east) { $t(\#|\text{noun})$ };
+    \node[anchor=south east] at (r11.north east) { $e(\text{Alice}|\text{noun})$ };
+    \node[anchor=south east] at (r21.north east) { $e(\text{sees}|\text{verb})$ };
+    \node[anchor=south east] at (r31.north east) { $e(\text{Bob}|\text{noun})$ };
+   \end{scope}
+
+  }
+
+  \begin{scope}[note/.style={color=white}]
+   \only<2-3>{\tikzset{note/.style={color=gray}}}
+   \node[align=left,note,node font=\scriptsize] at (-1.5,-6) {
+    Knotenbeschriftung:\\ $c = (a,b)$
+   };
   \end{scope}
+
+  \node[rectangle] (spacing) at (6.85,-6.15) {};
  \end{tikzpicture}\end{center}
+\end{frame}
+
+\newcommand\gstate[2]{{\color{blue}(#1,#2)}}
+\newcommand\cevent[3]{{\color{red!90!black}\bigl(#1,(#2,#3)\bigr)}}
+\begin{frame}\frametitle{Beispiel: Ableitung aus der Baumsprache $K$}
+ \begin{center}\begin{tikzpicture}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm}]
+  \tikzstyle{gstate}=[color=blue]
+  \tikzstyle{cevent}=[color=red!90!black]
+  \node<1>  [gstate] (r01) at (+0.0,+0) { \strut$(\#,T)$ };
+  \node<2-> [cevent] (r01) at (+0.0,+0) { \strut$\bigl(\text{noun},(\#,T)\bigr)$ };
+  \node<2>  [gstate] (r11) at (-3.0,-1) { \strut$(\text{noun},E)$ };
+  \node<3-> [cevent] (r11) at (-3.0,-1) { \strut$\bigl(\text{Alice},(\text{noun},E)\bigr)$ };
+  \node<2-3>[gstate] (r12) at (+0.0,-1) { \strut$(\text{noun},T)$ };
+  \node<4-> [cevent] (r12) at (+0.0,-1) { \strut$\bigl(\text{verb},(\text{noun},T)\bigr)$ };
+  \node<4>  [gstate] (r21) at (-3.0,-2) { \strut$(\text{verb},E)$ };
+  \node<5-> [cevent] (r21) at (-3.0,-2) { \strut$\bigl(\text{sees},(\text{verb},E)\bigr)$ };
+  \node<4-5>[gstate] (r22) at (+0.0,-2) { \strut$(\text{verb},T)$ };
+  \node<6-> [cevent] (r22) at (+0.0,-2) { \strut$\bigl(\#,(\text{verb},T)\bigr)$ };
+  \draw<2->[->] (r01.south) -- (r12.north);
+  \draw<2->[->] (r01.south west) -- (r11.north east);
+  \draw<4->[->] (r12.south) -- (r22.north);
+  \draw<4->[->] (r12.south west) -- (r21.north east);
+  \draw[draw=none] (-4.3,0.3) rectangle (1.3,-2.3); % set stable size
+ \end{tikzpicture}\end{center}
+ \begin{itemize}
+  \item Zustände: $\gstate qT$ für $q\in Q\cup\{\#\}$ und $(q,e)$ für $q\in Q$
+  \item Startzustand: $\gstate\#T$; Regeln:
+   \begin{align*}
+    \gstate qT &\to \cevent{q'}qT\bigl(\gstate{q'}E,\gstate{q'}T\bigr)
+    &&\text{für } q\in Q\cup\{\#\}, q'\in Q \\
+    \gstate qT &\to \cevent\#qT
+    &&\text{für } q\in Q\cup\{\#\} \\
+    \gstate qE &\to \cevent vqE
+    &&\text{für } q\in Q, v\in V
+   \end{align*}
+  \item $H(x)$: Zustände enthalten noch nicht generierte Wörter
+ \end{itemize}
 \end{frame}
 
 \againframe<3>{gliederung}
@@ -521,4 +570,4 @@ Gliederung/Zeitbudget:
 - (5 Min) Hidden Markov Model: H = (Q,V,#,t,e) -> P(x)
 - (5 Min) Training: Idee Baum-Welch-Algorithmus bzw. EM allgemein -> gute Konvergenz, verallgemeinerbar?
 - (10 Min) EM-Algorithmus aus [BSV15]; nur IO-Info, wrsl. eher phänomenologisch (am Beispiel PCFG) als exakt
-- (7 Min) Anwendung auf HMM; Bäume aus K bzw. H(x)
+- (7 Min) Anwendung auf HMM; Bäume aus [[K]] bzw. [[H(x)]]
