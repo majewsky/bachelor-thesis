@@ -32,6 +32,12 @@
 
 \begin{document}
 
+% TODO count(Alice x) -> \#
+% TODO why "expectation" and "maximization"?
+% TODO bei Einführung Zählinformation: p(y) = \prod q_\omega(a|b)
+% TODO Folie Illustration Arbeitsweise der RTG
+% TODO bei Einführung RTG: alle $y$ -> alle $y\in Y$
+
 \begin{frame}
  \titlepage
 \end{frame}
@@ -525,7 +531,7 @@
 
 \newcommand\gstate[2]{{\color{blue}(#1,#2)}}
 \newcommand\cevent[3]{{\color{red!90!black}\bigl(#1,(#2,#3)\bigr)}}
-\begin{frame}\frametitle{Beispiel: Ableitung aus der Baumsprache $K$}
+\begin{frame}\frametitle{Beispiel: Ableitung aus der Baumgrammatik $K$}
  \begin{center}\begin{tikzpicture}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm}]
   \tikzstyle{gstate}=[color=blue]
   \tikzstyle{cevent}=[color=red!90!black]
