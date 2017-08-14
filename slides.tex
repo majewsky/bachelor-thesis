@@ -32,11 +32,8 @@
 
 \begin{document}
 
-% TODO count(Alice x) -> \#
 % TODO why "expectation" and "maximization"?
-% TODO bei Einführung Zählinformation: p(y) = \prod q_\omega(a|b)
 % TODO Folie Illustration Arbeitsweise der RTG
-% TODO bei Einführung RTG: alle $y$ -> alle $y\in Y$
 
 \begin{frame}
  \titlepage
@@ -121,6 +118,7 @@
   \item ...wird durch empirische Wahrscheinlichkeit maximiert
    {\scriptsize\[
     b(w'|w) = \frac{\operatorname{count}(w\;w')}{\sum_{w''}\operatorname{count}(w\;w'')}
+    \vspace*{-1.0em}
    \]}
    \pause
   \item z.~B.~für Korpus: "`Alice sees Bob"', "`Alice likes cake"'
@@ -132,6 +130,7 @@
   Bob   & \only<3->{0} & \only<4->{0}         \\
   likes & \only<3->{1} & \only<4->{\num{0.5}} \\
   cake  & \only<3->{0} & \only<4->{0}         \\
+  $\#$  & \only<3->{0} & \only<4->{0}
  \end{tabular}\end{center}
 \end{frame}
 
@@ -274,9 +273,6 @@
 
   \draw[draw=none] (-1.5,1) rectangle (5.5,-1.4); % establish common size
  \end{tikzpicture}\end{center}
- \begin{itemize}
-  \item<3-> $Z$, $\pi_2$: hier nicht; für Sprachmodelle nicht relevant
- \end{itemize}
 \end{frame}
 
 \begin{frame}\frametitle{Bsp. Kontextfreie Grammatiken}
@@ -344,7 +340,11 @@
    \node[pin=left:{$b\in B$},minimum size=0.8cm] (lb) at (+3.1,-3.0) {};
    \node[pin=right:{$a\in A$},minimum height=0.8cm,minimum width=1.6cm] (la) at (+4.4,-3.0) {};
   \end{scope}}
- \end{tikzpicture}\]
+ \end{tikzpicture}\vspace*{-2em}\]
+ \pause\pause\pause\pause
+ \[
+  p_\omega(y) = \sum_{{w\,\in\,\operatorname{pos}(y)}\atop{(a,b)\,=\,y(w)}} q_\omega(a|b)
+ \]
 \end{frame}
 
 \begin{frame}\frametitle{Inside-Outside-EM-Algorithmus (Forts.)}
@@ -352,8 +352,8 @@
  \begin{itemize}
   \item $X$, $Y$, $\pi_1$, $A$, $B$, $C$, $\Omega$, $q$: wie gesehen
   \pause
-  \item $K$: reguläre Baumgrammatik (RTG), die alle $y$ erzeugt
-  \item $H(x)$: RTG, die alle $y$ mit $\pi_1(y)=x$ erzeugt
+  \item $K$: reguläre Baumgrammatik (RTG), die alle $y\in Y$ erzeugt
+  \item $H(x)$: RTG, die alle $y\in Y$ mit $\pi_1(y)=x$ erzeugt
   \pause
   \item \emph{reguläre Baumgrammatik:} erzeugt Bäumen aus Regeln wie
    \[
