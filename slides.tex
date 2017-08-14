@@ -32,9 +32,6 @@
 
 \begin{document}
 
-% TODO why "expectation" and "maximization"?
-% TODO Folie Illustration Arbeitsweise der RTG
-
 \begin{frame}
  \titlepage
 \end{frame}
@@ -102,7 +99,7 @@
     \draw[decorate,decoration={brace,amplitude=5pt,mirror}] ($(x2.south)!0.3!(x2.south east)+(0,5pt)$) -- ($(x3.south)!0.3!(x3.south west)+(0,5pt)$);
     \draw[decorate,decoration={brace,amplitude=5pt,mirror}] ($(x3.south)!0.3!(x3.south east)+(0,5pt)$) -- ($(x4.south)!0.3!(x4.south west)+(0,5pt)$);
    \end{tikzpicture}\vspace*{-2em}\]
-   \pause
+   ~
    \[
     p(x) = b(\text{Alice}|\#) \cdot b(\text{sees}|\text{Alice}) \cdot b(\text{Bob}|\text{sees}) \cdot b(\#|\text{Bob})
    \]
@@ -214,7 +211,7 @@
     \node[n] (m) at (0,-1.5) { \strut Maximization };
     \draw[->] ($(e.south)!0.5!(e.south west)$) -- ($(m.north)!0.5!(m.north west)$);
     \draw[->] ($(m.north)!0.5!(m.north east)$) -- ($(e.south)!0.5!(e.south east)$);
-    \draw[<-] (e.west) -- +(-0.5,0);
+    \draw[<-] (e.west) -- +(-1.0,0);
 
     \tikzstyle{f}=[anchor=west,node font=\scriptsize]
     \node[f] at (e.east) { $\qquad\operatorname{count}(q,\#) \leftarrow \sum_x c(x) \cdot P(q_1=q|x)$ };
@@ -223,33 +220,33 @@
  \end{itemize}
 \end{frame}
 
-\againframe<4>{gliederung}
-
 \begin{frame}\frametitle{Warum ein allgemeiner EM-Algorithmus?}
  \begin{center}\begin{tikzpicture}
   \tikzstyle{n}=[rectangle,draw,minimum width=2.7cm]
   \node (spacing) at (0,+1){~};
   \node[n] (e) at (0,+0) { \strut Expectation };
   \node[n] (m) at (0,-1.5) { \strut Maximization };
-  \draw[->] ($(e.south)!0.5!(e.south west)$) -- ($(m.north)!0.5!(m.north west)$);
-  \draw[->] ($(m.north)!0.5!(m.north east)$) -- ($(e.south)!0.5!(e.south east)$);
-  \draw[<-] (e.west) -- +(-0.5,0);
+  \draw[->] ($(e.south)!0.5!(e.south west)$) -- node [auto,swap,node font=\scriptsize] {$\operatorname{count}$} ($(m.north)!0.5!(m.north west)$);
+  \draw[->] ($(m.north)!0.5!(m.north east)$) -- node [auto,swap] {$\omega'$} ($(e.south)!0.5!(e.south east)$);
+  \draw[<-] (e.west) -- node [auto] {$\omega$} +(-1.0,0);
+  \draw[draw=white] (e.east) -- +(1.0,0);
  \end{tikzpicture}\end{center}
  \begin{itemize}
-  \item EM = iterative Anpassung des Modellparameters
+  \item EM = iterative Anpassung des Modellparameters $\omega$
   \pause
   \item Ist der neue Modellparameter wirklich \emph{besser} als der alte?
   \pause
   \item EM-Algorithmen nach {\color{blue!75!black}[BSV15]} haben bewiesene Konvergenz-Eigenschaften
    \[
-    \forall \omega' \in \psi(\omega)\colon
     p_{\omega'}(c) \geq p_\omega(c)
    \]
  \end{itemize}
- \scriptsize {\color{blue!75!black}[BSV15]} Matthias Büchse, Torsten Stüber, und Heiko
+ \scriptsize {\color{blue!75!black}[BSV15]} Matthias Büchse, Torsten Stüber und Heiko
  Vogler. \emph{A generic inside-outside EM algorithm.} Unpublished Manuscript,
  2015.
 \end{frame}
+
+\againframe<4>{gliederung}
 
 \begin{frame}\frametitle{Inside-Outside-EM-Algorithmus nach [BSV15]}
  \begin{overlayarea}{\linewidth}{2.5cm}\begin{itemize}
@@ -343,7 +340,7 @@
  \end{tikzpicture}\vspace*{-2em}\]
  \pause\pause\pause\pause
  \[
-  p_\omega(y) = \sum_{{w\,\in\,\operatorname{pos}(y)}\atop{(a,b)\,=\,y(w)}} q_\omega(a|b)
+  p_\omega(y) = \prod_{{w\,\in\,\operatorname{pos}(y)}\atop{(a,b)\,=\,y(w)}} q_\omega(a|b)
  \]
 \end{frame}
 
@@ -370,6 +367,49 @@
  \end{itemize}
 \end{frame}
 
+\begin{frame}\frametitle{Bsp. Syntaxbaum eines CFG aus Baumgrammatik}
+ \begin{center}\begin{tikzpicture}[every node/.style={rectangle,draw,minimum height=1.5em}]
+  \draw[draw=none] (-4.1,-2.5) rectangle (4.1,0.5);
+
+  \tikzstyle{gstate}=[color=blue]
+  \tikzstyle{cevent}=[color=black]
+  \node<1>  [gstate] (c00) at (+0.0,+0.0) { $q_\text{S}$ };
+  \node<2-> [cevent] (c00) at (+0.0,+0.0) { $\text{S} \to \text{NP}\;\text{VP}$ };
+  \node<2>  [gstate] (c11) at (-1.5,-1.0) { $q_\text{NP}$ };
+  \node<3-> [cevent] (c11) at (-1.5,-1.0) { $\text{NP} \to \text{Alice}$ };
+  \node<2-3>[gstate] (c12) at (+1.5,-1.0) { $q_\text{VP}$ };
+  \node<4-> [cevent] (c12) at (+1.5,-1.0) { $\text{VP} \to \text{VBP}\;\text{NP}$ };
+  \node<4>  [gstate] (c21) at (+0.0,-2.0) { $q_\text{VBP}$ };
+  \node<5-> [cevent] (c21) at (+0.0,-2.0) { $\text{VBP} \to \text{sees}$ };
+  \node<4-5>[gstate] (c22) at (+3.0,-2.0) { $q_\text{NP}$ };
+  \node<6-> [cevent] (c22) at (+3.0,-2.0) { $\text{NP} \to \text{Bob}$ };
+  \only<2->{
+   \draw[->] ($(c00.south)!0.2!(c00.south west)$) -- (c11.north);
+   \draw[->] ($(c00.south)!0.2!(c00.south east)$) -- (c12.north);
+  }\only<4->{
+   \draw[->] ($(c12.south)!0.2!(c12.south west)$) -- (c21.north);
+   \draw[->] ($(c12.south)!0.2!(c12.south east)$) -- (c22.north);
+  }
+ \end{tikzpicture}\end{center}
+ Beispiele für Regeln:
+ \begin{align*}
+  q_\text{S} &\to \left(
+   \begin{tikzpicture}[baseline=(current bounding box.center)]
+    \node[rectangle,draw] (r0) at (+0.0,+0.0) { $\text{S} \to \text{NP}\;\text{VP}$ };
+    \node                 (r1) at (-0.8,-1.0) { $q_\text{VP}$ };
+    \node                 (r2) at (+0.8,-1.0) { $q_\text{NP}$ };
+    \draw[->] ($(r0.south)!0.2!(r0.south west)$) -- (r1.north);
+    \draw[->] ($(r0.south)!0.2!(r0.south east)$) -- (r2.north);
+   \end{tikzpicture}
+  \right) &
+  q_\text{NP} &\to
+   \begin{tikzpicture}[baseline=(current bounding box.center)]
+    \node[rectangle,draw] (r0) at (+0.0,+0.0) { $\text{NP} \to \text{Alice}$ };
+    \draw[draw=none] (r0.south) -- +(0,-0.2);
+   \end{tikzpicture}
+ \end{align*}
+\end{frame}
+
 \begin{frame}\frametitle{EM-Algorithmus für Inside-Outside-Informationen}
  \begin{center}\begin{tikzpicture}
   \tikzstyle{n}=[rectangle,draw,minimum width=2.7cm]
@@ -377,7 +417,7 @@
   \node[n] (m) at (0,-1.5) { \strut Maximization };
   \draw[->] ($(e.south)!0.5!(e.south west)$) -- ($(m.north)!0.5!(m.north west)$);
   \draw[->] ($(m.north)!0.5!(m.north east)$) -- ($(e.south)!0.5!(e.south east)$);
-  \draw[<-] (e.west) -- +(-0.5,0);
+  \draw[<-] (e.west) -- +(-1.0,0);
 
   \node (spacing) at (6.3,0) {};
   \tikzstyle{f}=[anchor=west,node font=\scriptsize]
@@ -452,7 +492,7 @@
   \node[n] (m) at (0,-1.5) { \strut Maximization };
   \draw[->] ($(e.south)!0.5!(e.south west)$) -- ($(m.north)!0.5!(m.north west)$);
   \draw[->] ($(m.north)!0.5!(m.north east)$) -- ($(e.south)!0.5!(e.south east)$);
-  \draw[<-] (e.west) -- +(-0.5,0);
+  \draw[<-] (e.west) -- +(-1.0,0);
 
   \node (spacing) at (6.3,0) {};
   \tikzstyle{f}=[anchor=west,node font=\scriptsize]
