@@ -83,8 +83,10 @@
 \end{frame}
 
 \begin{frame}\frametitle{Bigramm-Modell}
+ Idee:
  \begin{itemize}
-  \item Idee: Wahrscheinlichkeit jedes Wortes hängt nur vom vorhergehenden Wort ab
+  \item jedes Wort individuell betrachten
+  \item Wahrscheinlichkeit hängt nur vom vorherigen Wort ab
    \pause
    \[\begin{tikzpicture}[node distance=10mm]
     \node at (0,0) {~};
@@ -305,7 +307,7 @@
 \end{frame}
 
 \begin{frame}\frametitle{Zählinformationen}
- Jedes $y$ ist ein Baum mit Rang, der mit Zählereignissen beschriftet ist.
+ Jedes $y\in Y$ ist ein Baum mit Rang, der mit Zählereignissen beschriftet ist.
  \begin{overlayarea}{\linewidth}{2cm}
   \only<2-4>{\begin{itemize}
    \item \strut $C\subseteq A\times B$: \emph{Zählereignisse} (hierbei $A$, $B$ abzählbare Mengen)
@@ -396,8 +398,8 @@
   q_\text{S} &\to \left(
    \begin{tikzpicture}[baseline=(current bounding box.center)]
     \node[rectangle,draw] (r0) at (+0.0,+0.0) { $\text{S} \to \text{NP}\;\text{VP}$ };
-    \node                 (r1) at (-0.8,-1.0) { $q_\text{VP}$ };
-    \node                 (r2) at (+0.8,-1.0) { $q_\text{NP}$ };
+    \node                 (r1) at (-0.8,-1.0) { $q_\text{NP}$ };
+    \node                 (r2) at (+0.8,-1.0) { $q_\text{VP}$ };
     \draw[->] ($(r0.south)!0.2!(r0.south west)$) -- (r1.north);
     \draw[->] ($(r0.south)!0.2!(r0.south east)$) -- (r2.north);
    \end{tikzpicture}
@@ -427,13 +429,13 @@
   }
   \only<2->{
    \node[f] at (e.east) { $\qquad\operatorname{count}(a,b) \leftarrow \sum_x c(x) \cdot \chi_{\omega,x}(a,b)$ };
-   \node[f] at (m.east) { $\qquad q_\omega(a|b) \leftarrow \frac{\operatorname{count}(a,b)}{\sum_{a'} \operatorname{count}(a',b)} $ };
+   \node[f] at (m.east) { $\qquad q_{\omega'}(a|b) \leftarrow \frac{\operatorname{count}(a,b)}{\sum_{a'} \operatorname{count}(a',b)} $ };
   }
  \end{tikzpicture}\end{center}
  \pause\pause
  \begin{itemize}
-  \item $\chi_{\omega,x}(a,b)$ nutzt bekanntes $q_\omega$, um Beitrag von $(a,b)$ zur Beobachtung $x$ abzuschätzen
-  \item dann $\omega$ so neu wählen, dass $q_\omega$ der empirischen Wahrscheinlichkeitsverteilung von $\operatorname{count}(a,b)$ entspricht
+  \item $\chi_{\omega,x}(a,b)$ nutzt bekanntes $q_\omega$, um Häufigkeit von $(a,b)$ in der Beobachtung $x$ abzuschätzen
+  \item dann $\omega'$ so wählen, dass $q_{\omega'}$ der empirischen Wahrscheinlichkeitsverteilung von $\operatorname{count}(a,b)$ entspricht
  \end{itemize}
 \end{frame}
 
@@ -497,7 +499,7 @@
   \node (spacing) at (6.3,0) {};
   \tikzstyle{f}=[anchor=west,node font=\scriptsize]
   \node[f] at (e.east) { $\qquad\operatorname{count}(a,b) \leftarrow \sum_x c(x) \cdot \chi_{\omega,x}(a,b)$ };
-  \node[f] at (m.east) { $\qquad q_\omega(a|b) \leftarrow \frac{\operatorname{count}(a,b)}{\sum_{a'} \operatorname{count}(a',b)} $ };
+  \node[f] at (m.east) { $\qquad q_{\omega'}(a|b) \leftarrow \frac{\operatorname{count}(a,b)}{\sum_{a'} \operatorname{count}(a',b)} $ };
  \end{tikzpicture}\end{center}\vspace{1em}
  \[
   \chi_{\omega,x}(a,b) = \frac{
@@ -572,19 +574,19 @@
 \newcommand\gstate[2]{{\color{blue}(#1,#2)}}
 \newcommand\cevent[3]{{\color{red!90!black}\bigl(#1,(#2,#3)\bigr)}}
 \begin{frame}\frametitle{Beispiel: Ableitung aus der Baumgrammatik $K$}
- \begin{center}\begin{tikzpicture}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm}]
+ \begin{center}\begin{tikzpicture}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm,minimum height=2.0em}]
   \tikzstyle{gstate}=[color=blue]
   \tikzstyle{cevent}=[color=red!90!black]
-  \node<1>  [gstate] (r01) at (+0.0,+0) { \strut$(\#,T)$ };
-  \node<2-> [cevent] (r01) at (+0.0,+0) { \strut$\bigl(\text{noun},(\#,T)\bigr)$ };
-  \node<2>  [gstate] (r11) at (-3.0,-1) { \strut$(\text{noun},E)$ };
-  \node<3-> [cevent] (r11) at (-3.0,-1) { \strut$\bigl(\text{Alice},(\text{noun},E)\bigr)$ };
-  \node<2-3>[gstate] (r12) at (+0.0,-1) { \strut$(\text{noun},T)$ };
-  \node<4-> [cevent] (r12) at (+0.0,-1) { \strut$\bigl(\text{verb},(\text{noun},T)\bigr)$ };
-  \node<4>  [gstate] (r21) at (-3.0,-2) { \strut$(\text{verb},E)$ };
-  \node<5-> [cevent] (r21) at (-3.0,-2) { \strut$\bigl(\text{sees},(\text{verb},E)\bigr)$ };
-  \node<4-5>[gstate] (r22) at (+0.0,-2) { \strut$(\text{verb},T)$ };
-  \node<6-> [cevent] (r22) at (+0.0,-2) { \strut$\bigl(\#,(\text{verb},T)\bigr)$ };
+  \node<1>  [gstate] (r01) at (+0.0,+0) { $(\#,T)$ };
+  \node<2-> [cevent] (r01) at (+0.0,+0) { $\bigl(\text{noun},(\#,T)\bigr)$ };
+  \node<2>  [gstate] (r11) at (-3.0,-1) { $(\text{noun},E)$ };
+  \node<3-> [cevent] (r11) at (-3.0,-1) { $\bigl(\text{Alice},(\text{noun},E)\bigr)$ };
+  \node<2-3>[gstate] (r12) at (+0.0,-1) { $(\text{noun},T)$ };
+  \node<4-> [cevent] (r12) at (+0.0,-1) { $\bigl(\text{verb},(\text{noun},T)\bigr)$ };
+  \node<4>  [gstate] (r21) at (-3.0,-2) { $(\text{verb},E)$ };
+  \node<5-> [cevent] (r21) at (-3.0,-2) { $\bigl(\text{sees},(\text{verb},E)\bigr)$ };
+  \node<4-5>[gstate] (r22) at (+0.0,-2) { $(\text{verb},T)$ };
+  \node<6-> [cevent] (r22) at (+0.0,-2) { $\bigl(\#,(\text{verb},T)\bigr)$ };
   \draw<2->[->] (r01.south) -- (r12.north);
   \draw<2->[->] (r01.south west) -- (r11.north east);
   \draw<4->[->] (r12.south) -- (r22.north);
