@@ -30,6 +30,15 @@
 \author{Stefan Majewsky}
 \date{22. August 2017}
 
+% TODO: Framenummerierung, damit man sich bei Fragen darauf rückbeziehen kann
+% TODO: nochmal überlegen, ob jede Definition trotz Verkürzung noch sachlich richtig ist
+% TODO: Baum-Welch-Beispiel vllt lieber e(v|q) statt t(q|#)?
+% NOTE: nicht vergessen, zu sagen, dass K und H(x) unambiguous sind
+% TODO: zwischen den beiden Folien Instanziierung HMM eine weitere Folie mit X=..., Y=..., A=..., B=..., etc. außer H/K
+% TODO: vllt verschiedene Bäume für dasselbe x darstellen, um die Korrespondenz zu Zustandsfolgen zu zeigen; daran Analogie von Counts zwischen BW-Alg und IO-EM-Alg erklären
+%       z.B. mehrere Bäume, die (noun,(verb,T)) an verschiedenen Stellen enthalten bei demselben x und dann zeigen, dass diese zu count(noun,(verb,T)) beitragen
+% NOTE: Arbeit in physischer Form mitbringen, falls Fragen dazu kommen
+
 \begin{document}
 
 \begin{frame}
@@ -183,10 +192,10 @@
   \begin{itemize}
    \item Idee: Wahrscheinlichkeit jedes Wortes hängt vom Verhalten eines Zustandsautomaten ab
    \pause\pause
-   \item Modellparameter:
+   \item Modellparameter: $\omega=(t,e)$ %TODO: kriegt man den Umbruch weg
     \begin{itemize}
-     \item Transitions-Wrsl.~$t$
-     \item Emissions-Wrsl.~$e$
+     \item Transitions-Wkt.~$t$
+     \item Emissions-Wkt.~$e$
     \end{itemize}
   \end{itemize}
  \end{columns}
@@ -197,9 +206,9 @@
 
 \begin{frame}\frametitle{Hidden-Markov-Modell: Training}
  \begin{itemize}
-  \item Problem: Korpus enthält meist nur Sätze, keine Zustände
+  \item Problem: Korpus enthält nur Sätze, keine Zustände
    \begin{itemize}
-    \item $t,e$ nicht durch reine Maximierung ermittelbar
+    \item optimales $\omega = (t,e)$ nicht direkt ablesbar
    \end{itemize}
   \pause\item Idee: alle möglichen Beiträge zum Ergebnis abschätzen
    \begin{itemize}
@@ -594,7 +603,7 @@
   \draw[draw=none] (-4.3,0.3) rectangle (1.3,-2.3); % set stable size
  \end{tikzpicture}\end{center}
  \begin{itemize}
-  \item Zustände: $\gstate qT$ für $q\in Q\cup\{\#\}$ und $(q,e)$ für $q\in Q$
+  \item Zustände: $\gstate qT$ für $q\in Q\cup\{\#\}$ und $\gstate qE$ für $q\in Q$
   \item Startzustand: $\gstate\#T$; Regeln:
    \begin{align*}
     \gstate qT &\to \cevent{q'}qT\bigl(\gstate{q'}E,\gstate{q'}T\bigr)
@@ -604,7 +613,7 @@
     \gstate qE &\to \cevent vqE
     &&\text{für } q\in Q, v\in V
    \end{align*}
-  \item $H(x)$: Zustände enthalten noch nicht generierte Wörter
+  \item $H(x)$: Zustände erweitert um noch nicht generierte Wörter
  \end{itemize}
 \end{frame}
 
