@@ -9,6 +9,8 @@
 \usetheme{default}
 \beamertemplatenavigationsymbolsempty
 \hypersetup{pdfpagemode=UseNone} % don't show bookmarks on initial view
+\setbeamertemplate{footline}[frame number]
+\setbeamerfont{footline}{size=\footnotesize}
 % fonts
 \usepackage{mathpazo}
 \usefonttheme{serif}
@@ -30,13 +32,6 @@
 \author{Stefan Majewsky}
 \date{22. August 2017}
 
-% TODO: Framenummerierung, damit man sich bei Fragen darauf rückbeziehen kann
-% TODO: nochmal überlegen, ob jede Definition trotz Verkürzung noch sachlich richtig ist
-% TODO: Baum-Welch-Beispiel vllt lieber e(v|q) statt t(q|#)?
-% NOTE: nicht vergessen, zu sagen, dass K und H(x) unambiguous sind
-% TODO: zwischen den beiden Folien Instanziierung HMM eine weitere Folie mit X=..., Y=..., A=..., B=..., etc. außer H/K
-% TODO: vllt verschiedene Bäume für dasselbe x darstellen, um die Korrespondenz zu Zustandsfolgen zu zeigen; daran Analogie von Counts zwischen BW-Alg und IO-EM-Alg erklären
-%       z.B. mehrere Bäume, die (noun,(verb,T)) an verschiedenen Stellen enthalten bei demselben x und dann zeigen, dass diese zu count(noun,(verb,T)) beitragen
 % NOTE: Arbeit in physischer Form mitbringen, falls Fragen dazu kommen
 
 \begin{document}
@@ -82,7 +77,7 @@
     \draw[->] (training) -- (omega);
     \node[l] (input)    at (0,-2) { \strut Satz $x$ };
     \node[c] (eval)     at (2,-2) { \strut Evaluierung };
-    \node[r] (output)   at (4,-2) { \strut $p(x)$ };
+    \node[r] (output)   at (4,-2) { \strut $p_\omega(x)$ };
     \draw[->] (input) -- (eval);
     \draw[->] (eval) -- (output);
     \draw[->] (omega.south) |- ($(eval.north)!0.5!(omega.south)$) -| (eval.north);
@@ -99,11 +94,11 @@
    \pause
    \[\begin{tikzpicture}[node distance=10mm]
     \node at (0,0) {~};
-    \node (x0) at (1.2,0) { \strut \# };
-    \node (x1) at (3.25,0) { \strut Alice };
-    \node (x2) at (5.7,0) { \strut sees };
-    \node (x3) at (7.95,0) { \strut Bob };
-    \node (x4) at (9.6,0) { \strut \# };
+    \node (x0) at (1.3,0) { \strut \# };
+    \node (x1) at (3.35,0) { \strut Alice };
+    \node (x2) at (5.8,0) { \strut sees };
+    \node (x3) at (8.05,0) { \strut Bob };
+    \node (x4) at (9.7,0) { \strut \# };
     \node at (10,0) {~};
     \draw[decorate,decoration={brace,amplitude=5pt,mirror}] ($(x0.south)!0.3!(x0.south east)+(0,5pt)$) -- ($(x1.south)!0.3!(x1.south west)+(0,5pt)$);
     \draw[decorate,decoration={brace,amplitude=5pt,mirror}] ($(x1.south)!0.3!(x1.south east)+(0,5pt)$) -- ($(x2.south)!0.3!(x2.south west)+(0,5pt)$);
@@ -112,7 +107,7 @@
    \end{tikzpicture}\vspace*{-2em}\]
    ~
    \[
-    p(x) = b(\text{Alice}|\#) \cdot b(\text{sees}|\text{Alice}) \cdot b(\text{Bob}|\text{sees}) \cdot b(\#|\text{Bob})
+    p_b(x) = b(\text{Alice}|\#) \cdot b(\text{sees}|\text{Alice}) \cdot b(\text{Bob}|\text{sees}) \cdot b(\#|\text{Bob})
    \]
  \end{itemize}
 \end{frame}
@@ -121,7 +116,7 @@
  \begin{itemize}
   \item Likelihood eines Korpus...
    {\scriptsize\[
-    p(c) = \prod_x p(x)^{c(x)}
+    p_b(c) = \prod_x p_b(x)^{c(x)}
    \]}
   \item ...wird durch empirische Wahrscheinlichkeit maximiert
    {\scriptsize\[
@@ -143,7 +138,7 @@
 \end{frame}
 
 \begin{frame}\frametitle{Hidden-Markov-Modell}
- \begin{columns}\column{0.5\linewidth}\centering
+ \begin{columns}\column{0.47\linewidth}\centering
   \begin{tikzpicture}
    \tikzstyle{q}=[rectangle,draw,minimum size=4ex]
    \tikzstyle{l}=[auto,node font=\scriptsize,rectangle,inner sep=0.5mm]
@@ -188,7 +183,7 @@
 
    \draw[draw=none] (3.0,-5.5) rectangle (-3.0,0.5);
   \end{tikzpicture}
- \column{0.5\linewidth}
+ \column{0.53\linewidth}
   \begin{itemize}
    \item Idee: Wahrscheinlichkeit jedes Wortes hängt vom Verhalten eines Zustandsautomaten ab
    \pause\pause
@@ -200,7 +195,7 @@
   \end{itemize}
  \end{columns}
  \scriptsize\vspace{1em}\[
-  p(x=x_1\cdots x_n) = \sum_{q_1,\ldots,q_n} t(q_1|\#) \cdot e(x_1|q_1) \cdot \Bigl[\prod_{i=2}^n t(q_i|q_{i-1}) \cdot e(x_i|q_i)\Bigr] \cdot t(\#|q_n)
+  p_\omega(x=x_1\cdots x_n) = \sum_{q_1,\ldots,q_n} t(q_1|\#) \cdot e(x_1|q_1) \cdot \Bigl[\prod_{i=2}^n t(q_i|q_{i-1}) \cdot e(x_i|q_i)\Bigr] \cdot t(\#|q_n)
  \]
 \end{frame}
 
@@ -246,28 +241,29 @@
   \item EM = iterative Anpassung des Modellparameters $\omega$
   \pause
   \item Ist der neue Modellparameter wirklich \emph{besser} als der alte?
-  \pause
-  \item EM-Algorithmen nach {\color{blue!75!black}[BSV15]} haben bewiesene Konvergenz-Eigenschaften
    \[
     p_{\omega'}(c) \geq p_\omega(c)
-   \]
+   \]\vspace{-1.5em}\pause
+  \item EM-Algorithmen nach {\color{blue!75!black}[BSV15]} haben bewiesene Konvergenz-Eigenschaften
  \end{itemize}
- \scriptsize {\color{blue!75!black}[BSV15]} Matthias Büchse, Torsten Stüber und Heiko
+ \scriptsize {\color{blue!75!black}[BSV15]} {\color{black!70}Matthias Büchse, Torsten Stüber und Heiko
  Vogler. \emph{A generic inside-outside EM algorithm.} Unpublished Manuscript,
- 2015.
+ 2015.}
 \end{frame}
 
 \againframe<4>{gliederung}
 
+\newcommand\nbX{{X\!}_{\not\bot}}
+\newcommand\nbY{{Y\!}_{\not\bot}}
 \begin{frame}\frametitle{Inside-Outside-EM-Algorithmus nach [BSV15]}
  \begin{overlayarea}{\linewidth}{2.5cm}\begin{itemize}
-  \item $X$: abzählbare Menge der \emph{Beobachtungen} (z.~B.~Sätze)
-  \item $Y$: abzählbare Menge der \emph{versteckten Informationen} (z.~B.~Syntaxbäume)
-  \item<2-> $\pi_1\colon Y\to X$ ordnet jedem $y$ eine Beobachtung $x$ zu
+  \item $\nbX$: abzählbare Menge der \emph{Beobachtungen} (z.~B.~Sätze)
+  \item $\nbY$: abzählbare Menge der \emph{versteckten Informationen} (z.~B.~Syntaxbäume)
+  \item<2-> $\pi_1\colon \nbY\to \nbX$ ordnet jedem $y$ eine Beobachtung $x$ zu
  \end{itemize}\end{overlayarea}
  \begin{center}\begin{tikzpicture}
-  \draw (0,0) ellipse[x radius=1.5,y radius=1] node {$X$};
-  \draw (4,0) ellipse[x radius=1.5,y radius=1] node {$Y$};
+  \draw (0,0) ellipse[x radius=1.5,y radius=1] node {$\nbX$};
+  \draw (4,0) ellipse[x radius=1.5,y radius=1] node {$\nbY$};
   \tikzstyle{p}=[circle,fill,inner sep=0.3mm];
 
   \only<2->{
@@ -285,8 +281,8 @@
 
 \begin{frame}\frametitle{Bsp. Kontextfreie Grammatiken}
  \begin{center}\begin{tikzpicture}
-  \draw (0,0) ellipse[x radius=1.5,y radius=1] node {$X$};
-  \draw (4,0) ellipse[x radius=1.5,y radius=1] node {$Y$};
+  \draw (0,0) ellipse[x radius=1.5,y radius=1] node {$\nbX$};
+  \draw (4,0) ellipse[x radius=1.5,y radius=1] node {$\nbY$};
   \tikzstyle{p}=[circle,fill,inner sep=0.3mm];
 
   \node[p] (x1) at (1,0,+0.0) {};
@@ -316,14 +312,14 @@
 \end{frame}
 
 \begin{frame}\frametitle{Zählinformationen}
- Jedes $y\in Y$ ist ein Baum mit Rang, der mit Zählereignissen beschriftet ist.
+ Jedes $y\in \nbY$ ist ein Baum mit Rang, der mit Zählereignissen beschriftet ist.
  \begin{overlayarea}{\linewidth}{2cm}
   \only<2-4>{\begin{itemize}
    \item \strut $C\subseteq A\times B$: \emph{Zählereignisse} (hierbei $A$, $B$ abzählbare Mengen)
    \item \emph{Baum mit Rang:} Anzahl der Nachfolger eines Knotens ist eine Funktion der Beschriftung des Knotens
   \end{itemize}}
   \only<5->{\begin{itemize}
-   \item $\Omega$: abzählbare Menge von \emph{Modellparametern}
+   \item $\Omega$: Menge von \emph{Modellparametern} $\omega$
    \item $q$: \emph{$\Omega$-Wahrscheinlichkeitsmodell} für $A$ und $B$ {\scriptsize(eingeschränkt auf $C$)}
    \item $q_\omega(a|b)$: Wahrscheinlichkeit des Zählereignisses $c = (a,b)$
   \end{itemize}}
@@ -360,8 +356,9 @@
  \begin{itemize}
   \item $X$, $Y$, $\pi_1$, $A$, $B$, $C$, $\Omega$, $q$: wie gesehen
   \pause
-  \item $K$: reguläre Baumgrammatik (RTG), die alle $y\in Y$ erzeugt
-  \item $H(x)$: RTG, die alle $y\in Y$ mit $\pi_1(y)=x$ erzeugt
+  \item $K$: reguläre Baumgrammatik (RTG), die alle $y\in \nbY$ erzeugt
+  \item $H(x)$: RTG, die alle $y\in \nbY$ mit $\pi_1(y)=x$ erzeugt
+  \item Eindeutigkeit: je RTG genau eine Ableitung für jedes $y$
   \pause
   \item \emph{reguläre Baumgrammatik:} erzeugt Bäumen aus Regeln wie
    \[
@@ -378,11 +375,11 @@
  \end{itemize}
 \end{frame}
 
-\begin{frame}\frametitle{Bsp. Syntaxbaum eines CFG aus Baumgrammatik}
+\begin{frame}\frametitle{Bsp. Syntaxbaum einer CFG aus Baumgrammatik}
  \begin{center}\begin{tikzpicture}[every node/.style={rectangle,draw,minimum height=1.5em}]
   \draw[draw=none] (-4.1,-2.5) rectangle (4.1,0.5);
 
-  \tikzstyle{gstate}=[color=blue]
+  \tikzstyle{gstate}=[color=blue,fill=blue!3]
   \tikzstyle{cevent}=[color=black]
   \node<1>  [gstate] (c00) at (+0.0,+0.0) { $q_\text{S}$ };
   \node<2-> [cevent] (c00) at (+0.0,+0.0) { $\text{S} \to \text{NP}\;\text{VP}$ };
@@ -441,7 +438,7 @@
    \node[f] at (m.east) { $\qquad q_{\omega'}(a|b) \leftarrow \frac{\operatorname{count}(a,b)}{\sum_{a'} \operatorname{count}(a',b)} $ };
   }
  \end{tikzpicture}\end{center}
- \pause\pause
+ \pause
  \begin{itemize}
   \item $\chi_{\omega,x}(a,b)$ nutzt bekanntes $q_\omega$, um Häufigkeit von $(a,b)$ in der Beobachtung $x$ abzuschätzen
   \item dann $\omega'$ so wählen, dass $q_{\omega'}$ der empirischen Wahrscheinlichkeitsverteilung von $\operatorname{count}(a,b)$ entspricht
@@ -523,8 +520,8 @@
 
 \begin{frame}\frametitle{Versteckte Information für Hidden-Markov-Modell}
  \begin{center}\begin{tikzpicture}
-  \draw (0,0) ellipse[x radius=1.5,y radius=1] node {$X$};
-  \draw (4,0) ellipse[x radius=1.5,y radius=1] node {$Y$};
+  \draw (0,0) ellipse[x radius=1.5,y radius=1] node {$\nbX$};
+  \draw (4,0) ellipse[x radius=1.5,y radius=1] node {$\nbY$};
   \tikzstyle{p}=[circle,fill,inner sep=0.3mm];
 
   \node[p] (x1) at (1,0,+0.0) {};
@@ -571,12 +568,13 @@
 
   \begin{scope}[note/.style={color=white}]
    \only<2-3>{\tikzset{note/.style={color=gray}}}
-   \node[align=left,note,node font=\scriptsize] at (-1.5,-6) {
-    Knotenbeschriftung:\\ $c = (a,b)$
+   \node[anchor=south west,align=left,note,node font=\scriptsize] at (-3.5,-6.3) {
+    Knotenbeschriftung: $c = (a,b)$
+    \only<3>{\\ Annotation: $q_\omega(a|b)$}
    };
   \end{scope}
 
-  \node[rectangle] (spacing) at (6.85,-6.15) {};
+  \node[rectangle] (spacing) at (6.85,-6.25) {};
  \end{tikzpicture}\end{center}
 \end{frame}
 
@@ -584,8 +582,8 @@
 \newcommand\cevent[3]{{\color{red!90!black}\bigl(#1,(#2,#3)\bigr)}}
 \begin{frame}\frametitle{Beispiel: Ableitung aus der Baumgrammatik $K$}
  \begin{center}\begin{tikzpicture}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm,minimum height=2.0em}]
-  \tikzstyle{gstate}=[color=blue]
-  \tikzstyle{cevent}=[color=red!90!black]
+  \tikzstyle{gstate}=[color=blue,fill=blue!3]
+  \tikzstyle{cevent}=[color=red!90!black,fill=red!3]
   \node<1>  [gstate] (r01) at (+0.0,+0) { $(\#,T)$ };
   \node<2-> [cevent] (r01) at (+0.0,+0) { $\bigl(\text{noun},(\#,T)\bigr)$ };
   \node<2>  [gstate] (r11) at (-3.0,-1) { $(\text{noun},E)$ };
@@ -615,6 +613,71 @@
    \end{align*}
   \item $H(x)$: Zustände erweitert um noch nicht generierte Wörter
  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Zur Instanziierung des IO-EM-Algorithmus}
+ \vspace*{-1em}
+ \begin{center}\begin{tikzpicture}[every node/.style={node font=\scriptsize}]
+  \only<1-2>{\colorlet{highlightcolor}{black}}
+  \only<3->{\colorlet{highlightcolor}{blue}}
+  \tikzstyle{formula}=[anchor=west,minimum size=0.6cm]
+  \node[formula] (x)  at (-2.5, +0.0) { $x = \text{Alice sees Bob}$ };
+  \node[formula] (q1) at (-2.5, +2.2) { $q = \text{{\color{highlightcolor}noun verb} noun}$ };
+  \node[formula] (q2) at (-2.5, -2.2) { $q = \text{noun {\color{highlightcolor}noun verb}}$ };
+  \draw[<-] (x.north) -- ($(q1.south east)!(x.north)!(q1.south west)$);
+  \draw[<-] (x.south) -- node[auto]{u.~s.~w.} ($(q2.north east)!(x.south)!(q2.north west)$);
+
+  \only<2->{
+   \only<2-3>{\tikzstyle{highlight}=[color=black]}
+   \only<4->{\tikzstyle{highlight}=[color=blue,fill=blue!3]}
+   \draw[decorate,decoration={brace,amplitude=5pt}] (+0.6,-4.0) -- (+0.6,-0.4);
+   \draw[decorate,decoration={brace,amplitude=5pt}] (+0.6,+0.4) -- (+0.6,+4.0);
+   \begin{scope}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm}]
+    \node (r00) at (+5.0,-0.7) { $\bigl(\text{noun},(\#,T)\bigr)$ };
+    \node (r10) at (+5.0,-1.7) { $\bigl(\text{noun},(\text{noun},T)\bigr)$ };
+    \node (r11) at (+2.0,-1.7) { $\bigl(\text{Alice},(\text{noun},E)\bigr)$ };
+    \node[highlight]
+          (r20) at (+5.0,-2.7) { $\bigl(\text{verb},(\text{noun},T)\bigr)$ };
+    \node (r21) at (+2.0,-2.7) { $\bigl(\text{sees},(\text{noun},E)\bigr)$ };
+    \node (r30) at (+5.0,-3.7) { $\bigl(\#,(\text{verb},T)\bigr)$ };
+    \node (r31) at (+2.0,-3.7) { $\bigl(\text{Bob},(\text{verb},E)\bigr)$ };
+    \draw[->] (r00.south) -- (r10.north);
+    \draw[->] (r10.south) -- (r20.north);
+    \draw[->] (r20.south) -- (r30.north);
+    \draw[->] (r00.south west) -- (r11.north east);
+    \draw[->] (r10.south west) -- (r21.north east);
+    \draw[->] (r20.south west) -- (r31.north east);
+
+    \node (s00) at (+5.0,+3.7) { $\bigl(\text{noun},(\#,T)\bigr)$ };
+    \node[highlight]
+          (s10) at (+5.0,+2.7) { $\bigl(\text{verb},(\text{noun},T)\bigr)$ };
+    \node (s11) at (+2.0,+2.7) { $\bigl(\text{Alice},(\text{noun},E)\bigr)$ };
+    \node (s20) at (+5.0,+1.7) { $\bigl(\text{noun},(\text{verb},T)\bigr)$ };
+    \node (s21) at (+2.0,+1.7) { $\bigl(\text{sees},(\text{verb},E)\bigr)$ };
+    \node (s30) at (+5.0,+0.7) { $\bigl(\#,(\text{noun},T)\bigr)$ };
+    \node (s31) at (+2.0,+0.7) { $\bigl(\text{Bob},(\text{noun},E)\bigr)$ };
+    \draw[->] (s00.south) -- (s10.north);
+    \draw[->] (s10.south) -- (s20.north);
+    \draw[->] (s20.south) -- (s30.north);
+    \draw[->] (s00.south west) -- (s11.north east);
+    \draw[->] (s10.south west) -- (s21.north east);
+    \draw[->] (s20.south west) -- (s31.north east);
+   \end{scope}
+  }
+
+  \only<4->{
+   \node[color=blue,minimum height=0.6cm] (chi) at (+7.0,+0.0) {
+    \only<4>{$\chi_{\omega,x}\bigl(\text{verb},(\text{noun},T)\bigr)$}
+    \only<5>{$\operatorname{count}\bigl(\text{verb},(\text{noun},T)\bigr)$}
+    \only<6>{$q_{\omega'}\bigl(\text{verb}\!\bigm|\!(\text{noun},T)\bigr)$}
+    \only<7>{$t'(\text{verb}\,|\,\text{noun})$}
+   };
+   \draw[color=blue,->,dashed] (r20.east) ++(0.2,0) -| (chi.south);
+   \draw[color=blue,->,dashed] (s10.east) ++(0.2,0) -| (chi.north);
+  }
+
+  \draw[draw=none] (0,+4.1) rectangle (8.5,-4.1);
+ \end{tikzpicture}\end{center}
 \end{frame}
 
 \againframe<3>{gliederung}
