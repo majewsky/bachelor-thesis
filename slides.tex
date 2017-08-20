@@ -450,14 +450,14 @@
   \node[anchor=south,rectangle] at (0,0) { $q_0$ };
   \only<1-5>{
    \draw (0,0) -- (5,-6) -- (-5,-6) -- cycle;
-   \node[coordinate,pin=60:{\scriptsize Ableitungsbaum aus $H(x)$}] at ($(0,0)!0.2!(5,-6)$) {};
+   \node[coordinate,pin=60:{\scriptsize Ableitungsbaum für $H(x)$}] at ($(0,0)!0.2!(5,-6)$) {};
   }
   \only<6>{
    \draw[thick,blue] (0,0) -- (5,-6) -- (-5,-6) -- cycle;
    \node[coordinate,pin=60:{\color{blue}$\beta_x(q_0)$}] at ($(0,0)!0.2!(5,-6)$) {};
   }
   \node[rectangle,draw] (rule) at (0,-4) { $q\to (a,b)(q_1,q_2,q_3)$ };
-  \only<2->{
+  \only<3->{
    \node (q0) at (0,-3) { $q$ };
    \node (q1) at (-1.0,-5) { $q_1$ };
    \node (q2) at (+0.0,-5) { $q_2$ };
@@ -467,7 +467,7 @@
    \draw[->] ($(rule.south)+(+0,0)$) -- (q2.north);
    \draw[->] ($(rule.south)+(+1,0)$) -- (q3.north);
   }
-  \only<3->{
+  \only<2->{
    \begin{scope}[on background layer]
     \fill[fill=green!20] (rule.north west) rectangle (rule.south east);
    \end{scope}
@@ -578,21 +578,21 @@
  \end{tikzpicture}\end{center}
 \end{frame}
 
-\newcommand\gstate[2]{{\color{blue}(#1,#2)}}
+\newcommand\gstate[2]{{\color{blue}(#2,#1)}}
 \newcommand\cevent[3]{{\color{red!90!black}\bigl(#1,(#2,#3)\bigr)}}
 \begin{frame}\frametitle{Beispiel: Ableitung aus der Baumgrammatik $K$}
  \begin{center}\begin{tikzpicture}[every node/.style={rectangle,draw,node font=\scriptsize,minimum width=2.5cm,minimum height=2.0em}]
   \tikzstyle{gstate}=[color=blue,fill=blue!3]
   \tikzstyle{cevent}=[color=red!90!black,fill=red!3]
-  \node<1>  [gstate] (r01) at (+0.0,+0) { $(\#,T)$ };
+  \node<1>  [gstate] (r01) at (+0.0,+0) { $(T,\#)$ };
   \node<2-> [cevent] (r01) at (+0.0,+0) { $\bigl(\text{noun},(\#,T)\bigr)$ };
-  \node<2>  [gstate] (r11) at (-3.0,-1) { $(\text{noun},E)$ };
+  \node<2>  [gstate] (r11) at (-3.0,-1) { $(E,\text{noun})$ };
   \node<3-> [cevent] (r11) at (-3.0,-1) { $\bigl(\text{Alice},(\text{noun},E)\bigr)$ };
-  \node<2-3>[gstate] (r12) at (+0.0,-1) { $(\text{noun},T)$ };
+  \node<2-3>[gstate] (r12) at (+0.0,-1) { $(T,\text{noun})$ };
   \node<4-> [cevent] (r12) at (+0.0,-1) { $\bigl(\text{verb},(\text{noun},T)\bigr)$ };
-  \node<4>  [gstate] (r21) at (-3.0,-2) { $(\text{verb},E)$ };
+  \node<4>  [gstate] (r21) at (-3.0,-2) { $(E,\text{verb})$ };
   \node<5-> [cevent] (r21) at (-3.0,-2) { $\bigl(\text{sees},(\text{verb},E)\bigr)$ };
-  \node<4-5>[gstate] (r22) at (+0.0,-2) { $(\text{verb},T)$ };
+  \node<4-5>[gstate] (r22) at (+0.0,-2) { $(T,\text{verb})$ };
   \node<6-> [cevent] (r22) at (+0.0,-2) { $\bigl(\#,(\text{verb},T)\bigr)$ };
   \draw<2->[->] (r01.south) -- (r12.north);
   \draw<2->[->] (r01.south west) -- (r11.north east);
