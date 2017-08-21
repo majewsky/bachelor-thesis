@@ -5,7 +5,7 @@ This repository contains my bachelor thesis. All content is available under
 which is licensed under [CC BY 4.0 International](https://creativecommons.org/licenses/by/4.0/), and is a
 [trademark of Creative Commons](https://creativecommons.org/policies/#license).
 
-**The PDF of the submitted version is [here](https://github.com/majewsky/bachelor-thesis/raw/master/final.pdf).**
+**The PDF of the submitted version is [here](https://github.com/majewsky/bachelor-thesis/raw/master/final.pdf).** There are also some [slides](https://github.com/majewsky/bachelor-thesis/raw/master/slides.pdf) from a presentation of my work, but they are not nearly as self-explanatory since I'm supposed to be talking over them.
 
 ## Abstract
 
